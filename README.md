@@ -20,11 +20,31 @@ npx http-server . -p 8099     # then open http://localhost:8099
 …or simply open `index.html` in a browser — the scripts are classic
 (non-module) scripts precisely so the pages work from `file://` too.
 
+## Deploy
+
+Static, so there is nothing to build. On Vercel, import this repository and
+accept the defaults — Framework Preset **Other**, no build command, output
+directory `./`. Or deploy straight from the folder without GitHub:
+
+```bash
+npx vercel          # preview URL
+npx vercel --prod   # production
+```
+
+`vercel.json` turns on clean URLs (`/product`, not `/product.html`), caches
+`/assets` with revalidation — the CSS and JS filenames are not fingerprinted,
+so long-lived caching would strand visitors on stale files — and sets the
+baseline security headers.
+
+Anywhere that serves static files works equally well: Netlify, Cloudflare
+Pages, GitHub Pages, S3 + CloudFront.
+
 ## What's here
 
 ```
 .
 ├── index.html            Homepage — 12 sections, hero through footer
+├── vercel.json           Clean URLs, cache and security headers
 ├── product.html          Sabkha Console — gallery, configurator, story
 ├── docs/
 │   └── brand-and-experience.md
