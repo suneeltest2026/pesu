@@ -1,199 +1,427 @@
 /* ==========================================================================
    PESU — Catalogue
-   The single source of truth for merchandising data in the prototype:
-   materials, configurable options, products, collections, editorial.
-   Shaped deliberately like an API response so it can be replaced by a fetch
-   from the commerce backend / PIM without touching the views.
+   Real store data, pulled from the pesu.ae Shopify store.
+   Prices in AED, images from the Shopify CDN, copy and specifications taken
+   from the live product records and the published store policies.
+
+   Product identity (id / handle / gid) matches Shopify exactly, so this file
+   can be regenerated from the Admin API rather than hand-edited.
    ========================================================================== */
 window.PESU = window.PESU || {};
 
 (function (PESU) {
   'use strict';
 
-  /* --- Materials ---------------------------------------------------------
-     `vars` drive the vector artwork; `swatch` drives the CSS texture chip;
-     `stage` tints the backdrop so each material sits in its own light.      */
-  var MATERIALS = [
-    {
-      id: 'travertine',
-      leadAdd: 0,   /* extra weeks in the atelier for this material */
-      name: 'Travertine Dune',
-      short: 'Travertine',
-      origin: 'Quarried in Ras Al Khaimah',
-      note: 'Open-pored, honed by hand until the stone reads like still sand.',
-      swatch: 'mat-travertine',
-      deltaAED: 0,
-      stage: '#EFE7DA',
-      finishes: ['honed', 'brushed', 'polished'],
-      vars: { '--m-1': '#EFE6D6', '--m-2': '#DCCDB4', '--m-3': '#C2AF92', '--m-hi': '#FAF5EB', '--m-metal': '#B08D4F' }
-    },
-    {
-      id: 'oak',
-      leadAdd: 0,   /* extra weeks in the atelier for this material */
-      name: 'Desert Oak',
-      short: 'Oak',
-      origin: 'FSC-certified, air-dried 18 months',
-      note: 'Smoked and oiled, the grain left proud so the surface keeps moving.',
-      swatch: 'mat-oak',
-      deltaAED: -1800,
-      stage: '#E7DCCB',
-      finishes: ['honed', 'brushed', 'oiled'],
-      vars: { '--m-1': '#B48F62', '--m-2': '#946F45', '--m-3': '#6F5133', '--m-hi': '#D3B287', '--m-metal': '#B08D4F' }
-    },
-    {
-      id: 'alabaster',
-      leadAdd: 2,   /* extra weeks in the atelier for this material */
-      name: 'Alabaster Nour',
-      short: 'Alabaster',
-      origin: 'Selected block, Iberian quarry',
-      note: 'Translucent at the edge — it holds light the way a lamp does.',
-      swatch: 'mat-alabaster',
-      deltaAED: 4200,
-      stage: '#F2EDE3',
-      finishes: ['honed', 'polished'],
-      vars: { '--m-1': '#F7F2E8', '--m-2': '#E6DBC7', '--m-3': '#CFC0A6', '--m-hi': '#FFFDF8', '--m-metal': '#C6A464' }
-    },
-    {
-      id: 'basalt',
-      leadAdd: 1,   /* extra weeks in the atelier for this material */
-      name: 'Volcanic Basalt',
-      short: 'Basalt',
-      origin: 'Hajar mountain basalt',
-      note: 'Flamed then brushed to a matte graphite that swallows reflection.',
-      swatch: 'mat-basalt',
-      deltaAED: 2200,
-      stage: '#DFD8CD',
-      finishes: ['honed', 'brushed'],
-      vars: { '--m-1': '#4A4239', '--m-2': '#332D26', '--m-3': '#23201B', '--m-hi': '#645A4D', '--m-metal': '#C6A464' }
-    },
-    {
-      id: 'brass',
-      leadAdd: 2,   /* extra weeks in the atelier for this material */
-      name: 'Brushed Brass',
-      short: 'Brass',
-      origin: 'Cast and finished in Al Quoz',
-      note: 'Unlacquered, so it warms and deepens through the years it is used.',
-      swatch: 'mat-brass',
-      deltaAED: 6500,
-      stage: '#EAE0CD',
-      finishes: ['brushed', 'polished'],
-      vars: { '--m-1': '#DFC287', '--m-2': '#B08D4F', '--m-3': '#7E6229', '--m-hi': '#F2DFAE', '--m-metal': '#8A6C36' }
-    }
-  ];
-
-  var FINISHES = [
-    { id: 'honed',    name: 'Honed',    deltaAED: 0,    note: 'Matte, velvet to the touch' },
-    { id: 'brushed',  name: 'Brushed',  deltaAED: 900,  note: 'Directional, low sheen' },
-    { id: 'polished', name: 'Polished', deltaAED: 1600, note: 'Mirror depth, sealed' },
-    { id: 'oiled',    name: 'Oiled',    deltaAED: 0,    note: 'Natural hardwax oil' }
-  ];
-
-  var SIZES = [
-    { id: 's160', name: '160 cm', deltaAED: -2200, dims: { w: 160, d: 40, h: 84 }, weeks: '10–12' },
-    { id: 's180', name: '180 cm', deltaAED: 0,     dims: { w: 180, d: 42, h: 84 }, weeks: '10–12', span: 1 },
-    { id: 's220', name: '220 cm', deltaAED: 3900,  dims: { w: 220, d: 45, h: 86 }, weeks: '12–14' },
-    { id: 'bespoke', name: 'Bespoke', deltaAED: 6800, dims: { w: 200, d: 45, h: 86 }, weeks: '16–18', custom: true }
-  ];
-
-  var BASES = [
-    { id: 'monolith',   name: 'Monolith plinth', deltaAED: 0,    note: 'Solid material, mitred' },
-    { id: 'cantilever', name: 'Cantilever',      deltaAED: 3400, note: 'Solid brass frame' },
-    { id: 'fluted',     name: 'Fluted column',   deltaAED: 2600, note: 'Hand-carved reeding' }
-  ];
-
-  var ENGRAVING = { deltaAED: 680, maxLength: 22 };
-
-  /* --- The configurable hero product ------------------------------------ */
-  var PRODUCT = {
-    sku: 'PS-SBK-CON-180',
-    name: 'Sabkha Console',
-    collection: 'Sabkha',
-    collectionHref: '#',
-    edition: 'Made to order · Edition of 60 per year',
-    basePriceAED: 24500,
-    href: 'product.html',
-    story: [
-      'Sabkha are the salt flats that lie between Dubai and the Empty Quarter — a surface that looks solid and reads, up close, as a thousand fractured plates of crystal and sand.',
-      'The console takes that geology literally. A single 42 mm slab is cut, honed and set on a plinth with no visible fixings, so the piece appears to have been left there by weather rather than assembled by hand.'
-    ],
-    care: 'Seal annually with the PESU stone balm included in your delivery. Wipe with a soft, damp cloth; avoid citrus and alcohol on porous stone.',
-    provenance: 'Every piece carries a hand-numbered brass disc on the underside and a signed certificate of provenance recording the block, the maker and the date it left the atelier in Al Quoz.'
+  /* --- The house ---------------------------------------------------------
+     From the published store policies — not invented. Any claim shown on the
+     site should be traceable to something here.                             */
+  var SHOP = {
+    name: 'PESU',
+    phone: '+971 56 712 6966',
+    phoneHref: 'tel:+971567126966',
+    email: 'care@pesu.ae',
+    city: 'Ajman, United Arab Emirates',
+    returnsAddress: 'C1 Building, Ajman Free Zone, Ajman',
+    courier: 'Quiqup',
+    storeUrl: 'https://pesu.ae'
   };
 
-  /* --- Merchandising for the homepage ------------------------------------ */
-  var COLLECTIONS = [
+  var SHIPPING = {
+    processing: '1–2 business days',
+    dubai: '1–3 business days',
+    emirates: '5–7 business days',
+    international: 'up to 15 business days',
+    freeThresholdAED: 200,
+    flatAED: 25,
+    outsideUaeAED: 75,
+    note: 'Free delivery across the UAE on orders of AED 200 and above.'
+  };
+
+  var RETURNS = {
+    days: 15,
+    note: 'Unused, in original packaging, with proof of purchase.'
+  };
+
+  /* --- Materials ----------------------------------------------------------
+     Six materials that actually run through the range. `swatch` is the CSS
+     texture; `products` links each material to what is made from it.        */
+  var MATERIALS = [
     {
-      name: 'Dune',
-      count: '14 pieces',
-      line: 'Seating and consoles carved from a single mass',
+      id: 'marble',
+      name: 'Marble',
+      short: 'Marble',
+      origin: 'Hand-finished natural stone',
+      note: 'Cool to the touch, honest in texture — no two pieces exactly alike.',
       swatch: 'mat-travertine',
-      href: '#'
+      products: ['marble-incense']
     },
     {
-      name: 'Majlis',
-      count: '11 pieces',
-      line: 'Modular low seating in camel wool and bouclé',
+      id: 'bamboo',
+      name: 'Bamboo & cane',
+      short: 'Cane',
+      origin: 'Traditional hand-weaving',
+      note: 'Light passes through in soft, uneven patterns — never harsh, never perfect.',
       swatch: 'mat-boucle',
-      href: '#'
+      products: ['bamboo-lamps']
     },
     {
-      name: 'Ghaf',
-      count: '9 pieces',
-      line: 'Lighting drawn from the canopy of the desert tree',
+      id: 'wood',
+      name: 'Hand-painted wood',
+      short: 'Wood',
+      origin: 'Painted by hand, piece by piece',
+      note: 'Brushwork you can read up close, on a frame built to outlast a trend.',
+      swatch: 'mat-oak',
+      products: ['frames-classic', 'frame-turquoise']
+    },
+    {
+      id: 'sabai',
+      name: 'Sabai grass',
+      short: 'Sabai',
+      origin: 'Mayurbhanj, Odisha',
+      note: 'Sun-dried, hand-twisted into rope, then braided by rural artisans.',
+      swatch: 'mat-clay',
+      products: ['sabai-tealight']
+    },
+    {
+      id: 'silver',
+      name: 'Silver finish',
+      short: 'Silver',
+      origin: 'Premium metal finish',
+      note: 'A quiet shine that holds the light without shouting about it.',
       swatch: 'mat-brass',
-      href: '#'
+      products: ['elephant-bowl', 'krishna-tlight']
+    },
+    {
+      id: 'ply',
+      name: 'Wood & glass',
+      short: 'Glass',
+      origin: 'Handmade, dovetailed',
+      note: 'Knots, scratches and blemishes left in place — the evidence of real wood.',
+      swatch: 'mat-basalt',
+      products: ['dovetail-planter']
     }
   ];
 
-  var MATERIAL_STORIES = [
-    { name: 'Travertine', swatch: 'mat-travertine', origin: 'Ras Al Khaimah', line: 'Cut from a single block so the veining runs unbroken across a whole collection.' },
-    { name: 'Desert oak', swatch: 'mat-oak',        origin: 'Air-dried 18 months', line: 'Smoked to a deep amber, finished with hardwax oil and nothing else.' },
-    { name: 'Brass',      swatch: 'mat-brass',      origin: 'Cast in Al Quoz',   line: 'Left unlacquered. It records every hand that has touched it.' },
-    { name: 'Alabaster',  swatch: 'mat-alabaster',  origin: 'Iberian quarry',    line: 'Milled to 8 mm at the rim, where it turns translucent under light.' },
-    { name: 'Bouclé',     swatch: 'mat-boucle',     origin: 'Woven in Puglia',   line: 'Undyed camel and wool, looped on a slow shuttle loom.' },
-    { name: 'Basalt',     swatch: 'mat-basalt',     origin: 'Hajar mountains',   line: 'Flamed until the surface opens, then brushed back to graphite.' }
+  /* --- Groupings ---------------------------------------------------------
+     The store runs one Shopify collection today ("Home Decor"). These four
+     groups are a merchandising layer over the same products; when real
+     collections exist in Shopify they replace this list.                    */
+  var GROUPS = [
+    { id: 'ritual', name: 'Ritual',  line: 'Incense, tea lights and the quiet minutes',   swatch: 'mat-travertine' },
+    { id: 'light',  name: 'Light',   line: 'Hand-woven shades and warm, uneven glow',      swatch: 'mat-boucle' },
+    { id: 'wall',   name: 'Wall',    line: 'Hand-painted frames and gallery walls',        swatch: 'mat-oak' },
+    { id: 'table',  name: 'Table',   line: 'Centrepieces, bowls and small green things',   swatch: 'mat-brass' }
   ];
 
-  var JOURNAL = [
-    { kicker: 'At home with', title: 'A tower apartment on the Palm, furnished in three materials', line: 'Restraint as a form of luxury: one stone, one wood, one metal, repeated.', swatch: 'mat-travertine' },
-    { kicker: 'In the atelier', title: 'Sixty hours of hand-honing, in eleven photographs', line: 'How a slab becomes a surface you want to touch on the way past.', swatch: 'mat-basalt' },
-    { kicker: 'Material study', title: 'Why we leave brass unlacquered', line: 'Patina is not a defect. It is the object keeping a record of your life.', swatch: 'mat-brass' }
+  var CDN = 'https://cdn.shopify.com/s/files/1/0769/8962/8589/files/';
+
+  /* --- Products ----------------------------------------------------------- */
+  var PRODUCTS = [
+    {
+      id: 'marble-incense',
+      gid: 'gid://shopify/Product/8597235859629',
+      handle: 'luxury-marble-incense-holder-handmade-minimal-home-decor-pesu-uae',
+      name: 'Marble Incense Holder',
+      fullTitle: 'Handcrafted Marble Incense Holder — Raw Stone, Quiet Ritual',
+      group: 'ritual',
+      material: 'marble',
+      priceAED: 89,
+      inventory: 10,
+      blurb: 'A small ritual, carved in stone',
+      images: [CDN + 'IMG-8088.png?v=1780069020'],
+      story: [
+        'A small ritual, carved in stone. This incense holder is cut from natural marble — cool to the touch, honest in texture, with no two pieces exactly alike.',
+        'Light it during meditation, prayer, or simply the quiet minutes before bed. Let the smoke settle the room, and let the stone settle you.'
+      ],
+      features: [
+        'Natural marble, hand-finished',
+        'Minimal form, raw material',
+        'A daily reset for your space'
+      ],
+      specs: {
+        Material: 'Natural marble, hand-finished',
+        Finish: 'Raw stone, honest texture',
+        Care: 'Wipe with a soft, dry cloth',
+        Note: 'Handmade — colour and veining vary piece to piece'
+      }
+    },
+    {
+      id: 'bamboo-lamps',
+      gid: 'gid://shopify/Product/8596344963245',
+      handle: 'handmade-bamboo-cane-hanging-lamps-set-of-3',
+      name: 'Bamboo & Cane Hanging Lamps',
+      fullTitle: 'Handmade Bamboo & Cane Hanging Lamps — Set of 3',
+      group: 'light',
+      material: 'bamboo',
+      priceAED: 149,
+      inventory: 5,
+      blurb: 'Set of three, hand-woven',
+      images: [
+        CDN + 'IMG-8060.jpg?v=1779981651',
+        CDN + 'IMG-8061.jpg?v=1779981651',
+        CDN + 'IMG-8062.jpg?v=1779981651',
+        CDN + 'IMG-8063.jpg?v=1779981651'
+      ],
+      story: [
+        'Light, filtered through something real. Hand-woven from natural bamboo and cane, these lamps let light pass through in soft, uneven patterns — never harsh, never perfect.',
+        'Hang them over a dining table, a reading corner, or a quiet hallway, and watch the room settle into a warmer glow. No two lamps are identical — the small irregularities are part of the craft, not a flaw in it.'
+      ],
+      features: [
+        'Hand-woven bamboo and cane, set of 3',
+        'Soft, ambient light with natural shadow texture',
+        'Lightweight, easy to hang',
+        'Eco-friendly, sustainably made'
+      ],
+      specs: {
+        'Set includes': '3 hanging lamps',
+        Material: 'Natural bamboo & cane',
+        Dimensions: '17 cm diameter × 19 cm height, each',
+        Includes: 'Bulb holder + 2 m wire with plug',
+        Care: 'Wipe gently with a soft, dry cloth'
+      }
+    },
+    {
+      id: 'frames-classic',
+      gid: 'gid://shopify/Product/8596307673261',
+      handle: 'classic-handpainted-wooden-wall-frames-elegant-artistic-wall-decor',
+      name: 'Handpainted Wall Frames, Classic',
+      fullTitle: 'Classic Handpainted Wooden Wall Frames — Elegant Artistic Wall Décor',
+      group: 'wall',
+      material: 'wood',
+      priceAED: 199,
+      inventory: 10,
+      blurb: 'Intricate brushwork on wood',
+      images: [
+        CDN + 'IMG-8059.png?v=1779979974',
+        CDN + 'IMG-8058.png?v=1779979974',
+        CDN + 'IMG-8057.png?v=1779979974',
+        CDN + 'IMG-8056.png?v=1779979974'
+      ],
+      story: [
+        'Intricate handpainted detailing on premium wood, for walls that need warmth rather than another print.',
+        'Built for gallery arrangements and statement walls — living rooms, hallways, entryways — and equally at home in modern, traditional or layered interiors.'
+      ],
+      features: [
+        'Handpainted detailing, piece by piece',
+        'Premium wooden craftsmanship',
+        'Made for gallery walls and statement arrangements'
+      ],
+      specs: {
+        Type: 'Decorative wall frames',
+        Material: 'Wood',
+        Finish: 'Handpainted',
+        Spaces: 'Living room, bedroom, hallway, entryway, office',
+        Care: 'Wipe with a soft, dry cloth only'
+      }
+    },
+    {
+      id: 'frame-turquoise',
+      gid: 'gid://shopify/Product/8596301807789',
+      handle: 'turquoise-handpainted-wooden-wall-frame-artistic-luxury-wall-decor',
+      name: 'Handpainted Wall Frame, Turquoise',
+      fullTitle: 'Turquoise Handpainted Wooden Wall Frame — Artistic Luxury Wall Décor',
+      group: 'wall',
+      material: 'wood',
+      priceAED: 69,
+      inventory: 25,
+      blurb: 'One colour, held against a neutral wall',
+      images: [
+        CDN + 'IMG-8054.png?v=1779979790',
+        CDN + 'IMG-8053.png?v=1779979791'
+      ],
+      story: [
+        'A rich turquoise finish over handpainted detailing — colour used the way a room can take it, in one place rather than everywhere.',
+        'Hang it alone against a neutral wall, or let it anchor a gallery arrangement of quieter frames.'
+      ],
+      features: [
+        'Rich turquoise finish, handpainted',
+        'Artistic detailing on premium wood',
+        'Anchors a gallery wall or stands alone'
+      ],
+      specs: {
+        Type: 'Decorative wall frame',
+        Material: 'Wood',
+        Finish: 'Handpainted turquoise',
+        Spaces: 'Living room, bedroom, hallway, entryway, office',
+        Care: 'Wipe with a soft, dry cloth only'
+      }
+    },
+    {
+      id: 'krishna-tlight',
+      gid: 'gid://shopify/Product/8596289159341',
+      handle: 'krishna-t-light-candle-holder-elegant-spiritual-home-decor',
+      name: 'Krishna T-Light Holder',
+      fullTitle: 'Krishna T-Light Candle Holder — Elegant Spiritual Home Décor',
+      group: 'ritual',
+      material: 'silver',
+      priceAED: 49,
+      inventory: 10,
+      blurb: 'Candlelight for a prayer corner',
+      images: [
+        CDN + 'IMG-8052.jpg?v=1779979420',
+        CDN + 'IMG-8051.jpg?v=1779979420',
+        CDN + 'IMG-8050.png?v=1779979423',
+        CDN + 'IMG-8049.png?v=1779979420'
+      ],
+      story: [
+        'A Krishna-inspired form with intricate detailing, made to hold a single tea light and the warmth that comes with it.',
+        'For coffee tables, prayer corners, shelves and festive setups — Ramadan, Eid, Diwali, or an ordinary evening that deserves better light.'
+      ],
+      features: [
+        'Krishna-inspired decorative design',
+        'Warm, peaceful candlelight ambiance',
+        'For festive setups, prayer corners and shelves'
+      ],
+      specs: {
+        Type: 'T-light candle holder',
+        Material: 'Premium decorative finish',
+        Spaces: 'Living room, prayer room, bedroom, entryway, office',
+        Care: 'Wipe with a soft, dry cloth only'
+      }
+    },
+    {
+      id: 'elephant-bowl',
+      gid: 'gid://shopify/Product/8596269170861',
+      handle: 'silver-elephant-decorative-bowl-elegant-luxury-home-decor',
+      name: 'Silver Elephant Bowl',
+      fullTitle: 'Silver Elephant Decorative Bowl — Elegant Luxury Home Décor',
+      group: 'table',
+      material: 'silver',
+      priceAED: 99,
+      inventory: 10,
+      blurb: 'A centrepiece that carries symbolism',
+      images: [
+        CDN + 'kTcMELfR_C31DFRVVG2_2025-03-19_4.webp?v=1779977074',
+        CDN + 'kTcMELfR_8ZNGJOKFMI_2025-03-19_3.webp?v=1779977074',
+        CDN + 'kTcMELfR_ICMVLCFBU5_2025-03-19_2.webp?v=1779977074',
+        CDN + 'kTcMELfR_LOV9P61VHQ_2025-03-19_1.webp?v=1779977074'
+      ],
+      story: [
+        'An elephant-inspired form in a premium silver finish — a centrepiece for a coffee table, a console, or a dining table that needs one considered object rather than five.',
+        'The elephant carries its own symbolism: wisdom, prosperity, strength. It reads as decoration first and meaning second, which is the right order.'
+      ],
+      features: [
+        'Luxury silver finish with premium detailing',
+        'Elephant-inspired decorative form',
+        'Centrepiece for coffee tables, consoles and shelves'
+      ],
+      specs: {
+        Type: 'Decorative bowl',
+        Material: 'Premium metal, silver finish',
+        Spaces: 'Living room, dining room, bedroom, office, entryway',
+        Care: 'Wipe with a soft, dry cloth only'
+      }
+    },
+    {
+      id: 'sabai-tealight',
+      gid: 'gid://shopify/Product/8592413425837',
+      handle: 'handwoven-sabai-grass-tea-light-holder',
+      name: 'Sabai Grass Tea Light Holder',
+      fullTitle: 'Handwoven Sabai Grass Tea Light Holder',
+      group: 'ritual',
+      material: 'sabai',
+      priceAED: 24.99,
+      inventory: 20,
+      blurb: 'Hand-twisted grass, braided by artisans',
+      images: [
+        CDN + 'HR6010134010200_1.jpg?v=1779608582',
+        CDN + '6010134010200_2.jpg?v=1779608581',
+        CDN + '6010134010200_3.jpg?v=1779608581'
+      ],
+      story: [
+        'Mayurbhanj in Odisha is known as the land of tigers, and also for its handicrafts. This holder is woven there, by rural artisans, from sabai grass.',
+        'The grass is sun-dried, hand-twisted into rope, rubbed against tree bark to take off the rough edges, then braided. It is slow work, and it shows in the object.'
+      ],
+      features: [
+        'Handwoven sabai grass',
+        'Eco-friendly and artisanal',
+        'One-of-a-kind by nature of the process'
+      ],
+      specs: {
+        Material: 'Sabai grass',
+        Dimensions: '1.7 in × 1.7 in',
+        Weight: '20 g',
+        Method: 'Handwoven',
+        Care: 'Wipe clean or dust with a soft, damp cloth'
+      }
+    },
+    {
+      id: 'dovetail-planter',
+      gid: 'gid://shopify/Product/8590823981229',
+      handle: 'dovetail-wooden-test-tube-planter',
+      name: 'Dovetail Test Tube Planter',
+      fullTitle: 'Dovetail Wooden Test Tube Planter',
+      group: 'table',
+      material: 'ply',
+      priceAED: 69,
+      inventory: 5,
+      blurb: 'Cuttings, held in glass and wood',
+      images: [
+        CDN + 'IMG-7931.jpg?v=1779481422',
+        CDN + 'IMG-7932.jpg?v=1779481422',
+        CDN + 'IMG-7933.jpg?v=1779481422'
+      ],
+      /* The only product in the range carrying a real Shopify option. */
+      options: [{ name: 'Size — inches', values: ['9.75 × 2.5 × 7.25'] }],
+      story: [
+        'Test tubes set into dovetailed wood, for cuttings, single stems and the kind of green that does not need a pot.',
+        'Made from wood, and left with its rustic aesthetic intact: knot holes, scratches and blemishes are part of the offering rather than faults in it.'
+      ],
+      features: [
+        'Handmade, dovetailed construction',
+        'Plywood and glass test tubes',
+        'Table-top scale'
+      ],
+      specs: {
+        Material: 'Plywood & glass test tubes',
+        Dimensions: '9.75 in × 2.5 in × 7.25 in',
+        Weight: '434 g',
+        Method: 'Handmade',
+        Care: 'Wipe with a soft cloth'
+      }
+    }
   ];
 
-  var RELATED = [
-    { name: 'Ghaf Pendant',     collection: 'Ghaf',   priceAED: 18900, swatch: 'mat-alabaster' },
-    { name: 'Majlis Low Seat',  collection: 'Majlis', priceAED: 32400, swatch: 'mat-boucle' },
-    { name: 'Dune Side Table',  collection: 'Dune',   priceAED: 11200, swatch: 'mat-travertine' },
-    { name: 'Oud Vessel, Tall', collection: 'Sabkha', priceAED: 6400,  swatch: 'mat-clay' }
-  ];
-
-  var SEARCH_INDEX = [
-    { name: 'Sabkha Console',     collection: 'Sabkha', priceAED: 24500, swatch: 'mat-travertine', href: 'product.html' },
-    { name: 'Ghaf Pendant',       collection: 'Ghaf',   priceAED: 18900, swatch: 'mat-alabaster',  href: 'product.html' },
-    { name: 'Majlis Low Seat',    collection: 'Majlis', priceAED: 32400, swatch: 'mat-boucle',     href: 'product.html' },
-    { name: 'Dune Side Table',    collection: 'Dune',   priceAED: 11200, swatch: 'mat-travertine', href: 'product.html' },
-    { name: 'Dune Lounge Chair',  collection: 'Dune',   priceAED: 27800, swatch: 'mat-oak',        href: 'product.html' },
-    { name: 'Oud Vessel, Tall',   collection: 'Sabkha', priceAED: 6400,  swatch: 'mat-clay',       href: 'product.html' },
-    { name: 'Basalt Plinth',      collection: 'Sabkha', priceAED: 9800,  swatch: 'mat-basalt',     href: 'product.html' },
-    { name: 'Nour Wall Light',    collection: 'Ghaf',   priceAED: 7400,  swatch: 'mat-alabaster',  href: 'product.html' }
-  ];
-
+  /* --- Helpers ------------------------------------------------------------ */
   function byId(list, id) {
     return list.filter(function (item) { return item.id === id; })[0] || list[0];
   }
 
+  function product(id) { return byId(PRODUCTS, id); }
+
+  function inGroup(groupId) {
+    return PRODUCTS.filter(function (p) { return p.group === groupId; });
+  }
+
+  function ofMaterial(materialId) {
+    return PRODUCTS.filter(function (p) { return p.material === materialId; });
+  }
+
+  /* Shopify's CDN resizes on request — ask for what the layout actually uses. */
+  function image(url, width) {
+    if (!url) return '';
+    return url + (url.indexOf('?') > -1 ? '&' : '?') + 'width=' + (width || 800);
+  }
+
+  function productUrl(p) {
+    return 'product.html?product=' + p.id;
+  }
+
   PESU.catalog = {
+    shop: SHOP,
+    shipping: SHIPPING,
+    returns: RETURNS,
     materials: MATERIALS,
-    finishes: FINISHES,
-    sizes: SIZES,
-    bases: BASES,
-    engraving: ENGRAVING,
-    product: PRODUCT,
-    collections: COLLECTIONS,
-    materialStories: MATERIAL_STORIES,
-    journal: JOURNAL,
-    related: RELATED,
-    searchIndex: SEARCH_INDEX,
-    byId: byId
+    groups: GROUPS,
+    products: PRODUCTS,
+    byId: byId,
+    product: product,
+    inGroup: inGroup,
+    ofMaterial: ofMaterial,
+    image: image,
+    productUrl: productUrl,
+    /* The piece the homepage leads with, and the PDP's default. */
+    featuredId: 'marble-incense',
+    spotlightId: 'bamboo-lamps'
   };
 })(window.PESU);

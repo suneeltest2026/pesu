@@ -18,12 +18,12 @@ window.PESU = window.PESU || {};
   /* All prices are authored in AED — the home currency of the house.
      Rates are indicative and would come from an FX service, refreshed daily,
      with rounding rules per market (luxury pricing never ends in .37). */
+  /* The store sells and settles in AED (Shopify Basic, single market). More
+     currencies belong here only once Shopify Markets is publishing real
+     per-market prices — a display-only conversion would disagree with what
+     checkout actually charges. */
   var CURRENCIES = {
-    AED: { label: 'AED', locale: 'en-AE', rate: 1,      round: 1 },
-    USD: { label: 'USD', locale: 'en-US', rate: 0.2723, round: 10 },
-    EUR: { label: 'EUR', locale: 'de-DE', rate: 0.2510, round: 10 },
-    GBP: { label: 'GBP', locale: 'en-GB', rate: 0.2140, round: 10 },
-    SAR: { label: 'SAR', locale: 'en-SA', rate: 1.0210, round: 50 }
+    AED: { label: 'AED', locale: 'en-AE', rate: 1, round: 1 }
   };
 
   var state = {
@@ -63,22 +63,26 @@ window.PESU = window.PESU || {};
   function convert(aed) {
     var c = CURRENCIES[state.currency];
     var value = aed * c.rate;
-    return Math.round(value / c.round) * c.round;
+    return c.round > 1 ? Math.round(value / c.round) * c.round : value;
   }
 
   function format(aed, opts) {
     var code = (opts && opts.currency) || state.currency;
-    var c = CURRENCIES[code];
-    var value = code === state.currency ? convert(aed) : Math.round(aed * c.rate / c.round) * c.round;
+    var c = CURRENCIES[code] || CURRENCIES.AED;
+    /* Rounding is for converted currencies only — the home currency is
+       shown exactly as the store charges it, decimals and all. */
+    var value = c.round > 1 ? Math.round(aed * c.rate / c.round) * c.round : aed * c.rate;
+    var decimals = Math.abs(value - Math.round(value)) > 0.001 ? 2 : 0;
     try {
       return new Intl.NumberFormat(c.locale, {
         style: 'currency',
         currency: code,
         currencyDisplay: 'code',
-        maximumFractionDigits: 0
+        minimumFractionDigits: decimals,
+        maximumFractionDigits: decimals
       }).format(value).replace(/\u00a0/g, ' ');
     } catch (err) {
-      return code + ' ' + value.toLocaleString('en-US');
+      return code + ' ' + value.toFixed(decimals);
     }
   }
 
@@ -105,6 +109,7 @@ window.PESU = window.PESU || {};
         specLines: item.specLines || [],
         options: item.options || {},
         swatch: item.swatch || 'mat-travertine',
+        image: item.image || '',
         leadTime: item.leadTime || '',
         href: item.href || '#'
       });

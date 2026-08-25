@@ -574,3 +574,23 @@ a:hover > .seal { opacity: 1; }
   .drawer { width: 100%; }
   .newsletter { max-width: none; }
 }
+
+/* --- Photography -------------------------------------------------------
+   Product images sit on the material surface that stands behind them, so a
+   slow or failed load degrades to a texture rather than a hole.
+   ----------------------------------------------------------------------- */
+.tile__media img,
+.material-card .surface img,
+.manifesto__media img,
+.cart-line__thumb img,
+.search__result .surface img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 1;
+}
+.material-card .surface,
+.search__result .surface { position: relative; overflow: hidden; }
+.manifesto__media img { object-position: center 40%; }

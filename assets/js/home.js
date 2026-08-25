@@ -1,38 +1,26 @@
 /* ==========================================================================
    PESU — Homepage behaviour
-   Hero parallax, the featured object, and the material configurator teaser.
+   Hero parallax and the shop-by-material picker.
    ========================================================================== */
 (function (PESU) {
   'use strict';
 
   var $ = PESU.ui.$, $$ = PESU.ui.$$;
-  var catalog = PESU.catalog, art = PESU.art;
+  var catalog = PESU.catalog, store = PESU.store;
 
-  function applyMaterial(el, material) {
-    Object.keys(material.vars).forEach(function (key) {
-      el.style.setProperty(key, material.vars[key]);
-    });
-  }
-
-  /* --- Featured object --------------------------------------------------- */
-  function initSpotlight() {
-    var mount = $('[data-art="pendant"]');
-    if (!mount) return;
-    mount.innerHTML = art.pendant({ id: 'spot' });
-    applyMaterial(mount, catalog.byId(catalog.materials, 'alabaster'));
-  }
-
-  /* --- Configurator teaser ----------------------------------------------- */
-  function initConfigureTeaser() {
+  /* --- Shop by material ---------------------------------------------------
+     Each swatch swaps the preview to a real piece made from that material. */
+  function initMaterialPicker() {
     var preview = $('[data-teaser-preview]');
     var object = $('[data-teaser-object]');
     var caption = $('[data-teaser-caption]');
+    var note = $('[data-teaser-note]');
+    var cta = $('[data-teaser-cta]');
     var swatchWrap = $('[data-teaser-swatches]');
     if (!preview || !object || !swatchWrap) return;
 
-    object.innerHTML = art.vessel({ id: 'teaser' });
-
     var materials = catalog.materials;
+
     swatchWrap.innerHTML = materials.map(function (m, i) {
       return [
         '<span class="swatch-item">',
@@ -46,33 +34,41 @@
 
     function select(id) {
       var material = catalog.byId(materials, id);
-      applyMaterial(object, material);
-      preview.style.background = material.stage;
-      if (caption) caption.textContent = material.name + ' — ' + material.origin;
+      var piece = catalog.ofMaterial(id)[0];
+      if (!piece) return;
+
+      object.innerHTML = '<img src="' + catalog.image(piece.images[0], 900) + '" alt="' + piece.name + '">';
+      preview.className = 'configure__preview surface ' + material.swatch;
+      if (caption) caption.textContent = piece.name + ' — ' + store.format(piece.priceAED);
+      if (note) note.textContent = material.note;
+      if (cta) {
+        cta.href = catalog.productUrl(piece);
+        cta.textContent = 'View the ' + material.short.toLowerCase() + ' piece';
+      }
       $$('[data-material]', swatchWrap).forEach(function (btn) {
         btn.setAttribute('aria-pressed', String(btn.getAttribute('data-material') === id));
       });
     }
 
     $$('[data-material]', swatchWrap).forEach(function (btn) {
-      btn.addEventListener('click', function () { select(btn.getAttribute('data-material')); });
-      btn.addEventListener('mouseenter', function () { select(btn.getAttribute('data-material')); });
+      var id = btn.getAttribute('data-material');
+      btn.addEventListener('click', function () { select(id); });
+      btn.addEventListener('mouseenter', function () { select(id); });
     });
 
     select(materials[0].id);
   }
 
-  /* --- Ticker ------------------------------------------------------------- */
+  /* --- Ticker -------------------------------------------------------------- */
   function initTicker() {
     var track = $('.ticker__track');
     if (!track) return;
-    /* Duplicate the run so the -100% translate loops seamlessly. */
     var clone = track.cloneNode(true);
     clone.setAttribute('aria-hidden', 'true');
     track.parentNode.appendChild(clone);
   }
 
-  /* --- Hero: pointer-led light ------------------------------------------- */
+  /* --- Hero: pointer-led light --------------------------------------------- */
   function initHeroLight() {
     var hero = $('.hero');
     if (!hero || PESU.ui.reduced || window.matchMedia('(pointer: coarse)').matches) return;
@@ -86,8 +82,7 @@
   }
 
   function init() {
-    initSpotlight();
-    initConfigureTeaser();
+    initMaterialPicker();
     initTicker();
     initHeroLight();
   }

@@ -1,219 +1,248 @@
 /* ==========================================================================
-   PESU — Product detail & configurator
-   One state object drives price, lead time, artwork, summary and the cart
-   payload. Every option change is a single re-render — no partial updates,
-   so the page can never show a price that disagrees with the drawing.
+   PESU — Product detail
+   One page renders any product in the range: ?product=<id>, defaulting to
+   the featured piece. Gallery, specifications, delivery and the purchase
+   rail are all driven from catalog.js, so adding a product to Shopify and
+   regenerating the catalogue is the only step needed to publish it here.
+
+   Note for production: this renders client-side. Before launch each product
+   should be pre-rendered to its own HTML file (or moved onto a framework
+   with SSG) so it is crawlable and shareable.
    ========================================================================== */
 (function (PESU) {
   'use strict';
 
   var $ = PESU.ui.$, $$ = PESU.ui.$$;
-  var store = PESU.store, catalog = PESU.catalog, art = PESU.art;
-  var product = catalog.product;
+  var store = PESU.store, catalog = PESU.catalog;
 
-  var config = {
-    material: 'travertine',
-    finish: 'honed',
-    size: 's180',
-    base: 'monolith',
-    engraving: '',
-    qty: 1,
-    custom: { w: 200, d: 45, h: 86 }
-  };
-
+  var product = null;
+  var qty = 1;
   var els = {};
 
-  /* --- Derived values ---------------------------------------------------- */
-  function parts() {
-    return {
-      material: catalog.byId(catalog.materials, config.material),
-      finish:   catalog.byId(catalog.finishes,  config.finish),
-      size:     catalog.byId(catalog.sizes,     config.size),
-      base:     catalog.byId(catalog.bases,     config.base)
-    };
+  function currentId() {
+    var match = /[?&]product=([\w-]+)/.exec(window.location.search);
+    return match ? match[1] : catalog.featuredId;
   }
 
-  function unitPriceAED() {
-    var p = parts();
-    return product.basePriceAED
-      + p.material.deltaAED
-      + p.finish.deltaAED
-      + p.size.deltaAED
-      + p.base.deltaAED
-      + (config.engraving.trim() ? catalog.engraving.deltaAED : 0);
+  function groupName(id) {
+    return catalog.byId(catalog.groups, id).name;
   }
 
-  function leadTime() {
-    var p = parts();
-    var range = p.size.weeks.split('–').map(Number);
-    var add = p.material.leadAdd || 0;
-    return (range[0] + add) + '–' + (range[1] + add) + ' weeks';
-  }
-
-  function dims() {
-    var p = parts();
-    return p.size.custom ? config.custom : p.size.dims;
-  }
-
-  function specLines() {
-    var p = parts();
-    var d = dims();
-    var lines = [
-      p.material.name,
-      p.finish.name + ' finish',
-      (p.size.custom ? 'Bespoke ' + d.w + '×' + d.d + '×' + d.h + ' cm' : p.size.name),
-      p.base.name
-    ];
-    if (config.engraving.trim()) lines.push('Engraved “' + config.engraving.trim().toUpperCase() + '”');
-    return lines;
-  }
-
-  /* --- Artwork ----------------------------------------------------------- */
-  function applyMaterialVars(el, material) {
-    Object.keys(material.vars).forEach(function (k) { el.style.setProperty(k, material.vars[k]); });
-  }
-
-  function renderArt() {
-    var p = parts();
-    var d = dims();
-    var span = Math.max(0.82, Math.min(1.12, d.w / 180));
-
-    els.viewMain.innerHTML = art.console({
-      id: 'pdp', base: config.base, span: span, engraving: config.engraving
-    });
-    els.viewDetail.innerHTML = art.detail({ id: 'pdpd' });
-    els.viewSitu.innerHTML   = art.situ({ id: 'pdps', base: config.base });
-    els.viewDims.innerHTML   = art.dimensions({ w: d.w, d: d.d, h: d.h });
-
-    [els.viewMain, els.viewDetail, els.viewSitu].forEach(function (el) {
-      applyMaterialVars(el, p.material);
-    });
-    els.stage.style.background = p.material.stage;
-
-    /* Thumbnails mirror the live material. */
-    $$('[data-thumb-art]', els.thumbs).forEach(function (holder) {
-      var kind = holder.getAttribute('data-thumb-art');
-      if (kind === 'main')   holder.innerHTML = art.console({ id: 't1', base: config.base, span: 1 });
-      if (kind === 'detail') holder.innerHTML = art.detail({ id: 't2' });
-      if (kind === 'situ')   holder.innerHTML = art.situ({ id: 't3', base: config.base });
-      if (kind === 'dims')   holder.innerHTML = art.dimensions({ w: d.w, d: d.d, h: d.h });
-      applyMaterialVars(holder, p.material);
-    });
-  }
-
-  /* --- Options ------------------------------------------------------------ */
-  function buildOptions() {
-    /* Materials */
-    els.materials.innerHTML = catalog.materials.map(function (m) {
-      return [
-        '<span class="swatch-item">',
-        '  <button class="swatch surface ' + m.swatch + '" type="button" data-opt="material" data-value="' + m.id + '"',
-        '   aria-pressed="false" aria-label="' + m.name + ', ' + (m.deltaAED >= 0 ? 'plus ' : 'less ') + Math.abs(m.deltaAED) + ' dirhams"></button>',
-        '  <span class="swatch__label">' + m.short + '</span>',
-        '</span>'
-      ].join('');
-    }).join('');
-
-    els.finishes.innerHTML = catalog.finishes.map(function (f) {
-      return chip('finish', f.id, f.name, f.deltaAED);
-    }).join('');
-
-    els.sizes.innerHTML = catalog.sizes.map(function (s) {
-      return chip('size', s.id, s.name, s.deltaAED);
-    }).join('');
-
-    els.bases.innerHTML = catalog.bases.map(function (b) {
-      return chip('base', b.id, b.name, b.deltaAED);
-    }).join('');
-
-    $$('[data-opt]').forEach(function (btn) {
-      btn.addEventListener('click', function () {
-        var key = btn.getAttribute('data-opt');
-        config[key] = btn.getAttribute('data-value');
-        if (key === 'material') reconcileFinish();
-        render();
-      });
-    });
-  }
-
-  function chip(group, value, label, delta) {
-    var money = delta === 0 ? 'Included' : (delta > 0 ? '+' : '−') + Math.abs(delta).toLocaleString('en-US');
-    return [
-      '<button class="option" type="button" data-opt="' + group + '" data-value="' + value + '" aria-pressed="false">',
-      label, '<small data-delta="' + delta + '">' + money + '</small></button>'
-    ].join('');
-  }
-
-  /* A material dictates which finishes the atelier will accept. */
-  function reconcileFinish() {
-    var allowed = parts().material.finishes;
-    if (allowed.indexOf(config.finish) === -1) config.finish = allowed[0];
-  }
-
-  /* --- Render ------------------------------------------------------------- */
-  function render() {
-    var p = parts();
-    var unit = unitPriceAED();
-
-    $$('[data-opt]').forEach(function (btn) {
-      var key = btn.getAttribute('data-opt');
-      btn.setAttribute('aria-pressed', String(config[key] === btn.getAttribute('data-value')));
-      if (key === 'finish') {
-        var ok = p.material.finishes.indexOf(btn.getAttribute('data-value')) > -1;
-        btn.disabled = !ok;
-        btn.title = ok ? '' : 'Not offered in ' + p.material.name;
-      }
-    });
-
-    /* Delta chips are quoted in the shopper's currency too. */
-    $$('.option small[data-delta]').forEach(function (small) {
-      var delta = parseFloat(small.getAttribute('data-delta'));
-      if (delta === 0) { small.textContent = 'Included'; return; }
-      small.textContent = (delta > 0 ? '+ ' : '− ') + store.format(Math.abs(delta));
-    });
-
-    els.groupValue.material.textContent = p.material.name;
-    els.groupValue.finish.textContent   = p.finish.name + ' — ' + p.finish.note;
-    els.groupValue.size.textContent     = p.size.custom ? 'Bespoke' : p.size.name;
-    els.groupValue.base.textContent     = p.base.name;
-
-    els.price.textContent = store.format(unit);
-    els.price.classList.remove('is-bumping');
-    void els.price.offsetWidth;              /* restart the bump animation */
-    els.price.classList.add('is-bumping');
-    if (els.buybarPrice) els.buybarPrice.textContent = store.format(unit * config.qty);
-
-    els.lead.textContent = 'Atelier lead time ' + leadTime();
-    els.qty.textContent = config.qty;
-    els.customDims.hidden = !p.size.custom;
-
-    els.summary.innerHTML = specLines().map(function (line, i) {
-      var labels = ['Material', 'Finish', 'Dimensions', 'Base', 'Engraving'];
-      return '<dt>' + labels[i] + '</dt><dd>' + line + '</dd>';
-    }).join('');
-
-    var engraved = config.engraving.trim();
-    els.engravePreview.classList.toggle('is-empty', !engraved);
-    els.engravePreviewText.textContent = engraved ? engraved.toUpperCase() : 'Your inscription appears here';
-    els.engraveCount.textContent = config.engraving.length + ' / ' + catalog.engraving.maxLength;
-
-    renderArt();
-    PESU.ui.renderPrices(els.rail);
+  function materialName(id) {
+    return catalog.byId(catalog.materials, id).name;
   }
 
   /* --- Gallery ------------------------------------------------------------ */
-  function initGallery() {
-    $$('.gallery__thumb').forEach(function (thumb) {
+  function renderGallery() {
+    var images = product.images;
+    var swatch = catalog.byId(catalog.materials, product.material).swatch;
+
+    els.stage.className = 'gallery__stage surface ' + swatch;
+    els.stage.querySelectorAll('.gallery__view').forEach(function (el) { el.remove(); });
+
+    images.forEach(function (url, i) {
+      var view = document.createElement('div');
+      view.className = 'gallery__view gallery__view--photo' + (i === 0 ? ' is-active' : '');
+      view.setAttribute('data-view', String(i));
+      view.innerHTML = '<img src="' + catalog.image(url, 1200) + '" alt="' +
+        product.name + (i ? ' — view ' + (i + 1) : '') + '" loading="' + (i ? 'lazy' : 'eager') + '">';
+      els.stage.appendChild(view);
+    });
+
+    els.thumbs.innerHTML = images.length < 2 ? '' : images.map(function (url, i) {
+      return [
+        '<button class="gallery__thumb surface ' + swatch + '" type="button" role="tab"',
+        '  data-view="' + i + '" aria-selected="' + (i === 0) + '">',
+        '  <img src="' + catalog.image(url, 300) + '" alt="">',
+        '  <span class="visually-hidden">View ' + (i + 1) + '</span>',
+        '</button>'
+      ].join('');
+    }).join('');
+
+    $$('.gallery__thumb', els.thumbs).forEach(function (thumb) {
       thumb.addEventListener('click', function () {
         var view = thumb.getAttribute('data-view');
-        $$('.gallery__thumb').forEach(function (t) {
+        $$('.gallery__thumb', els.thumbs).forEach(function (t) {
           t.setAttribute('aria-selected', String(t === thumb));
         });
-        $$('.gallery__view').forEach(function (v) {
+        $$('.gallery__view', els.stage).forEach(function (v) {
           v.classList.toggle('is-active', v.getAttribute('data-view') === view);
         });
+        els.stage.classList.remove('is-zoomed');
       });
     });
+  }
+
+  /* --- Purchase rail ------------------------------------------------------ */
+  function renderRail() {
+    els.eyebrow.textContent = groupName(product.group) + ' — ' + materialName(product.material);
+    els.title.textContent = product.name;
+    els.fullTitle.textContent = product.fullTitle;
+    els.price.textContent = store.format(product.priceAED);
+
+    var free = product.priceAED >= catalog.shipping.freeThresholdAED;
+    els.delivery.textContent = free
+      ? 'Free delivery across the UAE'
+      : 'Delivery AED ' + catalog.shipping.flatAED + ' — free over AED ' + catalog.shipping.freeThresholdAED;
+
+    els.stock.textContent = product.inventory > 0
+      ? (product.inventory <= 5 ? 'Only ' + product.inventory + ' left' : 'In stock')
+      : 'Sold out';
+    els.stock.classList.toggle('is-low', product.inventory > 0 && product.inventory <= 5);
+
+    els.features.innerHTML = product.features.map(function (f) {
+      return '<li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 5 5L19 7"/></svg><span>' + f + '</span></li>';
+    }).join('');
+
+    /* Real Shopify options only. Most of the range is single-variant, and in
+       that case no option group renders at all. */
+    if (product.options && product.options.length) {
+      els.optionsWrap.hidden = false;
+      els.optionsWrap.innerHTML = product.options.map(function (opt) {
+        return [
+          '<div class="config__group">',
+          '  <div class="config__group-head">',
+          '    <span class="config__group-label">' + opt.name + '</span>',
+          '  </div>',
+          '  <div class="options">',
+          opt.values.map(function (v, i) {
+            return '<button class="option" type="button" aria-pressed="' + (i === 0) + '">' + v + '</button>';
+          }).join(''),
+          '  </div>',
+          '</div>'
+        ].join('');
+      }).join('');
+    } else {
+      els.optionsWrap.hidden = true;
+      els.optionsWrap.innerHTML = '';
+    }
+
+    els.qty.textContent = qty;
+    els.buybarName.textContent = product.name;
+    els.buybarPrice.textContent = store.format(product.priceAED * qty);
+    els.addBtns.forEach(function (btn) {
+      btn.disabled = product.inventory <= 0;
+      btn.textContent = product.inventory > 0 ? 'Add to bag' : 'Sold out';
+    });
+
+    els.wish.setAttribute('data-wishlist-sku', product.id);
+    els.wish.setAttribute('aria-pressed', String(store.inWishlist(product.id)));
+
+    els.shopLink.href = catalog.shop.storeUrl + '/products/' + product.handle;
+  }
+
+  /* --- Story, specs, policies --------------------------------------------- */
+  function renderStory() {
+    els.story.innerHTML = product.story.map(function (p) { return '<p>' + p + '</p>'; }).join('');
+
+    els.specs.innerHTML = Object.keys(product.specs).map(function (key) {
+      return '<dt>' + key + '</dt><dd>' + product.specs[key] + '</dd>';
+    }).join('');
+
+    var ship = catalog.shipping;
+    els.shipping.innerHTML = [
+      '<dt>Processing</dt><dd>' + ship.processing + ' after payment</dd>',
+      '<dt>Dubai</dt><dd>' + ship.dubai + '</dd>',
+      '<dt>Other emirates</dt><dd>' + ship.emirates + '</dd>',
+      '<dt>International</dt><dd>' + ship.international + '</dd>',
+      '<dt>Cost</dt><dd>Free over AED ' + ship.freeThresholdAED + ' in the UAE; AED ' + ship.flatAED +
+        ' below that, AED ' + ship.outsideUaeAED + ' outside the UAE</dd>',
+      '<dt>Courier</dt><dd>' + ship.courier + ' and trusted logistics partners</dd>'
+    ].join('');
+
+    els.returns.innerHTML = [
+      '<p>' + catalog.returns.days + '-day returns from the day your order arrives. ' +
+        catalog.returns.note + '</p>',
+      '<p>Start a return by writing to <a href="mailto:' + catalog.shop.email + '">' +
+        catalog.shop.email + '</a> — we will send a return label and instructions. Returns sent ' +
+        'without being requested first cannot be accepted. Customised and personal-care items are ' +
+        'excluded.</p>'
+    ].join('');
+  }
+
+  /* --- Related ------------------------------------------------------------- */
+  function renderRelated() {
+    var others = catalog.products.filter(function (p) { return p.id !== product.id; });
+    /* Same group first, then the rest of the range. */
+    others.sort(function (a, b) {
+      return (b.group === product.group) - (a.group === product.group);
+    });
+    els.related.innerHTML = others.slice(0, 4).map(function (p) {
+      var swatch = catalog.byId(catalog.materials, p.material).swatch;
+      return [
+        '<a class="tile" href="' + catalog.productUrl(p) + '" data-reveal-child>',
+        '  <div class="tile__media surface ' + swatch + '">',
+        '    <img src="' + catalog.image(p.images[0], 600) + '" alt="' + p.name + '" loading="lazy">',
+        '  </div>',
+        '  <div class="tile__body">',
+        '    <div><h3 class="tile__name">' + p.name + '</h3>',
+        '    <p class="tile__meta">' + groupName(p.group) + '</p></div>',
+        '    <p class="tile__price num">' + store.format(p.priceAED) + '</p>',
+        '  </div>',
+        '</a>'
+      ].join('');
+    }).join('');
+  }
+
+  /* --- Page --------------------------------------------------------------- */
+  function render() {
+    renderGallery();
+    renderRail();
+    renderStory();
+    renderRelated();
+
+    document.title = product.name + ' — PESU';
+    var desc = document.querySelector('meta[name="description"]');
+    if (desc) desc.setAttribute('content', product.story[0]);
+    els.crumb.textContent = product.name;
+  }
+
+  function addToBag() {
+    store.addToCart({
+      sku: product.id,
+      name: product.name,
+      collection: groupName(product.group),
+      priceAED: product.priceAED,
+      qty: qty,
+      specLines: [materialName(product.material)],
+      options: {},
+      swatch: catalog.byId(catalog.materials, product.material).swatch,
+      image: catalog.image(product.images[0], 200),
+      leadTime: '',
+      href: catalog.productUrl(product)
+    });
+    PESU.ui.toast('Added to your bag');
+    PESU.ui.openPanel('#cart');
+  }
+
+  function init() {
+    els.rail = $('.config');
+    if (!els.rail) return;
+
+    product = catalog.product(currentId());
+
+    els.stage      = $('.gallery__stage');
+    els.thumbs     = $('.gallery__thumbs');
+    els.eyebrow    = $('[data-product-eyebrow]');
+    els.title      = $('[data-product-title]');
+    els.fullTitle  = $('[data-product-fulltitle]');
+    els.price      = $('[data-unit-price]');
+    els.delivery   = $('[data-delivery-line]');
+    els.stock      = $('[data-stock]');
+    els.features   = $('[data-features]');
+    els.optionsWrap = $('[data-product-options]');
+    els.qty        = $('[data-qty]');
+    els.wish       = $('[data-wish]');
+    els.shopLink   = $('[data-shop-link]');
+    els.story      = $('[data-story]');
+    els.specs      = $('[data-specs]');
+    els.shipping   = $('[data-shipping]');
+    els.returns    = $('[data-returns]');
+    els.related    = $('[data-related]');
+    els.crumb      = $('[data-crumb]');
+    els.buybarName = $('[data-buybar-name]');
+    els.buybarPrice = $('[data-buybar-price]');
+    els.addBtns    = $$('[data-add-to-cart]');
 
     els.stage.addEventListener('click', function (e) {
       var rect = els.stage.getBoundingClientRect();
@@ -221,112 +250,29 @@
       els.stage.style.setProperty('--zy', ((e.clientY - rect.top) / rect.height * 100) + '%');
       els.stage.classList.toggle('is-zoomed');
     });
-  }
-
-  /* --- Buy bar ------------------------------------------------------------ */
-  function initBuyBar() {
-    var bar = $('.buybar');
-    var anchor = $('[data-buy-anchor]');
-    if (!bar || !anchor || !('IntersectionObserver' in window)) return;
-    new IntersectionObserver(function (entries) {
-      bar.classList.toggle('is-visible', !entries[0].isIntersecting);
-    }, { threshold: 0 }).observe(anchor);
-  }
-
-  /* --- Add to cart -------------------------------------------------------- */
-  function addToCart() {
-    var p = parts();
-    store.addToCart({
-      sku: product.sku,
-      name: product.name,
-      collection: product.collection,
-      priceAED: unitPriceAED(),
-      qty: config.qty,
-      specLines: specLines(),
-      options: {
-        material: config.material, finish: config.finish, size: config.size,
-        base: config.base, engraving: config.engraving.trim(),
-        dims: p.size.custom ? config.custom : null
-      },
-      swatch: p.material.swatch,
-      leadTime: leadTime(),
-      href: 'product.html'
-    });
-    PESU.ui.toast('Added to your selection');
-    PESU.ui.openPanel('#cart');
-  }
-
-  /* --- Wiring ------------------------------------------------------------- */
-  function init() {
-    els.rail = $('.config');
-    if (!els.rail) return;
-
-    els.stage       = $('.gallery__stage');
-    els.thumbs      = $('.gallery__thumbs');
-    els.viewMain    = $('[data-view="main"].gallery__view');
-    els.viewDetail  = $('[data-view="detail"].gallery__view');
-    els.viewSitu    = $('[data-view="situ"].gallery__view');
-    els.viewDims    = $('[data-view="dims"].gallery__view');
-    els.materials   = $('[data-options="material"]');
-    els.finishes    = $('[data-options="finish"]');
-    els.sizes       = $('[data-options="size"]');
-    els.bases       = $('[data-options="base"]');
-    els.price       = $('[data-unit-price]');
-    els.buybarPrice = $('[data-buybar-price]');
-    els.lead        = $('[data-lead-time]');
-    els.qty         = $('[data-qty]');
-    els.summary     = $('[data-summary]');
-    els.customDims  = $('[data-custom-dims]');
-    els.engravePreview     = $('[data-engrave-preview]');
-    els.engravePreviewText = $('[data-engrave-preview] span');
-    els.engraveCount       = $('[data-engrave-count]');
-    els.groupValue = {
-      material: $('[data-value-for="material"]'),
-      finish:   $('[data-value-for="finish"]'),
-      size:     $('[data-value-for="size"]'),
-      base:     $('[data-value-for="base"]')
-    };
-
-    buildOptions();
-    initGallery();
-    initBuyBar();
-
-    var engraveInput = $('[data-engrave-input]');
-    engraveInput.setAttribute('maxlength', catalog.engraving.maxLength);
-    engraveInput.addEventListener('input', function () {
-      config.engraving = engraveInput.value;
-      render();
-    });
-
-    $$('[data-custom-dim]').forEach(function (input) {
-      input.addEventListener('input', function () {
-        var key = input.getAttribute('data-custom-dim');
-        var v = parseInt(input.value, 10);
-        if (!isNaN(v)) { config.custom[key] = Math.max(40, Math.min(400, v)); render(); }
-      });
-    });
 
     $$('[data-qty-step]').forEach(function (btn) {
       btn.addEventListener('click', function () {
-        config.qty = Math.max(1, config.qty + parseInt(btn.getAttribute('data-qty-step'), 10));
-        render();
+        var next = qty + parseInt(btn.getAttribute('data-qty-step'), 10);
+        qty = Math.max(1, Math.min(product.inventory || 1, next));
+        renderRail();
       });
     });
 
-    $$('[data-add-to-cart]').forEach(function (btn) {
-      btn.addEventListener('click', addToCart);
+    els.addBtns.forEach(function (btn) { btn.addEventListener('click', addToBag); });
+
+    els.wish.addEventListener('click', function () {
+      var on = store.toggleWishlist(product.id);
+      els.wish.setAttribute('aria-pressed', String(on));
+      PESU.ui.toast(on ? 'Saved to your wishlist' : 'Removed from wishlist');
     });
 
-    $('[data-book-consult]').addEventListener('click', function () {
-      PESU.ui.toast('A design advisor will be in touch within one working day');
-    });
-
-    $('[data-swatch-box]').addEventListener('click', function () {
-      PESU.ui.toast('Swatch box requested — delivered by courier in Dubai');
-    });
-
-    /* Currency changes re-price every chip and the buy bar. */
-    document.addEventListener('pesu:store', render);
+    var bar = $('.buybar'), anchor = $('[data-buy-anchor]');
+    if (bar && anchor && 'IntersectionObserver' in window) {
+      new IntersectionObserver(function (entries) {
+        bar.classList.toggle('is-visible', !entries[0].isIntersecting);
+      }, { threshold: 0 }).observe(anchor);
+    }
 
     render();
   }

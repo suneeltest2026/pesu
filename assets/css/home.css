@@ -448,3 +448,36 @@
   .concierge__grid { grid-template-columns: 1fr; }
   .spotlight__specs { grid-template-columns: 1fr; }
 }
+
+/* --- Four-up range grid ------------------------------------------------- */
+.collections__grid--four { grid-template-columns: repeat(4, 1fr); }
+.collections__grid--four .tile:nth-child(2) { margin-top: 0; }
+.collections__grid--four .tile:nth-child(even) { margin-top: clamp(1rem, 3vw, 3rem); }
+
+.tile__index {
+  font-size: var(--step--2);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  mix-blend-mode: normal;
+  color: rgba(255,255,255,.92);
+  text-shadow: 0 1px 12px rgba(18,16,14,.5);
+}
+
+/* Spotlight and material preview now hold photographs */
+.spotlight__object--photo img,
+.configure__object--photo img {
+  width: 100%;
+  height: auto;
+  border-radius: 2px;
+}
+.configure__object--photo { width: 72%; }
+
+@media (max-width: 1080px) {
+  .collections__grid--four { grid-template-columns: repeat(2, 1fr); }
+  .collections__grid--four .tile:nth-child(3) { grid-column: auto; }
+  .collections__grid--four .tile:nth-child(3) .tile__media { --tile-ratio: 3 / 4; }
+}
+@media (max-width: 640px) {
+  .collections__grid--four { grid-template-columns: 1fr; }
+  .collections__grid--four .tile:nth-child(even) { margin-top: 0; }
+}

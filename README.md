@@ -1,51 +1,42 @@
 # PESU
 
-Ultra-luxury home decor, made to order in Al Quoz, Dubai.
+Handmade home decor in natural materials — marble, bamboo and cane,
+hand-painted wood, sabai grass. Ajman, United Arab Emirates.
 
-This repository holds the PESU storefront: a full homepage and a product
-detail page with a working configurator, built as a self-contained static
-front end.
+This repository holds a storefront front end for [pesu.ae](https://pesu.ae):
+a homepage and a product page, built as a self-contained static site. Product
+data, copy, imagery and policies come from the live Shopify store.
 
-The brand strategy, visual identity system and the page-by-page UX breakdown
-live in [`docs/brand-and-experience.md`](docs/brand-and-experience.md).
+Brand and UX documentation: [`docs/brand-and-experience.md`](docs/brand-and-experience.md).
 
 ## Run it
 
-No build step and no dependencies. Either:
+No build step and no dependencies.
 
 ```bash
 npx http-server . -p 8099     # then open http://localhost:8099
 ```
 
-…or simply open `index.html` in a browser — the scripts are classic
-(non-module) scripts precisely so the pages work from `file://` too.
+…or open `index.html` directly — the scripts are classic (non-module) scripts
+so the pages work from `file://` too.
 
 ## Deploy
 
-Static, so there is nothing to build. On Vercel, import this repository and
-accept the defaults — Framework Preset **Other**, no build command, output
-directory `./`. Or deploy straight from the folder without GitHub:
+Static, nothing to build. On Vercel, import the repository and accept the
+defaults — Framework Preset **Other**, no build command, output directory
+`./`. Or from the folder: `npx vercel --prod`.
 
-```bash
-npx vercel          # preview URL
-npx vercel --prod   # production
-```
-
-`vercel.json` turns on clean URLs (`/product`, not `/product.html`), caches
-`/assets` with revalidation — the CSS and JS filenames are not fingerprinted,
-so long-lived caching would strand visitors on stale files — and sets the
-baseline security headers.
-
-Anywhere that serves static files works equally well: Netlify, Cloudflare
-Pages, GitHub Pages, S3 + CloudFront.
+`vercel.json` sets clean URLs, a short revalidating cache on `/assets` (the
+filenames are not fingerprinted, so long caching would strand visitors on
+stale files) and baseline security headers.
 
 ## What's here
 
 ```
 .
-├── index.html            Homepage — 12 sections, hero through footer
+├── index.html            Homepage
+├── product.html          Product detail — renders any product via ?product=<id>
 ├── vercel.json           Clean URLs, cache and security headers
-├── product.html          Sabkha Console — gallery, configurator, story
 ├── docs/
 │   └── brand-and-experience.md
 └── assets/
@@ -53,46 +44,49 @@ Pages, GitHub Pages, S3 + CloudFront.
     │   ├── base.css        Tokens, reset, type scale, material surfaces, motion
     │   ├── components.css  Header, mega menu, drawers, search, forms, footer
     │   ├── home.css        Homepage sections
-    │   └── product.css     Product detail + configurator
+    │   └── product.css     Product detail
     └── js/
-        ├── store.js        Currency, cart, wishlist — persisted, observable
-        ├── catalog.js      Materials, options, products, editorial
-        ├── art.js          Vector stand-ins for product photography
+        ├── store.js        Currency, bag, wishlist — persisted, observable
+        ├── catalog.js      The catalogue: products, materials, policies
         ├── ui.js           Shared chrome: reveals, overlays, prices, toasts
-        ├── home.js         Hero parallax, featured object, material teaser
-        └── product.js      Configurator state → price, lead time, artwork
+        ├── home.js         Hero parallax, shop-by-material picker
+        └── product.js      Product page rendering
 ```
+
+## The catalogue
+
+`assets/js/catalog.js` mirrors the Shopify store: eight products with their
+handles, Shopify GIDs, prices in AED, stock, CDN imagery, descriptions and
+specifications, plus the shipping and returns facts taken from the published
+store policies. Nothing on the site asserts anything that isn't in that file.
+
+To refresh it, re-read the products from the Shopify Admin API and regenerate
+the `PRODUCTS` array — ids and handles already match, so nothing else changes.
+
+Merchandising note: the store runs one Shopify collection ("Home Decor"). The
+four groups used on the site — Ritual, Light, Wall, Table — are a layer in
+`catalog.js`. Create them as real collections in Shopify and they can be read
+from there instead.
 
 ## Working features
 
-- **Configurator** — five materials, four finishes (incompatible ones disable
-  themselves per material), three sizes plus bespoke dimensions, three bases,
-  and a hand-engraved inscription. Price, atelier lead time, the elevation
-  drawing, the in-situ scene and the technical drawing all update together.
-- **Multi-currency** — AED first, plus USD/EUR/GBP/SAR, with per-currency
-  rounding (AED stays exact; converted prices round to a luxury increment).
-  Every price on the page, including option deltas, re-renders on change.
-- **Cart drawer** — each line records its full configuration and lead time;
-  identically configured pieces merge, differently configured ones don't.
-- **Wishlist**, **search overlay**, **mega menu**, **mobile menu**, toasts.
-- Cart, wishlist and currency persist in `localStorage`; blocked storage
-  degrades to a session-only shop rather than an error.
+- **Product page for the whole range** — `product.html?product=<id>` renders
+  any of the eight products: gallery with zoom, specifications, delivery and
+  returns, related pieces. Real Shopify options render only where a product
+  actually has them.
+- **Bag** — line items with quantity and stock ceiling, persisted in
+  `localStorage`, checkout handed off to `pesu.ae/cart`.
+- **Wishlist**, **search across the catalogue**, mega menu, mobile menu.
+- Prices in AED exactly as the store charges them, decimals included.
 
-## Product photography
+## Known gaps before this replaces the live store
 
-There is none yet, and nothing depends on it. `assets/js/art.js` draws each
-view as SVG from CSS custom properties, so selecting a material re-skins every
-scene. When the shoot lands, those builders are replaced by `<picture>`
-elements and no other file changes.
-
-## Browser support
-
-Evergreen Chrome, Safari, Firefox and Edge. Uses `:has()`, `grid-template-rows`
-transitions and `backdrop-filter` for progressive enhancement only — the page
-is fully usable without them.
-
-## Not built yet
-
-Collection/category listing pages, cart page, checkout, account and order
-tracking, and the bespoke enquiry flow. See the roadmap at the end of
-[`docs/brand-and-experience.md`](docs/brand-and-experience.md).
+- **Rendering.** Product pages render client-side. Each product needs
+  pre-rendering to its own URL (or a move to a framework with SSG) to be
+  crawlable and shareable.
+- **Checkout.** The bag hands off to Shopify rather than checking out here.
+  A real implementation uses the Storefront API to create the cart.
+- **Photography.** Images are hotlinked from the Shopify CDN at request-time
+  widths. Fine to start; art direction is the bigger opportunity.
+- **Currency.** AED only, matching the store. More currencies belong here
+  once Shopify Markets publishes real per-market prices.

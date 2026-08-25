@@ -166,7 +166,8 @@ window.PESU = window.PESU || {};
   function cartLineMarkup(line) {
     return [
       '<article class="cart-line" data-line="' + line.id + '">',
-      '  <div class="cart-line__thumb surface ' + line.swatch + '"></div>',
+      '  <div class="cart-line__thumb surface ' + line.swatch + '">' +
+      (line.image ? '<img src="' + line.image + '" alt="">' : '') + '</div>',
       '  <div>',
       '    <a class="cart-line__name" href="' + line.href + '">' + line.name + '</a>',
       '    <p class="cart-line__spec">' + line.specLines.join(' · ') + '</p>',
@@ -189,9 +190,9 @@ window.PESU = window.PESU || {};
     if (!store.state.cart.length) {
       body.innerHTML = [
         '<div class="cart-empty stack">',
-        '  <p class="display display--s">Your selection is empty.</p>',
-        '  <p>Every PESU piece is made to order. Begin with a collection, or speak with a design advisor.</p>',
-        '  <p><a class="link" href="index.html#collections">View collections</a></p>',
+        '  <p class="display display--s">Your bag is empty.</p>',
+        '  <p>Eight pieces, made by hand from natural materials. Free delivery across the UAE over AED 200.</p>',
+        '  <p><a class="link" href="index.html#collections">Browse the range</a></p>',
         '</div>'
       ].join('');
       if (foot) foot.hidden = true;
@@ -224,20 +225,20 @@ window.PESU = window.PESU || {};
 
     function render(q) {
       var term = q.trim().toLowerCase();
-      var hits = PESU.catalog.searchIndex.filter(function (p) {
-        return !term || (p.name + ' ' + p.collection).toLowerCase().indexOf(term) > -1;
+      var hits = PESU.catalog.products.filter(function (p) {
+        return !term || (p.name + ' ' + p.fullTitle + ' ' + p.group + ' ' + p.material).toLowerCase().indexOf(term) > -1;
       }).slice(0, 6);
 
       results.innerHTML = hits.length ? hits.map(function (p) {
         return [
-          '<a class="search__result" href="' + p.href + '">',
-          '  <span class="surface ' + p.swatch + '"></span>',
+          '<a class="search__result" href="' + PESU.catalog.productUrl(p) + '">',
+          '  <span class="surface"><img src="' + PESU.catalog.image(p.images[0], 200) + '" alt=""></span>',
           '  <span><span class="tile__name" style="font-size:var(--step-1)">' + p.name + '</span>',
-          '  <span class="tile__meta" style="display:block">' + p.collection + '</span></span>',
-          '  <span class="tile__price num" data-price-aed="' + p.priceAED + '"></span>',
+          '  <span class="tile__meta" style="display:block">' + p.blurb + '</span></span>',
+          '  <span class="tile__price num">' + store.format(p.priceAED) + '</span>',
           '</a>'
         ].join('');
-      }).join('') : '<p class="prose">Nothing matches “' + q + '”. Our advisors can source or commission it — <a class="link" href="#">write to the atelier</a>.</p>';
+      }).join('') : '<p class="prose">Nothing matches \u201c' + q + '\u201d. Write to <a class="link" href="mailto:care@pesu.ae">care@pesu.ae</a> and we will help you find it.</p>';
       renderPrices(results);
     }
 
