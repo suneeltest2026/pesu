@@ -280,6 +280,15 @@ window.PESU = window.PESU || {};
   }
 
   /* --- Misc --------------------------------------------------------------- */
+  /* Checkout and account links resolve from the catalogue, so moving the
+     storefront onto another domain is a one-line change. */
+  function initShopLinks() {
+    var shop = PESU.catalog && PESU.catalog.shop;
+    if (!shop) return;
+    $$('[data-shop-url="checkout"]').forEach(function (el) { el.href = shop.checkoutUrl; });
+    $$('[data-shop-url="account"]').forEach(function (el) { el.href = shop.accountUrl; });
+  }
+
   function initYear() {
     $$('[data-year]').forEach(function (el) { el.textContent = new Date().getFullYear(); });
   }
@@ -303,6 +312,7 @@ window.PESU = window.PESU || {};
     initCurrency();
     initSearch();
     initAccordions();
+    initShopLinks();
     initYear();
     initWishlistButtons();
 

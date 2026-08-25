@@ -23,7 +23,12 @@ window.PESU = window.PESU || {};
     city: 'Ajman, United Arab Emirates',
     returnsAddress: 'C1 Building, Ajman Free Zone, Ajman',
     courier: 'Quiqup',
-    storeUrl: 'https://pesu.ae'
+    storeUrl: 'https://pesu.ae',
+    /* Checkout, cart and account live on Shopify. Point these at the
+       myshopify domain if this front end ever takes over pesu.ae itself —
+       otherwise the hand-off would loop back here and no order completes. */
+    checkoutUrl: 'https://pesu.ae/cart',
+    accountUrl: 'https://pesu.ae/account'
   };
 
   var SHIPPING = {
