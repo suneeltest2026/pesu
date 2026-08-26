@@ -81,10 +81,12 @@ async function ensureReady() {
 }
 
 async function initialise() {
-  const client = await pool.connect();
-  try {
-    /* Any arbitrary constant; only this application uses it. */
-    await client.query('SELECT pg_advisory_lock(841125)');
+  /* pg_advisory_xact_lock, not pg_advisory_lock: hosted Postgres sits behind
+     a transaction-mode pooler, where a session-scoped lock can be left on a
+     backend that the next statement never sees. A transaction-scoped lock is
+     released by COMMIT, whichever backend served it. */
+  await transaction(async (client) => {
+    await client.query('SELECT pg_advisory_xact_lock(841125)');
     await client.query(fs.readFileSync(path.join(__dirname, 'schema.sql'), 'utf8'));
 
     const seeded = await client.query('SELECT COUNT(*)::int AS c FROM products');
@@ -93,10 +95,7 @@ async function initialise() {
       await seedWith(client);
       console.log('[db] seeded from data/products.json');
     }
-  } finally {
-    try { await client.query('SELECT pg_advisory_unlock(841125)'); } catch (e) { /* lock released with the connection */ }
-    client.release();
-  }
+  });
 }
 
 module.exports = { pool, query, one, all, transaction, ensureReady };
