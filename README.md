@@ -75,14 +75,42 @@ bag drawer instead of reloading, and adds reveals and the gallery.
 `available()` returns false simply doesn't appear at checkout — so the shop
 runs with cash on delivery until card keys exist.
 
-- **Card** — Stripe Checkout. Set `STRIPE_SECRET_KEY`. The customer pays on
-  Stripe's page, so card details never touch this server. On return, payment
-  is verified against Stripe rather than trusted from the URL.
+- **Card** — Stripe Checkout. The customer pays on Stripe's hosted page, so
+  card details never touch this server and PCI scope stays minimal. See the
+  setup below.
 - **To use a UAE gateway instead** (Telr, PayTabs, Network N-Genius): copy
   `stripe.js`, build their hosted-payment-page request in `start()`, return
   `{ redirect: url }`. Nothing else in checkout changes.
 - **Cash on delivery** — on by default, `ENABLE_COD=false` to remove it.
 - **Bank transfer** — appears when `BANK_ACCOUNT_NAME` and `BANK_IBAN` are set.
+
+### Stripe setup
+
+1. **Keys.** Stripe dashboard → Developers → API keys. Set
+   `STRIPE_SECRET_KEY` (`sk_test_…` to trial it, `sk_live_…` when you go
+   live). Card payment appears at checkout as soon as the key is set.
+2. **Webhook.** Developers → Webhooks → Add endpoint:
+   - URL: `https://your-domain/webhooks/stripe`
+   - Events: `checkout.session.completed`, `checkout.session.expired`,
+     `checkout.session.async_payment_succeeded`,
+     `checkout.session.async_payment_failed`
+   - Copy the signing secret into `STRIPE_WEBHOOK_SECRET`.
+3. **Test it** before going live: use a `sk_test_` key and card
+   `4242 4242 4242 4242`, any future expiry, any CVC. To test webhooks
+   locally, `stripe listen --forward-to localhost:3000/webhooks/stripe`.
+4. **Account settings.** Make sure AED is enabled for your Stripe account and
+   your payout account is UAE-based.
+
+**Why the webhook matters.** The success page marks an order paid when the
+customer comes back, but people close tabs. The webhook is the authoritative
+record: signature-verified, idempotent on replay, and it releases reserved
+stock when a checkout session expires unpaid. Without it, a paid order can
+sit as `pending` until someone notices.
+
+To use a different gateway (Telr, PayTabs, Network N-Genius) instead, copy
+`lib/payments/stripe.js`, build their hosted-payment-page request in
+`start()`, return `{ redirect: url }`, and point their callback at an
+equivalent route in `routes/webhooks.js`.
 
 ## Deploying to Render
 
@@ -107,8 +135,9 @@ complete back-up, and there is no export process to depend on.
    `npm run fetch-images` from a machine that can reach the Shopify CDN, or
    download from Shopify admin → Content → Files and drop the files in with
    their names unchanged. See `data/README.md`.
-2. **Card keys.** Checkout offers cash on delivery until `STRIPE_SECRET_KEY`
-   (or another gateway) is set.
+2. **Stripe keys.** Set `STRIPE_SECRET_KEY` and `STRIPE_WEBHOOK_SECRET` and
+   register the webhook endpoint (see Stripe setup above). Until then,
+   checkout offers cash on delivery only.
 3. **SMTP.** Without it, order confirmations aren't sent. Orders are still
    taken and visible in the admin.
 4. **DNS.** Point pesu.ae at the deployment only once 1–3 are done. Until

@@ -61,6 +61,9 @@ router.post('/checkout', async (req, res, next) => {
     );
 
     if (started.redirect) {
+      /* Keep the gateway's session id: it is how the webhook and the return
+         journey both identify this order. */
+      if (started.reference) orders.setPaymentRef(order.reference, started.reference);
       /* The bag is only emptied once the customer is safely at the gateway. */
       cart.clear(req.session);
       return res.redirect(303, started.redirect);

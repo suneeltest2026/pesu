@@ -25,6 +25,10 @@ app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 app.set('trust proxy', 1);
 
+/* Stripe webhooks need the raw body for signature verification, so they are
+   mounted ahead of the body parsers. */
+app.use('/', require('./routes/webhooks'));
+
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(cookieParser());
