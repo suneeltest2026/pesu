@@ -8,7 +8,7 @@
   <% cart.items.forEach(function (item) { %>
   <article class="cart-line">
     <a class="cart-line__thumb surface <%= item.swatch %>" href="/product/<%= item.handle %>">
-      <% if (item.image) { %><img src="<%= imageSrc(item.image) %>" alt=""><% } %>
+      <% if (item.image) { %><img src="<%= imageSrc(item.image) %>" alt="" onerror="this.hidden=true"><% } %>
     </a>
     <div>
       <a class="cart-line__name" href="/product/<%= item.handle %>"><%= item.name %></a>

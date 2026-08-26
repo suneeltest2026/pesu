@@ -108,8 +108,10 @@ app.use(async (req, res, next) => {
       const file = product && product.images && product.images[index || 0];
       if (!file) return '';
       const alt = String(product.name || '').replace(/"/g, '&quot;');
+      /* A missing photograph degrades to the material texture behind it,
+         rather than a broken-image icon with alt text spilling across it. */
       return `<img src="${res.locals.imageSrc(file)}" alt="${alt}" loading="lazy" decoding="async"` +
-        ` width="${width || 800}" height="${width || 800}">`;
+        ` width="${width || 800}" height="${width || 800}" onerror="this.hidden=true">`;
     };
 
     next();

@@ -21,7 +21,7 @@
             <% product.images.forEach(function (file, i) { %>
             <div class="gallery__view gallery__view--photo <%= i === 0 ? 'is-active' : '' %>" data-view="<%= i %>">
               <img src="<%= imageSrc(file) %>" alt="<%= product.name %><%= i ? ' — view ' + (i + 1) : '' %>"
-                   loading="<%= i ? 'lazy' : 'eager' %>" width="1000" height="1000">
+                   loading="<%= i ? 'lazy' : 'eager' %>" width="1000" height="1000" onerror="this.hidden=true">
             </div>
             <% }) %>
             <p class="gallery__zoom-hint">Click to zoom</p>
@@ -32,7 +32,7 @@
             <% product.images.forEach(function (file, i) { %>
             <button class="gallery__thumb surface <%= product.swatch %>" type="button" role="tab"
                     data-view="<%= i %>" aria-selected="<%= i === 0 %>">
-              <img src="<%= imageSrc(file) %>" alt="" loading="lazy">
+              <img src="<%= imageSrc(file) %>" alt="" loading="lazy" onerror="this.hidden=true">
               <span class="visually-hidden">View <%= i + 1 %></span>
             </button>
             <% }) %>

@@ -10,7 +10,7 @@
         <% products.forEach(function (p) { %>
         <tr>
           <td class="adm-thumb">
-            <% if (p.images[0]) { %><img src="<%= imageSrc(p.images[0]) %>" alt=""><% } %>
+            <% if (p.images[0]) { %><img src="<%= imageSrc(p.images[0]) %>" alt="" onerror="this.hidden=true"><% } %>
           </td>
           <td><a href="/admin/products/<%= p.id %>"><%= p.name %></a><br><span class="adm-dim"><%= p.handle %></span></td>
           <td><%= p.group_name %></td>

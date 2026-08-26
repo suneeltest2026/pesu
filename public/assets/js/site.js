@@ -222,7 +222,7 @@
         .then(function (data) {
           results.innerHTML = data.results.length ? data.results.map(function (p) {
             return '<a class="search__result" href="/product/' + p.handle + '">' +
-              '<span class="surface ' + p.swatch + '">' + (p.image ? '<img src="' + p.image + '" alt="">' : '') + '</span>' +
+              '<span class="surface ' + p.swatch + '">' + (p.image ? '<img src="' + p.image + '" alt="" onerror="this.hidden=true">' : '') + '</span>' +
               '<span><span class="tile__name" style="font-size:var(--step-1)">' + p.name + '</span>' +
               '<span class="tile__meta" style="display:block">' + (p.blurb || '') + '</span></span>' +
               '<span class="tile__price num">' + p.price + '</span></a>';

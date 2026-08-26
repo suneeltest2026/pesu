@@ -79,7 +79,7 @@
         <div class="adm-images">
           <% product.images.forEach(function (file) { %>
           <figure class="adm-image">
-            <img src="<%= imageSrc(file) %>" alt="">
+            <img src="<%= imageSrc(file) %>" alt="" onerror="this.hidden=true">
             <figcaption class="adm-dim"><%= String(file).startsWith('db:') ? 'uploaded' : file %></figcaption>
           </figure>
           <% }) %>
