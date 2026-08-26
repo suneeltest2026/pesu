@@ -1,0 +1,26 @@
+<!DOCTYPE html><html lang="en"><head><%- include('_layout-head') %></head>
+<body class="adm">
+<%- include('_nav') %>
+<main class="adm-main">
+  <h1 class="display display--m">Products</h1>
+  <div class="adm-table-wrap">
+    <table class="adm-table">
+      <thead><tr><th></th><th>Name</th><th>Group</th><th>Price</th><th>Stock</th><th>Live</th></tr></thead>
+      <tbody>
+        <% products.forEach(function (p) { %>
+        <tr>
+          <td class="adm-thumb">
+            <% if (p.images[0]) { %><img src="/images/<%= p.images[0] %>" alt=""><% } %>
+          </td>
+          <td><a href="/admin/products/<%= p.id %>"><%= p.name %></a><br><span class="adm-dim"><%= p.handle %></span></td>
+          <td><%= p.group_name %></td>
+          <td class="num"><%= money(p.price_fils) %></td>
+          <td><span class="adm-pill <%= p.inventory === 0 ? 'is-out' : p.inventory <= 5 ? 'is-low' : '' %>"><%= p.inventory %></span></td>
+          <td><%= p.active ? 'Yes' : 'Draft' %></td>
+        </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+</main>
+</body></html>

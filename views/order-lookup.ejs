@@ -1,0 +1,32 @@
+<%- include('partials/head') %>
+</head>
+<body data-header="solid"<% if (flash) { %> data-flash="<%= flash %>"<% } %>>
+<a class="skip-link" href="#main">Skip to content</a>
+<%- include('partials/header') %>
+
+<main id="main" class="page">
+  <div class="shell shell--narrow">
+    <header class="page__head" data-reveal>
+      <p class="eyebrow">Track an order</p>
+      <h1 class="display display--l">Where is it?</h1>
+      <p class="lede">Enter the reference from your confirmation email, and the email address you ordered with.</p>
+    </header>
+    <% if (error) { %><p class="form-error form-error--block"><%= error %></p><% } %>
+    <form class="lookup" method="post" action="/order-lookup">
+      <label class="field">
+        <span class="field__label">Order reference</span>
+        <input class="field__input" name="reference" required placeholder="PESU-1001">
+      </label>
+      <label class="field">
+        <span class="field__label">Email</span>
+        <input class="field__input" type="email" name="email" required autocomplete="email">
+      </label>
+      <button class="btn" type="submit">Find my order</button>
+    </form>
+  </div>
+</main>
+
+<%- include('partials/footer') %>
+<script src="/assets/js/site.js"></script>
+</body>
+</html>

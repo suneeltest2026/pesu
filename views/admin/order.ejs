@@ -1,0 +1,70 @@
+<!DOCTYPE html><html lang="en"><head><%- include('_layout-head') %></head>
+<body class="adm">
+<%- include('_nav') %>
+<main class="adm-main">
+  <p class="adm-back"><a href="/admin/orders">← Orders</a></p>
+  <h1 class="display display--m"><%= order.reference %></h1>
+
+  <div class="adm-cols">
+    <section class="adm-section">
+      <h2>Items</h2>
+      <div class="adm-table-wrap">
+        <table class="adm-table">
+          <tbody>
+            <% order.items.forEach(function (i) { %>
+            <tr><td><%= i.qty %>×</td><td><%= i.name %></td><td class="num"><%= money(i.price_fils * i.qty) %></td></tr>
+            <% }) %>
+            <tr><td></td><td>Subtotal</td><td class="num"><%= money(order.subtotal_fils) %></td></tr>
+            <tr><td></td><td>Delivery</td><td class="num"><%= order.delivery_fils ? money(order.delivery_fils) : 'Free' %></td></tr>
+            <tr><td></td><td><strong>Total</strong></td><td class="num"><strong><%= money(order.total_fils) %></strong></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2>Customer</h2>
+      <dl class="adm-dl">
+        <dt>Name</dt><dd><%= order.name %></dd>
+        <dt>Email</dt><dd><a href="mailto:<%= order.email %>"><%= order.email %></a></dd>
+        <dt>Phone</dt><dd><a href="tel:<%= order.phone %>"><%= order.phone %></a></dd>
+        <dt>Address</dt><dd><%= order.address1 %><% if (order.address2) { %><br><%= order.address2 %><% } %><br><%= order.city %>, <%= order.emirate %></dd>
+        <% if (order.notes) { %><dt>Notes</dt><dd><%= order.notes %></dd><% } %>
+      </dl>
+    </section>
+
+    <section class="adm-section">
+      <h2>Fulfilment</h2>
+      <form method="post" action="/admin/orders/<%= order.reference %>" class="stack">
+        <label class="field">
+          <span class="field__label">Order status</span>
+          <select class="field__input" name="status">
+            <% ['new','packed','shipped','delivered'].forEach(function (s) { %>
+            <option value="<%= s %>" <%= order.status === s ? 'selected' : '' %>><%= s %></option>
+            <% }) %>
+          </select>
+        </label>
+        <label class="field">
+          <span class="field__label">Payment</span>
+          <select class="field__input" name="payment_status">
+            <% ['pending','paid','failed','refunded'].forEach(function (s) { %>
+            <option value="<%= s %>" <%= order.payment_status === s ? 'selected' : '' %>><%= s %></option>
+            <% }) %>
+          </select>
+        </label>
+        <label class="field">
+          <span class="field__label">Tracking</span>
+          <input class="field__input" name="tracking" value="<%= order.tracking || '' %>" placeholder="Courier reference">
+        </label>
+        <button class="btn" type="submit">Save</button>
+      </form>
+
+      <% if (order.status !== 'cancelled') { %>
+      <form method="post" action="/admin/orders/<%= order.reference %>" class="adm-danger"
+            onsubmit="return confirm('Cancel this order and return the stock?')">
+        <input type="hidden" name="cancel" value="1">
+        <button class="adm-link adm-link--danger" type="submit">Cancel order and restock</button>
+      </form>
+      <% } %>
+    </section>
+  </div>
+</main>
+</body></html>

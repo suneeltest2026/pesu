@@ -1,0 +1,23 @@
+<%- include('partials/head') %>
+</head>
+<body data-header="solid"<% if (flash) { %> data-flash="<%= flash %>"<% } %>>
+<a class="skip-link" href="#main">Skip to content</a>
+<%- include('partials/header') %>
+
+<main id="main" class="page">
+  <div class="shell shell--narrow">
+    <header class="page__head" data-reveal>
+      <p class="eyebrow"><%= page.eyebrow %></p>
+      <h1 class="display display--l"><%= page.title %></h1>
+      <% if (page.lede) { %><p class="lede"><%= page.lede %></p><% } %>
+    </header>
+    <div class="prose prose--page" data-reveal>
+      <%- page.body %>
+    </div>
+  </div>
+</main>
+
+<%- include('partials/footer') %>
+<script src="/assets/js/site.js"></script>
+</body>
+</html>

@@ -1,0 +1,14 @@
+<% if (cart.items.length) { %>
+<div class="drawer__foot stack">
+  <div class="cart-total">
+    <span>Subtotal</span>
+    <span class="num"><%= money(cart.subtotalFils) %></span>
+  </div>
+  <p class="cart-note">
+    <% if (cart.deliveryFils === 0) { %>Free delivery across the UAE.<% } else { %>Delivery <%= money(cart.deliveryFils) %> — add <%= money(cart.remainingForFreeFils) %> for free delivery.<% } %>
+    <%= settings.returns_days %>-day returns.
+  </p>
+  <a class="btn btn--block" href="/checkout">Checkout</a>
+  <a class="link" href="/cart" style="display:block;text-align:center">View bag</a>
+</div>
+<% } else { %><div class="drawer__foot" hidden></div><% } %>

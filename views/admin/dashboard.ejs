@@ -1,0 +1,30 @@
+<!DOCTYPE html><html lang="en"><head><%- include('_layout-head') %></head>
+<body class="adm">
+<%- include('_nav') %>
+<main class="adm-main">
+  <h1 class="display display--m">Today</h1>
+
+  <div class="adm-stats">
+    <div class="adm-stat"><span class="adm-stat__n num"><%= stats.orders %></span><span class="adm-stat__l">Orders</span></div>
+    <div class="adm-stat"><span class="adm-stat__n num"><%= money(stats.revenue) %></span><span class="adm-stat__l">Revenue</span></div>
+    <div class="adm-stat"><span class="adm-stat__n num"><%= stats.pending %></span><span class="adm-stat__l">To pack</span></div>
+  </div>
+
+  <% if (low.length) { %>
+  <section class="adm-section">
+    <h2>Low stock</h2>
+    <ul class="adm-lowlist">
+      <% low.forEach(function (p) { %>
+      <li><a href="/admin/products/<%= p.id %>"><%= p.name %></a>
+        <span class="adm-pill <%= p.inventory === 0 ? 'is-out' : 'is-low' %>"><%= p.inventory %> left</span></li>
+      <% }) %>
+    </ul>
+  </section>
+  <% } %>
+
+  <section class="adm-section">
+    <h2>Recent orders</h2>
+    <%- include('_orders-table', { orders: orders }) %>
+  </section>
+</main>
+</body></html>

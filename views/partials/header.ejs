@@ -1,0 +1,141 @@
+<!-- ======================= HEADER ======================= -->
+<header class="header" id="header">
+  <div class="header__inner">
+    <nav class="header__nav header__nav--start" aria-label="Primary">
+      <button class="icon-btn menu-toggle" type="button" data-panel="#menu" aria-expanded="false" aria-controls="menu">
+        <span class="menu-toggle__bars" aria-hidden="true"><span></span><span></span></span>
+        <span class="visually-hidden">Open menu</span>
+      </button>
+      <a class="navlink" href="/shop" data-panel="#megamenu" aria-expanded="false" aria-controls="megamenu">Shop</a>
+      <a class="navlink" href="/gifting">Gifting</a>
+      <a class="navlink" href="/materials">Materials</a>
+      <a class="navlink" href="mailto:care@pesu.ae">Contact</a>
+    </nav>
+
+    <a class="header__brand" href="/" aria-label="PESU — home">
+      <span class="wordmark wordmark--header">Pesu</span>
+    </a>
+
+    <nav class="header__nav header__nav--end" aria-label="Utilities">
+      <button class="icon-btn" type="button" data-panel="#search" aria-expanded="false" aria-controls="search">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M16.5 16.5 21 21"/></svg>
+        <span class="icon-btn__label">Search</span>
+      </button>
+      <a class="icon-btn" href="/order-lookup">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"/></svg>
+        <span class="icon-btn__label">Account</span>
+      </a>
+      <a class="icon-btn" href="/cart" data-panel="#cart" aria-controls="cart">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 8h14l-1.2 12H6.2L5 8Z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg>
+        <span class="icon-btn__label">Bag</span>
+        <span class="icon-btn__count" data-cart-count><%= cart.count %></span>
+      </a>
+    </nav>
+  </div>
+</header>
+
+<!-- ======================= MEGA MENU ======================= -->
+<div class="megamenu" id="megamenu" aria-hidden="true">
+  <div class="shell megamenu__grid">
+    <div class="megamenu__col">
+      <h3>Shop by room</h3>
+      <ul>
+        <% groups.forEach(function (g) { %>
+        <li><a href="/shop/<%= g.id %>"><%= g.name %></a></li>
+        <% }) %>
+      </ul>
+    </div>
+    <div class="megamenu__col">
+      <h3>Shop by material</h3>
+      <ul>
+        <% materials.forEach(function (m) { %>
+        <li><a href="/materials/<%= m.id %>"><%= m.name %></a></li>
+        <% }) %>
+      </ul>
+    </div>
+    <div class="megamenu__col">
+      <h3>Pieces</h3>
+      <ul>
+        <% navProducts.forEach(function (p) { %>
+        <li><a href="/product/<%= p.handle %>"><%= p.name %></a></li>
+        <% }) %>
+      </ul>
+    </div>
+    <div class="megamenu__col megamenu__feature">
+      <% if (featured) { %>
+      <a class="tile" href="/product/<%= featured.handle %>">
+        <span class="tile__media surface <%= featured.swatch %>" style="--tile-ratio:4/3">
+          <%- img(featured, 0, 600) %>
+        </span>
+        <span class="tile__body"><span class="tile__name" style="font-size:var(--step-1)"><%= featured.name %></span></span>
+      </a>
+      <p class="tile__meta"><%= money(featured.price_fils) %> — <%= featured.material_note %></p>
+      <% } %>
+    </div>
+  </div>
+</div>
+
+<!-- ======================= OVERLAYS ======================= -->
+<div class="scrim"></div>
+
+<aside class="drawer drawer--left" id="menu" aria-hidden="true" aria-label="Menu">
+  <div class="drawer__head">
+    <span class="drawer__title">Menu</span>
+    <button class="close-btn" type="button" data-close-panel aria-label="Close menu">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5 19 19M19 5 5 19"/></svg>
+    </button>
+  </div>
+  <div class="drawer__body">
+    <ul class="stack">
+      <li><a class="display display--s" href="/shop">Shop</a></li>
+      <li><a class="display display--s" href="/gifting">Gifting</a></li>
+      <li><a class="display display--s" href="/materials">Materials</a></li>
+      <li><a class="display display--s" href="/delivery">Care</a></li>
+      <li><a class="display display--s" href="/product/<%= handleFor('marble-incense') %>">Marble Incense Holder</a></li>
+    </ul>
+    <hr class="rule" style="margin:2rem 0">
+    <ul class="stack-sm">
+      <li><a class="link" href="/order-lookup">Account</a></li>
+      <li><a class="link" href="/shop">Wishlist</a></li>
+      <li><a class="link" href="mailto:care@pesu.ae">Contact</a></li>
+    </ul>
+  </div>
+</aside>
+
+<aside class="drawer" id="cart" aria-hidden="true" aria-label="Your bag">
+  <div class="drawer__head">
+    <span class="drawer__title">Your bag</span>
+    <button class="close-btn" type="button" data-close-panel aria-label="Close bag">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5 19 19M19 5 5 19"/></svg>
+    </button>
+  </div>
+  <div class="drawer__body" data-cart-body>
+    <%- include('cart-lines') %>
+  </div>
+  <%- include('cart-foot') %>
+</aside>
+
+<div class="search" id="search" aria-hidden="true" role="dialog" aria-label="Search">
+  <div class="shell">
+    <div style="display:flex;justify-content:flex-end;margin-bottom:2rem">
+      <button class="close-btn" type="button" data-close-panel aria-label="Close search">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5 19 19M19 5 5 19"/></svg>
+      </button>
+    </div>
+    <div class="search__field">
+      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M16.5 16.5 21 21"/></svg>
+      <label class="visually-hidden" for="search-input">Search PESU</label>
+      <input id="search-input" type="search" placeholder="Search pieces, materials, collections" data-search-input autocomplete="off">
+    </div>
+    <div class="search__suggest">
+      <button type="button" data-search-term="incense">Incense</button>
+      <button type="button" data-search-term="marble">Marble</button>
+      <button type="button" data-search-term="lamp">Lighting</button>
+      <button type="button" data-search-term="frame">Wall frames</button>
+    </div>
+    <div class="search__results" data-search-results></div>
+  </div>
+</div>
+
+<div class="toast-stack" aria-live="polite"></div>
+

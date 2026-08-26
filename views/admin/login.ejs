@@ -1,0 +1,19 @@
+<!DOCTYPE html><html lang="en"><head><%- include('_layout-head') %></head>
+<body class="adm adm--auth">
+  <main class="adm-auth">
+    <span class="wordmark" style="font-size:1.6rem">Pesu</span>
+    <h1 class="display display--s">Admin</h1>
+    <% if (error) { %><p class="form-error"><%= error %></p><% } %>
+    <form method="post" action="/admin/login" class="stack">
+      <label class="field">
+        <span class="field__label">Email</span>
+        <input class="field__input" type="email" name="email" required autocomplete="username" autofocus>
+      </label>
+      <label class="field">
+        <span class="field__label">Password</span>
+        <input class="field__input" type="password" name="password" required autocomplete="current-password">
+      </label>
+      <button class="btn btn--block" type="submit">Sign in</button>
+    </form>
+  </main>
+</body></html>

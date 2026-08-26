@@ -1,0 +1,65 @@
+<%- include('partials/head') %>
+</head>
+<body data-header="solid"<% if (flash) { %> data-flash="<%= flash %>"<% } %>>
+<a class="skip-link" href="#main">Skip to content</a>
+<%- include('partials/header') %>
+
+<main id="main" class="page">
+  <div class="shell shell--narrow">
+    <header class="page__head" data-reveal>
+      <p class="eyebrow">Order <%= order.reference %></p>
+      <h1 class="display display--l">
+        <% if (order.payment_status === 'paid') { %>Thank you — you're paid up.
+        <% } else if (order.payment_method === 'cod') { %>Thank you. Pay on delivery.
+        <% } else { %>Thank you. One step left.<% } %>
+      </h1>
+      <p class="lede">We have emailed a copy to <%= order.email %>. Keep the reference
+        <strong><%= order.reference %></strong> — it's how you track this order.</p>
+    </header>
+
+    <% if (order.payment_method === 'bank' && bank) { %>
+    <div class="panel-note" data-reveal>
+      <h2 class="config__group-label">Bank transfer details</h2>
+      <dl class="totals">
+        <dt>Account name</dt><dd><%= bank.accountName %></dd>
+        <dt>Bank</dt><dd><%= bank.bank %></dd>
+        <dt>IBAN</dt><dd class="num"><%= bank.iban %></dd>
+        <dt>Reference</dt><dd class="num"><%= order.reference %></dd>
+      </dl>
+      <p class="cart-note">Your order ships once the transfer clears. Send the receipt to <%= settings.shop_email %> to speed it up.</p>
+    </div>
+    <% } %>
+
+    <div class="order-summary" data-reveal>
+      <% order.items.forEach(function (item) { %>
+      <div class="checkout__line">
+        <span class="checkout__line-qty"><%= item.qty %>×</span>
+        <span><%= item.name %></span>
+        <span class="num"><%= money(item.price_fils * item.qty) %></span>
+      </div>
+      <% }) %>
+      <dl class="totals">
+        <dt>Subtotal</dt><dd class="num"><%= money(order.subtotal_fils) %></dd>
+        <dt>Delivery</dt><dd class="num"><%= order.delivery_fils ? money(order.delivery_fils) : 'Free' %></dd>
+        <dt class="totals__grand">Total</dt><dd class="totals__grand num"><%= money(order.total_fils) %></dd>
+      </dl>
+
+      <dl class="totals">
+        <dt>Delivering to</dt>
+        <dd><%= order.name %><br><%= order.address1 %><% if (order.address2) { %><br><%= order.address2 %><% } %><br><%= order.city %>, <%= order.emirate %></dd>
+        <dt>Payment</dt><dd><%= order.payment_method === 'cod' ? 'Cash on delivery' : order.payment_method === 'bank' ? 'Bank transfer' : 'Card' %> — <%= order.payment_status %></dd>
+        <dt>Status</dt><dd><%= order.status %></dd>
+        <% if (order.tracking) { %><dt>Tracking</dt><dd><%= order.tracking %></dd><% } %>
+      </dl>
+
+      <p class="cart-note">Dispatched in <%= settings.ship_processing %> by <%= settings.ship_courier %>.
+        Questions: <a href="mailto:<%= settings.shop_email %>"><%= settings.shop_email %></a> or <%= settings.shop_phone %>.</p>
+      <p><a class="link" href="/shop">Continue shopping</a></p>
+    </div>
+  </div>
+</main>
+
+<%- include('partials/footer') %>
+<script src="/assets/js/site.js"></script>
+</body>
+</html>

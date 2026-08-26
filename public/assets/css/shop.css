@@ -1,0 +1,125 @@
+/* ==========================================================================
+   PESU — shop pages
+   Listing, bag, checkout, order and content pages. Composes the same tokens
+   as the rest of the site; no new colours, no new type sizes.
+   ========================================================================== */
+
+/* --- Shared page furniture ---------------------------------------------- */
+.listing, .page { padding-top: calc(var(--header-h) + 2rem); padding-bottom: var(--section-y); }
+.listing__head, .page__head {
+  display: grid; gap: var(--sp-3);
+  padding-block: var(--sp-4) var(--sp-6);
+  max-width: 46ch;
+}
+
+/* --- Filters -------------------------------------------------------------- */
+.listing__filters {
+  display: flex; flex-wrap: wrap; gap: 0.5rem;
+  padding-bottom: var(--sp-5);
+  border-bottom: 1px solid var(--line);
+  margin-bottom: var(--sp-6);
+}
+.chip {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  border: 1px solid var(--line); border-radius: 99px;
+  padding: 0.5rem 1rem;
+  font-size: var(--step--2); letter-spacing: 0.08em; text-transform: uppercase;
+  transition: background var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease), border-color var(--dur-fast) var(--ease);
+}
+.chip span { color: var(--fg-faint); font-variant-numeric: tabular-nums; }
+.chip:hover { border-color: var(--fg-muted); }
+.chip.is-on { background: var(--ink); border-color: var(--ink); color: var(--alabaster); }
+.chip.is-on span { color: rgba(247,243,237,.6); }
+.chip--material i {
+  width: 14px; height: 14px; border-radius: 50%; display: inline-block; position: relative; overflow: hidden;
+}
+
+/* --- Product grid --------------------------------------------------------- */
+.listing__grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: clamp(1rem, 2.4vw, 2.25rem) clamp(1rem, 2vw, 1.75rem);
+}
+.tile__flag {
+  position: absolute; top: 0.9rem; left: 0.9rem; z-index: 3;
+  background: var(--alabaster); color: var(--ink);
+  padding: 0.3rem 0.7rem;
+  font-size: var(--step--2); letter-spacing: 0.1em; text-transform: uppercase;
+}
+
+/* --- Bag ------------------------------------------------------------------ */
+.bag { display: grid; grid-template-columns: 1fr minmax(280px, 0.6fr); gap: clamp(2rem, 5vw, 4rem); align-items: start; }
+.bag__summary { border: 1px solid var(--line); padding: var(--sp-5); display: grid; gap: var(--sp-3); position: sticky; top: calc(var(--header-h) + 1.5rem); }
+.totals { display: grid; grid-template-columns: 1fr auto; gap: 0.55rem 1.5rem; font-size: var(--step--1); }
+.totals dt { color: var(--fg-muted); }
+.totals dd { text-align: right; }
+.totals__grand { font-family: var(--font-display); font-size: var(--step-1); color: var(--fg); padding-top: 0.6rem; border-top: 1px solid var(--line-soft); }
+.qty--sm button { width: 2.2rem; height: 2rem; }
+.qty--sm output { min-width: 2rem; font-size: var(--step--1); }
+.qty__input {
+  width: 3rem; text-align: center; border: 0; background: none;
+  font-variant-numeric: tabular-nums; -moz-appearance: textfield;
+}
+.qty__input::-webkit-outer-spin-button, .qty__input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+
+/* --- Checkout ------------------------------------------------------------- */
+.checkout { display: grid; grid-template-columns: 1fr minmax(300px, 0.62fr); gap: clamp(2rem, 5vw, 4.5rem); align-items: start; }
+.checkout fieldset { border: 0; padding: 0; margin: 0; }
+.checkout legend { margin-bottom: var(--sp-4); padding-top: var(--sp-2); }
+.checkout fieldset + fieldset { margin-top: var(--sp-6); }
+.field-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--sp-4); }
+.field--wide { grid-column: 1 / -1; }
+.field__opt { color: var(--fg-faint); text-transform: none; letter-spacing: 0; }
+.checkout__summary {
+  border: 1px solid var(--line); padding: var(--sp-5);
+  display: grid; gap: var(--sp-3);
+  position: sticky; top: calc(var(--header-h) + 1.5rem);
+  background: color-mix(in srgb, var(--gypsum) 40%, transparent);
+}
+.checkout__line {
+  display: grid; grid-template-columns: 2.2rem 1fr auto; gap: 0.6rem;
+  font-size: var(--step--1); padding-bottom: 0.6rem;
+  border-bottom: 1px solid var(--line-soft);
+}
+.checkout__line-qty { color: var(--fg-faint); font-variant-numeric: tabular-nums; }
+
+.pay-methods { display: grid; gap: 0.75rem; }
+.pay-method {
+  display: grid; grid-template-columns: auto 1fr; gap: 0.9rem; align-items: start;
+  border: 1px solid var(--line); padding: 1rem 1.15rem; cursor: pointer;
+  transition: border-color var(--dur-fast) var(--ease);
+}
+.pay-method:hover { border-color: var(--fg-muted); }
+.pay-method:has(input:checked) { border-color: var(--ink); }
+.pay-method input { margin-top: 0.35em; accent-color: var(--ink); }
+.pay-method__label { display: block; font-size: var(--step-0); }
+.pay-method__desc { display: block; font-size: var(--step--2); color: var(--fg-muted); margin-top: 0.2rem; }
+
+.form-error { color: var(--clay); font-size: var(--step--1); }
+.form-error--block { border: 1px solid var(--clay); padding: 0.9rem 1.1rem; margin-bottom: var(--sp-4); }
+
+/* --- Order & content ------------------------------------------------------ */
+.order-summary, .panel-note {
+  border: 1px solid var(--line); padding: var(--sp-5);
+  display: grid; gap: var(--sp-4); max-width: 640px;
+}
+.panel-note { background: color-mix(in srgb, var(--gypsum) 50%, transparent); margin-bottom: var(--sp-5); }
+.lookup { display: grid; gap: var(--sp-4); max-width: 420px; }
+.prose--page h3 { font-family: var(--font-display); font-size: var(--step-1); color: var(--fg); margin-top: var(--sp-5); margin-bottom: 0.5rem; font-weight: 400; }
+.prose--page .totals { margin-block: var(--sp-4); }
+.prose--page a { border-bottom: 1px solid var(--line); }
+.config__compare { font-size: var(--step--1); color: var(--fg-faint); text-decoration: line-through; }
+
+/* --- Responsive ----------------------------------------------------------- */
+@media (max-width: 1080px) {
+  .listing__grid { grid-template-columns: repeat(3, 1fr); }
+  .checkout, .bag { grid-template-columns: 1fr; }
+  .checkout__summary, .bag__summary { position: static; }
+}
+@media (max-width: 760px) {
+  .listing__grid { grid-template-columns: repeat(2, 1fr); }
+  .field-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 420px) {
+  .listing__grid { grid-template-columns: 1fr; }
+}

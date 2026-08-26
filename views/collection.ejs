@@ -1,0 +1,48 @@
+<%- include('partials/head') %>
+</head>
+<body data-header="solid"<% if (flash) { %> data-flash="<%= flash %>"<% } %>>
+<a class="skip-link" href="#main">Skip to content</a>
+<%- include('partials/header') %>
+
+<main id="main" class="listing">
+  <div class="shell">
+    <ol class="breadcrumb">
+      <li><a href="/">PESU</a></li>
+      <li><a href="/shop">Shop</a></li>
+      <% if (heading.crumb) { %><li aria-current="page"><%= heading.crumb %></li><% } %>
+    </ol>
+
+    <header class="listing__head" data-reveal>
+      <p class="eyebrow"><%= heading.eyebrow %></p>
+      <h1 class="display display--l"><%= heading.title %></h1>
+      <% if (heading.line) { %><p class="lede"><%= heading.line %></p><% } %>
+    </header>
+
+    <nav class="listing__filters" aria-label="Filter">
+      <a class="chip <%= !activeGroup && !activeMaterial ? 'is-on' : '' %>" href="/shop">All <span><%= totalCount %></span></a>
+      <% groups.forEach(function (g) { %>
+      <a class="chip <%= activeGroup === g.id ? 'is-on' : '' %>" href="/shop/<%= g.id %>"><%= g.name %> <span><%= g.count %></span></a>
+      <% }) %>
+      <% materials.forEach(function (m) { %>
+      <a class="chip chip--material <%= activeMaterial === m.id ? 'is-on' : '' %>" href="/materials/<%= m.id %>">
+        <i class="surface <%= m.swatch %>"></i><%= m.short %>
+      </a>
+      <% }) %>
+    </nav>
+
+    <% if (!products.length) { %>
+      <p class="prose" style="padding-block:3rem">Nothing here yet. <a class="link" href="/shop">See the whole range</a>.</p>
+    <% } else { %>
+    <div class="listing__grid" data-reveal data-reveal-stagger>
+      <% products.forEach(function (p) { %>
+      <%- include('partials/product-tile', { p: p }) %>
+      <% }) %>
+    </div>
+    <% } %>
+  </div>
+</main>
+
+<%- include('partials/footer') %>
+<script src="/assets/js/site.js"></script>
+</body>
+</html>

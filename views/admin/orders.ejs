@@ -1,0 +1,14 @@
+<!DOCTYPE html><html lang="en"><head><%- include('_layout-head') %></head>
+<body class="adm">
+<%- include('_nav') %>
+<main class="adm-main">
+  <h1 class="display display--m">Orders</h1>
+  <nav class="adm-filters">
+    <a class="chip <%= !status ? 'is-on' : '' %>" href="/admin/orders">All</a>
+    <% ['new','packed','shipped','delivered','cancelled'].forEach(function (s) { %>
+    <a class="chip <%= status === s ? 'is-on' : '' %>" href="/admin/orders?status=<%= s %>"><%= s %></a>
+    <% }) %>
+  </nav>
+  <%- include('_orders-table', { orders: orders }) %>
+</main>
+</body></html>

@@ -1,0 +1,112 @@
+<%- include('partials/head') %>
+</head>
+<body data-header="solid"<% if (flash) { %> data-flash="<%= flash %>"<% } %>>
+<a class="skip-link" href="#main">Skip to content</a>
+<%- include('partials/header') %>
+
+<main id="main" class="page">
+  <div class="shell">
+    <header class="page__head" data-reveal>
+      <p class="eyebrow">Checkout</p>
+      <h1 class="display display--l">Where it's going</h1>
+    </header>
+
+    <% if (error) { %><p class="form-error form-error--block"><%= error %></p><% } %>
+
+    <form class="checkout" method="post" action="/checkout" novalidate>
+      <div class="checkout__form stack-lg">
+        <fieldset>
+          <legend class="config__group-label">Contact</legend>
+          <div class="field-grid">
+            <label class="field">
+              <span class="field__label">Full name</span>
+              <input class="field__input" name="name" required autocomplete="name" value="<%= form.name || '' %>">
+            </label>
+            <label class="field">
+              <span class="field__label">Email</span>
+              <input class="field__input" type="email" name="email" required autocomplete="email" value="<%= form.email || '' %>">
+            </label>
+            <label class="field">
+              <span class="field__label">Mobile</span>
+              <input class="field__input" type="tel" name="phone" required autocomplete="tel"
+                     placeholder="05X XXX XXXX" value="<%= form.phone || '' %>">
+            </label>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend class="config__group-label">Delivery address</legend>
+          <div class="field-grid">
+            <label class="field field--wide">
+              <span class="field__label">Address</span>
+              <input class="field__input" name="address1" required autocomplete="address-line1"
+                     placeholder="Building, street" value="<%= form.address1 || '' %>">
+            </label>
+            <label class="field field--wide">
+              <span class="field__label">Apartment, floor <span class="field__opt">optional</span></span>
+              <input class="field__input" name="address2" autocomplete="address-line2" value="<%= form.address2 || '' %>">
+            </label>
+            <label class="field">
+              <span class="field__label">Area / city</span>
+              <input class="field__input" name="city" required autocomplete="address-level2" value="<%= form.city || '' %>">
+            </label>
+            <label class="field">
+              <span class="field__label">Emirate</span>
+              <select class="field__input" name="emirate" required>
+                <% emirates.forEach(function (e) { %>
+                <option value="<%= e %>" <%= form.emirate === e ? 'selected' : '' %>><%= e %></option>
+                <% }) %>
+              </select>
+            </label>
+            <label class="field field--wide">
+              <span class="field__label">Delivery notes <span class="field__opt">optional</span></span>
+              <input class="field__input" name="notes" placeholder="Landmark, gate code, best time"
+                     value="<%= form.notes || '' %>">
+            </label>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend class="config__group-label">Payment</legend>
+          <div class="pay-methods">
+            <% methods.forEach(function (m, i) { %>
+            <label class="pay-method">
+              <input type="radio" name="method" value="<%= m.id %>" <%= (form.method ? form.method === m.id : i === 0) ? 'checked' : '' %> required>
+              <span class="pay-method__body">
+                <span class="pay-method__label"><%= m.label %></span>
+                <span class="pay-method__desc"><%= m.description %></span>
+              </span>
+            </label>
+            <% }) %>
+          </div>
+          <% if (!methods.length) { %>
+          <p class="form-error">No payment method is configured yet. Set STRIPE_SECRET_KEY, or enable cash on delivery.</p>
+          <% } %>
+        </fieldset>
+      </div>
+
+      <aside class="checkout__summary">
+        <h2 class="config__group-label">Your order</h2>
+        <% cart.items.forEach(function (item) { %>
+        <div class="checkout__line">
+          <span class="checkout__line-qty"><%= item.qty %>×</span>
+          <span><%= item.name %></span>
+          <span class="num"><%= money(item.lineFils) %></span>
+        </div>
+        <% }) %>
+        <dl class="totals">
+          <dt>Subtotal</dt><dd class="num"><%= money(cart.subtotalFils) %></dd>
+          <dt>Delivery</dt><dd class="num"><%= cart.deliveryFils ? money(cart.deliveryFils) : 'Free' %></dd>
+          <dt class="totals__grand">Total</dt><dd class="totals__grand num"><%= money(cart.totalFils) %></dd>
+        </dl>
+        <button class="btn btn--block" type="submit" <%= methods.length ? '' : 'disabled' %>>Place order</button>
+        <p class="cart-note">By placing this order you agree to our <a href="/terms">terms</a>. <%= settings.returns_days %>-day returns.</p>
+      </aside>
+    </form>
+  </div>
+</main>
+
+<%- include('partials/footer') %>
+<script src="/assets/js/site.js"></script>
+</body>
+</html>

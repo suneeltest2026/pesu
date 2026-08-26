@@ -1,0 +1,97 @@
+<!DOCTYPE html><html lang="en"><head><%- include('_layout-head') %></head>
+<body class="adm">
+<%- include('_nav') %>
+<main class="adm-main">
+  <p class="adm-back"><a href="/admin/products">← Products</a></p>
+  <h1 class="display display--m"><%= product.name %></h1>
+  <% if (saved) { %><p class="adm-saved">Saved.</p><% } %>
+  <p class="adm-dim"><a href="/product/<%= product.handle %>" target="_blank" rel="noopener">View on the shop ↗</a></p>
+
+  <form method="post" action="/admin/products/<%= product.id %>" enctype="multipart/form-data" class="adm-cols">
+    <section class="adm-section stack">
+      <label class="field">
+        <span class="field__label">Name</span>
+        <input class="field__input" name="name" value="<%= product.name %>" required>
+      </label>
+      <label class="field">
+        <span class="field__label">Full title (used for SEO)</span>
+        <input class="field__input" name="full_title" value="<%= product.full_title %>" required>
+      </label>
+      <label class="field">
+        <span class="field__label">Short line</span>
+        <input class="field__input" name="blurb" value="<%= product.blurb || '' %>">
+      </label>
+      <label class="field">
+        <span class="field__label">Story — one paragraph per blank line</span>
+        <textarea class="field__input" name="story" rows="6"><%= product.story.join('\n\n') %></textarea>
+      </label>
+      <label class="field">
+        <span class="field__label">Features — one per line</span>
+        <textarea class="field__input" name="features" rows="4"><%= product.features.join('\n') %></textarea>
+      </label>
+      <label class="field">
+        <span class="field__label">Search description</span>
+        <textarea class="field__input" name="seo_desc" rows="2"><%= product.seo_desc || '' %></textarea>
+      </label>
+    </section>
+
+    <section class="adm-section stack">
+      <div class="adm-grid2">
+        <label class="field">
+          <span class="field__label">Price AED</span>
+          <input class="field__input num" name="price" type="number" step="0.01" min="0"
+                 value="<%= (product.price_fils / 100).toFixed(2) %>" required>
+        </label>
+        <label class="field">
+          <span class="field__label">Was AED <span class="field__opt">optional</span></span>
+          <input class="field__input num" name="compare" type="number" step="0.01" min="0"
+                 value="<%= product.compare_fils ? (product.compare_fils / 100).toFixed(2) : '' %>">
+        </label>
+        <label class="field">
+          <span class="field__label">Stock</span>
+          <input class="field__input num" name="inventory" type="number" min="0" value="<%= product.inventory %>" required>
+        </label>
+        <label class="field">
+          <span class="field__label">Group</span>
+          <select class="field__input" name="group_id">
+            <% groups.forEach(function (g) { %>
+            <option value="<%= g.id %>" <%= product.group_id === g.id ? 'selected' : '' %>><%= g.name %></option>
+            <% }) %>
+          </select>
+        </label>
+        <label class="field">
+          <span class="field__label">Material</span>
+          <select class="field__input" name="material_id">
+            <% materials.forEach(function (m) { %>
+            <option value="<%= m.id %>" <%= product.material_id === m.id ? 'selected' : '' %>><%= m.name %></option>
+            <% }) %>
+          </select>
+        </label>
+      </div>
+
+      <label class="adm-check">
+        <input type="checkbox" name="active" value="1" <%= product.active ? 'checked' : '' %>>
+        <span>Visible in the shop</span>
+      </label>
+
+      <div>
+        <span class="field__label">Photographs</span>
+        <div class="adm-images">
+          <% product.images.forEach(function (file) { %>
+          <figure class="adm-image">
+            <img src="/images/<%= file %>" alt="">
+            <figcaption class="adm-dim"><%= file %></figcaption>
+          </figure>
+          <% }) %>
+        </div>
+        <label class="field">
+          <span class="field__label">Add images</span>
+          <input class="field__input" type="file" name="images" accept="image/*" multiple>
+        </label>
+      </div>
+
+      <button class="btn" type="submit">Save product</button>
+    </section>
+  </form>
+</main>
+</body></html>

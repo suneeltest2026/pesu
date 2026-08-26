@@ -1,0 +1,42 @@
+<%- include('partials/head') %>
+</head>
+<body data-header="solid"<% if (flash) { %> data-flash="<%= flash %>"<% } %>>
+<a class="skip-link" href="#main">Skip to content</a>
+<%- include('partials/header') %>
+
+<main id="main" class="page">
+  <div class="shell shell--narrow">
+    <header class="page__head" data-reveal>
+      <p class="eyebrow">Your bag</p>
+      <h1 class="display display--l"><%= cart.count %> <%= cart.count === 1 ? 'piece' : 'pieces' %></h1>
+    </header>
+
+    <% if (!cart.items.length) { %>
+      <p class="prose">Your bag is empty. <a class="link" href="/shop">Browse the range</a>.</p>
+    <% } else { %>
+    <div class="bag">
+      <div class="bag__lines">
+        <%- include('partials/cart-lines') %>
+      </div>
+      <aside class="bag__summary">
+        <h2 class="config__group-label">Summary</h2>
+        <dl class="totals">
+          <dt>Subtotal</dt><dd class="num"><%= money(cart.subtotalFils) %></dd>
+          <dt>Delivery</dt><dd class="num"><%= cart.deliveryFils ? money(cart.deliveryFils) : 'Free' %></dd>
+          <dt class="totals__grand">Total</dt><dd class="totals__grand num"><%= money(cart.totalFils) %></dd>
+        </dl>
+        <% if (cart.remainingForFreeFils > 0) { %>
+        <p class="cart-note">Add <%= money(cart.remainingForFreeFils) %> for free delivery.</p>
+        <% } %>
+        <a class="btn btn--block" href="/checkout">Checkout</a>
+        <p class="cart-note"><%= settings.returns_days %>-day returns. Dispatched in <%= settings.ship_processing %>.</p>
+      </aside>
+    </div>
+    <% } %>
+  </div>
+</main>
+
+<%- include('partials/footer') %>
+<script src="/assets/js/site.js"></script>
+</body>
+</html>

@@ -1,0 +1,67 @@
+/* PESU admin — the same tokens as the shop, laid out for scanning rather
+   than for browsing. */
+body.adm {
+  background: var(--gypsum);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-size: var(--step--1);
+}
+.adm-bar {
+  display: flex; align-items: center; gap: var(--sp-5);
+  padding: 0.9rem clamp(1rem, 3vw, 2rem);
+  background: var(--ink); color: var(--alabaster);
+  position: sticky; top: 0; z-index: 10;
+}
+.adm-brand { font-size: 1.1rem; letter-spacing: 0.34em; text-indent: 0.34em; text-transform: uppercase; }
+.adm-nav { display: flex; gap: 1.4rem; flex: 1; flex-wrap: wrap; }
+.adm-nav a, .adm-link {
+  font-size: var(--step--2); letter-spacing: 0.14em; text-transform: uppercase;
+  color: rgba(247,243,237,.68);
+}
+.adm-nav a:hover, .adm-link:hover { color: var(--alabaster); }
+.adm-main { padding: clamp(1.5rem, 4vw, 3rem); max-width: 1200px; margin-inline: auto; }
+.adm-main h1 { margin-bottom: var(--sp-5); }
+.adm-main h2 { font-family: var(--font-display); font-size: var(--step-1); font-weight: 400; margin-bottom: var(--sp-3); }
+.adm-section { background: var(--alabaster); border: 1px solid var(--line); padding: clamp(1rem, 2.5vw, 1.75rem); margin-bottom: var(--sp-5); }
+.adm-cols { display: grid; grid-template-columns: 1.3fr 1fr; gap: var(--sp-5); align-items: start; }
+.adm-grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: var(--sp-3); }
+.adm-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: var(--sp-3); margin-bottom: var(--sp-5); }
+.adm-stat { background: var(--alabaster); border: 1px solid var(--line); padding: 1.2rem; display: grid; gap: 0.35rem; }
+.adm-stat__n { font-family: var(--font-display); font-size: var(--step-3); line-height: 1; }
+.adm-stat__l { font-size: var(--step--2); letter-spacing: 0.14em; text-transform: uppercase; color: var(--fg-muted); }
+.adm-table-wrap { overflow-x: auto; }
+.adm-table { width: 100%; border-collapse: collapse; min-width: 560px; }
+.adm-table th {
+  text-align: left; font-weight: 400; font-size: var(--step--2);
+  letter-spacing: 0.12em; text-transform: uppercase; color: var(--fg-faint);
+  padding: 0.5rem 0.75rem 0.5rem 0; border-bottom: 1px solid var(--line);
+}
+.adm-table td { padding: 0.75rem 0.75rem 0.75rem 0; border-bottom: 1px solid var(--line-soft); vertical-align: top; }
+.adm-table a { border-bottom: 1px solid var(--line); }
+.adm-dim { color: var(--fg-faint); font-size: var(--step--2); }
+.adm-thumb img { width: 48px; height: 48px; object-fit: cover; }
+.adm-pill {
+  display: inline-block; padding: 0.2rem 0.6rem; font-size: var(--step--2);
+  letter-spacing: 0.08em; text-transform: uppercase; border: 1px solid var(--line); border-radius: 99px;
+}
+.adm-pill.is-ok { border-color: #4d6b4a; color: #3d5a3a; }
+.adm-pill.is-low { border-color: var(--gilt); color: var(--gilt-deep); }
+.adm-pill.is-out { border-color: var(--clay); color: var(--clay); }
+.adm-filters, .adm-lowlist { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: var(--sp-4); }
+.adm-lowlist { flex-direction: column; gap: 0.6rem; }
+.adm-lowlist li { display: flex; gap: 0.75rem; align-items: center; }
+.adm-back { margin-bottom: var(--sp-3); }
+.adm-back a, .adm-saved { font-size: var(--step--2); letter-spacing: 0.12em; text-transform: uppercase; }
+.adm-saved { color: #3d5a3a; }
+.adm-dl { display: grid; grid-template-columns: auto 1fr; gap: 0.5rem 1.5rem; }
+.adm-dl dt { color: var(--fg-faint); }
+.adm-images { display: flex; gap: 0.75rem; flex-wrap: wrap; margin-bottom: var(--sp-3); }
+.adm-image img { width: 90px; height: 90px; object-fit: cover; border: 1px solid var(--line); }
+.adm-check { display: flex; gap: 0.6rem; align-items: center; }
+.adm-danger { margin-top: var(--sp-4); }
+.adm-link--danger { color: var(--clay); background: none; border-bottom: 1px solid currentColor; }
+.adm-empty { color: var(--fg-muted); padding-block: var(--sp-4); }
+.adm--auth { display: grid; place-items: center; min-height: 100svh; }
+.adm-auth { width: min(380px, 90vw); display: grid; gap: var(--sp-4); text-align: left; }
+.form-error { color: var(--clay); font-size: var(--step--1); }
+@media (max-width: 860px) { .adm-cols, .adm-grid2 { grid-template-columns: 1fr; } }

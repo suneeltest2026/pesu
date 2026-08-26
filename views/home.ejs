@@ -1,0 +1,330 @@
+<%- include('partials/head') %>
+</head>
+<body data-header="overlay"<% if (flash) { %> data-flash="<%= flash %>"<% } %>>
+<a class="skip-link" href="#main">Skip to content</a>
+<%- include('partials/header') %>
+
+<main id="main">
+
+<!-- ======================= HERO ======================= -->
+<section class="hero">
+  <div class="hero__stage" aria-hidden="true">
+    <div class="hero__layer hero__sky" style="--depth:0.06"></div>
+    <div class="hero__sun"></div>
+    <div class="hero__layer" style="--depth:0.16">
+      <div class="hero__dune" style="--dune-bg:#241C14;--dune-h:52%;--dune-bottom:-16%;left:-30%;right:20%"></div>
+    </div>
+    <div class="hero__layer" style="--depth:0.26">
+      <div class="hero__dune" style="--dune-bg:#191309;--dune-h:40%;--dune-bottom:-12%;left:15%;right:-25%"></div>
+    </div>
+    <div class="hero__layer" style="--depth:0.4">
+      <div class="hero__dune" style="--dune-bg:#0D0B08;--dune-h:26%;--dune-bottom:-8%"></div>
+    </div>
+    <div class="hero__grain"></div>
+    <div class="hero__vignette"></div>
+  </div>
+
+  <div class="hero__center shell">
+    <p class="hero__tagline">Home decor · United Arab Emirates</p>
+    <h1 class="wordmark wordmark--hero hero__wordmark" aria-label="PESU">
+      <span style="--i:0" aria-hidden="true">P</span><span style="--i:1" aria-hidden="true">E</span><span style="--i:2" aria-hidden="true">S</span><span style="--i:3" aria-hidden="true">U</span>
+    </h1>
+    <p class="hero__tagline" style="animation-delay:1.1s">Calm, made by hand</p>
+    <p class="hero__sub">Marble, bamboo and cane, hand-painted wood and sabai grass — small objects made by hand, for rooms that need less rather than more.</p>
+    <div class="hero__cta">
+      <a class="btn btn--light" href="/shop">Shop the range</a>
+    </div>
+  </div>
+
+  <div class="hero__foot shell">
+    <p>Handmade · natural materials</p>
+    <div class="hero__scroll"><i></i><span>Scroll</span></div>
+    <p>Free UAE delivery over AED&nbsp;200</p>
+  </div>
+</section>
+
+<!-- ======================= TICKER ======================= -->
+<div class="ticker" aria-hidden="true">
+  <div class="ticker__track">
+    <span>Handmade from natural materials</span>
+    <span>Free delivery across the UAE over AED 200</span>
+    <span>Dispatched in 1–2 business days</span>
+    <span>15-day returns</span>
+    <span>No two pieces exactly alike</span>
+  </div>
+</div>
+
+<!-- ======================= MANIFESTO ======================= -->
+<section class="section" id="manifesto">
+  <div class="shell manifesto__grid">
+    <div class="manifesto__statement stack-lg" data-reveal>
+      <p class="eyebrow">About PESU</p>
+      <h2 class="display display--l">
+        <span class="line-mask"><span>Objects that were</span></span>
+        <span class="line-mask" style="--reveal-delay:90ms"><span>something else</span></span>
+        <span class="line-mask" style="--reveal-delay:180ms"><span><em>first</em>.</span></span>
+      </h2>
+      <div class="manifesto__body prose">
+        <p>Grass that grew in Odisha and was sun-dried, twisted into rope and braided by hand. Marble cut from a block and finished until it is cool and honest to the touch. Bamboo woven into a shade that throws uneven shadows across a wall.</p>
+        <p>We look for objects that carry the evidence of the person who made them. That means colour, texture and finish vary from one piece to the next — a fact we would rather state plainly than photograph around. It is not a defect. It is the reason to buy the thing at all.</p>
+        <p>Everything is chosen to work in a calm room: few materials, small scale, nothing that shouts. Priced so that a considered object is an ordinary purchase rather than an event.</p>
+      </div>
+      <p class="manifesto__sig">— PESU, Ajman</p>
+    </div>
+
+    <figure class="manifesto__media surface mat-travertine" data-reveal style="--reveal-delay:120ms">
+      <img src="/images/IMG-8088.png" alt="Handcrafted marble incense holder">
+      <figcaption>Marble incense holder — natural stone, hand-finished</figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- ======================= THE RANGE ======================= -->
+<section class="section section--flush-top" id="collections">
+  <div class="shell">
+    <div class="section-head" data-reveal>
+      <div class="section-head__text">
+        <p class="eyebrow">The range</p>
+        <h2 class="display display--m">Eight pieces, four rooms</h2>
+      </div>
+      <a class="link" href="https://pesu.ae/collections/home-decor">Shop everything</a>
+    </div>
+
+    <div class="collections__grid collections__grid--four" data-reveal data-reveal-stagger>
+      <% groups.forEach(function (g) { var lead = leadFor(g.id); %>
+      <a class="tile collection-tile" href="/shop/<%= g.id %>" data-reveal-child>
+        <div class="tile__media surface <%= lead ? lead.swatch : '' %>">
+          <% if (lead) { %><%- img(lead, 0, 700) %><% } %>
+          <span class="collection-tile__cta">From <%= money(g.from_fils) %></span>
+        </div>
+        <div class="tile__body">
+          <div>
+            <h3 class="tile__name"><%= g.name %></h3>
+            <p class="tile__meta"><%= g.line %></p>
+          </div>
+          <p class="tile__price"><%= g.count %> <%= g.count === 1 ? 'piece' : 'pieces' %></p>
+        </div>
+      </a>
+      <% }) %>
+  </div>
+</section>
+
+<!-- ======================= SPOTLIGHT ======================= -->
+<% if (spotlight) { %>
+<section class="section spotlight on-dark">
+  <div class="shell spotlight__grid">
+    <div class="spotlight__stage" data-reveal>
+      <div class="spotlight__halo" aria-hidden="true"></div>
+      <div class="spotlight__object spotlight__object--photo">
+        <%- img(spotlight, 0, 900) %>
+      </div>
+    </div>
+    <div class="stack-lg" data-reveal style="--reveal-delay:100ms">
+      <p class="eyebrow">Piece of the season</p>
+      <h2 class="display display--l"><%= spotlight.name %></h2>
+      <p class="lede"><%= spotlight.story[0] %></p>
+      <dl class="spotlight__specs">
+        <% Object.keys(spotlight.specs).slice(0, 3).forEach(function (key) { %>
+        <div><dt><%= key %></dt><dd><%= spotlight.specs[key] %></dd></div>
+        <% }) %>
+        <div><dt>Price</dt><dd class="num"><%= money(spotlight.price_fils) %></dd></div>
+      </dl>
+      <div style="display:flex;gap:1rem;flex-wrap:wrap">
+        <a class="btn btn--light" href="/product/<%= spotlight.handle %>">View this piece</a>
+        <a class="btn btn--ghost" href="/shop">See the range</a>
+      </div>
+    </div>
+  </div>
+</section>
+<% } %>
+
+<!-- ======================= MATERIALS PICKER ======================= -->
+<section class="section" id="shop-by-material">
+  <div class="shell configure__grid">
+    <div class="stack-lg" data-reveal>
+      <p class="eyebrow">Shop by material</p>
+      <h2 class="display display--m">Start with what<br>it is made of</h2>
+      <p class="lede">Six materials run through the range. Pick one and see what it becomes — marble for the incense holder, cane for the lamps, sabai grass braided into a tea light holder.</p>
+      <div class="swatches swatches--labelled" data-teaser-swatches role="group" aria-label="Materials">
+        <% materials.forEach(function (m, i) { var piece = pieceOfMaterial(m.id); %>
+        <span class="swatch-item">
+          <a class="swatch surface <%= m.swatch %>" href="/materials/<%= m.id %>"
+             data-material="<%= m.id %>"
+             data-piece='<%- JSON.stringify({ name: piece ? piece.name : "", price: piece ? money(piece.price_fils) : "", img: piece && piece.images[0] ? "/images/" + piece.images[0] : "", href: piece ? "/product/" + piece.handle : "#", note: m.note, swatch: m.swatch }) %>'
+             aria-pressed="<%= i === 0 %>" aria-label="<%= m.name %>"></a>
+          <span class="swatch__label"><%= m.short %></span>
+        </span>
+        <% }) %>
+      </div>
+      <p class="prose" style="max-width:44ch" data-teaser-note><%= materials[0].note %></p>
+      <div style="display:flex;gap:1rem;flex-wrap:wrap">
+        <a class="btn" href="/materials" data-teaser-cta>View the pieces</a>
+      </div>
+    </div>
+
+    <div class="configure__preview surface <%= materials[0].swatch %>" data-teaser-preview data-reveal style="--reveal-delay:100ms">
+      <div class="configure__object configure__object--photo" data-teaser-object>
+        <% var first = pieceOfMaterial(materials[0].id); if (first) { %><%- img(first, 0, 800) %><% } %>
+      </div>
+      <p class="configure__caption" data-teaser-caption>
+        <% if (first) { %><%= first.name %> — <%= money(first.price_fils) %><% } %>
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= MATERIALS RAIL ======================= -->
+<section class="section section--tight" id="materials">
+  <div class="shell">
+    <div class="section-head" data-reveal>
+      <div class="section-head__text">
+        <p class="eyebrow">Materials</p>
+        <h2 class="display display--m">Six materials, named</h2>
+      </div>
+      <p class="tile__meta">Drag to explore →</p>
+    </div>
+  </div>
+  <div class="shell">
+    <div class="materials__rail" data-reveal>
+      <% materials.forEach(function (m) { var piece = pieceOfMaterial(m.id); %>
+      <a class="material-card" href="/materials/<%= m.id %>">
+        <div class="surface <%= m.swatch %>"><% if (piece) { %><%- img(piece, 0, 500) %><% } %></div>
+        <h3><%= m.name %></h3>
+        <p><%= m.note %></p>
+        <span class="material-card__origin"><%= m.origin %></span>
+      </a>
+      <% }) %>
+  </div>
+</section>
+
+<!-- ======================= GIFTING ======================= -->
+<section class="section bespoke on-dark" id="gifting">
+  <div class="bespoke__bg" aria-hidden="true"></div>
+  <div class="shell bespoke__inner bespoke__grid">
+    <div class="stack-lg" data-reveal>
+      <p class="eyebrow">Gifting</p>
+      <h2 class="display display--l">Wrapped,<br>quality-checked,<br>on its <em>way</em></h2>
+      <p class="lede">Every order leaves in secure premium packaging and is checked before dispatch — which makes most of the range a gift you can send straight to the person receiving it.</p>
+      <div style="display:flex;gap:1rem;flex-wrap:wrap">
+        <a class="btn btn--light" href="/shop">Find a gift</a>
+        <a class="link" href="/contact" style="align-self:center">Ask about a gift order</a>
+      </div>
+    </div>
+
+    <div class="bespoke__steps" data-reveal data-reveal-stagger>
+      <article class="bespoke__step" data-reveal-child>
+        <div>
+          <h3>Housewarming</h3>
+          <p>The marble incense holder or the sabai grass tea light — small, considered, and not something they already own.</p>
+        </div>
+      </article>
+      <article class="bespoke__step" data-reveal-child>
+        <div>
+          <h3>Ramadan &amp; Eid</h3>
+          <p>Candlelight and calm: the Krishna t-light holder, or a pair of them for a table.</p>
+        </div>
+      </article>
+      <article class="bespoke__step" data-reveal-child>
+        <div>
+          <h3>Diwali</h3>
+          <p>Warm metal and light — the silver elephant bowl as a centrepiece that carries its own symbolism.</p>
+        </div>
+      </article>
+      <article class="bespoke__step" data-reveal-child>
+        <div>
+          <h3>For a new home</h3>
+          <p>The hanging lamps, or a wall frame that turns an empty hallway into something finished.</p>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= SERVICE ======================= -->
+<section class="section" id="care">
+  <div class="shell">
+    <div class="section-head" data-reveal>
+      <div class="section-head__text">
+        <p class="eyebrow">Ordering from PESU</p>
+        <h2 class="display display--m">What you can expect,<br>stated plainly</h2>
+      </div>
+    </div>
+    <div class="concierge__grid" data-reveal data-reveal-stagger>
+      <article class="concierge__item" data-reveal-child>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 16V8l9-4 9 4v8l-9 4-9-4Z"/><path d="M3 8l9 4 9-4M12 12v8"/></svg>
+        <h3>UAE delivery</h3>
+        <p>Dispatched in 1–2 business days by Quiqup. Dubai in 1–3 business days, other emirates in 5–7. Free over AED 200, AED 25 below it.</p>
+      </article>
+      <article class="concierge__item" data-reveal-child>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 14 4 9l5-5"/><path d="M4 9h11a5 5 0 0 1 0 10H9"/></svg>
+        <h3>15-day returns</h3>
+        <p>Unused, in original packaging, with proof of purchase. Write to care@pesu.ae and we send a return label and instructions.</p>
+      </article>
+      <article class="concierge__item" data-reveal-child>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l2.6 5.6 6.4.8-4.7 4.3 1.3 6.3L12 17l-5.6 3 1.3-6.3L3 9.4l6.4-.8L12 3Z"/></svg>
+        <h3>Handmade variation</h3>
+        <p>Colour, texture, size and finish differ slightly from piece to piece. Natural materials behave that way, and we do not consider it a fault.</p>
+      </article>
+      <article class="concierge__item" data-reveal-child>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+        <h3>Talk to us</h3>
+        <p>care@pesu.ae or +971 56 712 6966. We are in Ajman, and we answer our own messages.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= CARE NOTES ======================= -->
+<section class="section section--tight" id="notes">
+  <div class="shell">
+    <div class="section-head" data-reveal>
+      <div class="section-head__text">
+        <p class="eyebrow">Living with it</p>
+        <h2 class="display display--m">Three short notes</h2>
+      </div>
+    </div>
+    <div class="journal__grid" data-reveal data-reveal-stagger>
+      <article class="tile journal-card" data-reveal-child>
+        <div class="tile__media surface mat-travertine"><img src="/images/IMG-8088.png" alt="" loading="lazy"></div>
+        <span class="journal-card__kicker">Marble</span>
+        <h3>Dust it dry, and let it age</h3>
+        <p>A soft, dry cloth is all it needs. Stone takes on the character of the room it sits in — that is the point of it.</p>
+      </article>
+      <article class="tile journal-card" data-reveal-child>
+        <div class="tile__media surface mat-boucle"><img src="/images/IMG-8062.jpg" alt="" loading="lazy"></div>
+        <span class="journal-card__kicker">Cane &amp; grass</span>
+        <h3>Keep the weave out of wet</h3>
+        <p>Dust gently with a dry cloth. Woven bamboo, cane and sabai grass are happiest away from steam and direct water.</p>
+      </article>
+      <article class="tile journal-card" data-reveal-child>
+        <div class="tile__media surface mat-oak"><img src="/images/IMG-8057.png" alt="" loading="lazy"></div>
+        <span class="journal-card__kicker">Hand-painted wood</span>
+        <h3>No polish, no solvents</h3>
+        <p>Wipe with a soft dry cloth only. Painted surfaces do not want cleaning products, and they do not need them.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= NEWSLETTER ======================= -->
+<section class="section invitation">
+  <div class="shell--narrow shell stack-lg" data-reveal>
+    <p class="eyebrow eyebrow--bare">Keep in touch</p>
+    <h2 class="display display--m">New pieces, and restocks</h2>
+    <p class="lede" style="margin-inline:auto">The range is small and moves quickly. Leave an email and we will tell you when something arrives or comes back in stock.</p>
+    <form class="newsletter" method="post" action="/subscribe">
+      <label class="field">
+        <span class="visually-hidden">Email address</span>
+        <input class="field__input" type="email" required placeholder="your@email.com" autocomplete="email">
+      </label>
+      <button type="submit">Join</button>
+    </form>
+  </div>
+</section>
+
+</main>
+
+<%- include('partials/footer') %>
+<script src="/assets/js/site.js"></script>
+</body>
+</html>

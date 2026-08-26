@@ -1,0 +1,33 @@
+<% if (!cart.items.length) { %>
+  <div class="cart-empty stack">
+    <p class="display display--s">Your bag is empty.</p>
+    <p>Eight pieces, made by hand from natural materials. Free delivery across the UAE over <%= money(cart.freeThresholdFils) %>.</p>
+    <p><a class="link" href="/shop">Browse the range</a></p>
+  </div>
+<% } else { %>
+  <% cart.items.forEach(function (item) { %>
+  <article class="cart-line">
+    <a class="cart-line__thumb surface <%= item.swatch %>" href="/product/<%= item.handle %>">
+      <% if (item.image) { %><img src="/images/<%= item.image %>" alt=""><% } %>
+    </a>
+    <div>
+      <a class="cart-line__name" href="/product/<%= item.handle %>"><%= item.name %></a>
+      <p class="cart-line__spec"><%= item.materialName %></p>
+      <div class="cart-line__foot">
+        <span class="num"><%= money(item.lineFils) %></span>
+        <form class="qty qty--sm" method="post" action="/cart/update">
+          <input type="hidden" name="productId" value="<%= item.productId %>">
+          <button type="submit" name="qty" value="<%= item.qty - 1 %>" aria-label="Decrease quantity">−</button>
+          <output class="num"><%= item.qty %></output>
+          <button type="submit" name="qty" value="<%= item.qty + 1 %>" aria-label="Increase quantity"
+            <%= item.qty >= item.inventory ? 'disabled' : '' %>>+</button>
+        </form>
+      </div>
+      <form method="post" action="/cart/remove">
+        <input type="hidden" name="productId" value="<%= item.productId %>">
+        <button class="cart-line__remove" type="submit">Remove</button>
+      </form>
+    </div>
+  </article>
+  <% }) %>
+<% } %>

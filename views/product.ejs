@@ -1,0 +1,200 @@
+<%- include('partials/head') %>
+</head>
+<body data-header="solid"<% if (flash) { %> data-flash="<%= flash %>"<% } %>>
+<a class="skip-link" href="#main">Skip to content</a>
+<%- include('partials/header') %>
+
+<main id="main" class="pdp">
+  <div class="shell">
+    <ol class="breadcrumb">
+      <li><a href="/">PESU</a></li>
+      <li><a href="/shop">Shop</a></li>
+      <li><a href="/shop/<%= product.group_id %>"><%= product.group_name %></a></li>
+      <li aria-current="page"><%= product.name %></li>
+    </ol>
+
+    <div class="pdp__layout">
+      <div class="pdp__gallery">
+        <div class="gallery">
+          <div class="gallery__stage surface <%= product.swatch %>" role="group" aria-label="Product imagery">
+            <div class="gallery__floor" aria-hidden="true"></div>
+            <% product.images.forEach(function (file, i) { %>
+            <div class="gallery__view gallery__view--photo <%= i === 0 ? 'is-active' : '' %>" data-view="<%= i %>">
+              <img src="/images/<%= file %>" alt="<%= product.name %><%= i ? ' — view ' + (i + 1) : '' %>"
+                   loading="<%= i ? 'lazy' : 'eager' %>" width="1000" height="1000">
+            </div>
+            <% }) %>
+            <p class="gallery__zoom-hint">Click to zoom</p>
+          </div>
+
+          <% if (product.images.length > 1) { %>
+          <div class="gallery__thumbs" role="tablist" aria-label="Views">
+            <% product.images.forEach(function (file, i) { %>
+            <button class="gallery__thumb surface <%= product.swatch %>" type="button" role="tab"
+                    data-view="<%= i %>" aria-selected="<%= i === 0 %>">
+              <img src="/images/<%= file %>" alt="" loading="lazy">
+              <span class="visually-hidden">View <%= i + 1 %></span>
+            </button>
+            <% }) %>
+          </div>
+          <% } %>
+        </div>
+      </div>
+
+      <div class="config" id="buy">
+        <div class="config__head">
+          <p class="eyebrow"><%= product.group_name %> — <%= product.material_name %></p>
+          <h1 class="config__title"><%= product.name %></h1>
+          <p class="config__meta">
+            <span<%= product.inventory > 0 && product.inventory <= 5 ? ' class="is-low"' : '' %>>
+              <% if (product.inventory <= 0) { %>Sold out<% } else if (product.inventory <= 5) { %>Only <%= product.inventory %> left<% } else { %>In stock<% } %>
+            </span>
+            <span>·</span>
+            <span class="config__fulltitle"><%= product.full_title %></span>
+          </p>
+          <p class="config__price">
+            <span class="num"><%= money(product.price_fils) %></span>
+            <% if (product.compare_fils && product.compare_fils > product.price_fils) { %>
+            <span class="config__compare num"><%= money(product.compare_fils) %></span>
+            <% } %>
+          </p>
+          <p class="lead-time">
+            <% if (product.price_fils >= cart.freeThresholdFils) { %>Free delivery across the UAE<% } else { %>Delivery <%= money(deliveryFlatFils) %> — free over <%= money(cart.freeThresholdFils) %><% } %>
+          </p>
+        </div>
+
+        <ul class="config__features">
+          <% product.features.forEach(function (f) { %>
+          <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 5 5L19 7"/></svg><span><%= f %></span></li>
+          <% }) %>
+        </ul>
+
+        <% product.options.forEach(function (opt) { %>
+        <div class="config__group">
+          <div class="config__group-head"><span class="config__group-label"><%= opt.name %></span></div>
+          <div class="options">
+            <% opt.values.forEach(function (v, i) { %>
+            <button class="option" type="button" aria-pressed="<%= i === 0 %>"><%= v %></button>
+            <% }) %>
+          </div>
+        </div>
+        <% }) %>
+
+        <form class="config__actions" data-buy-anchor method="post" action="/cart/add">
+          <input type="hidden" name="productId" value="<%= product.id %>">
+          <% if (error) { %><p class="form-error"><%= error %></p><% } %>
+          <div class="config__row">
+            <div class="qty" role="group" aria-label="Quantity">
+              <button type="button" data-qty-step="-1" aria-label="Decrease quantity">−</button>
+              <input class="num qty__input" type="number" name="qty" value="1" min="1"
+                     max="<%= Math.max(1, product.inventory) %>" aria-label="Quantity">
+              <button type="button" data-qty-step="1" aria-label="Increase quantity">+</button>
+            </div>
+            <button class="btn" style="flex:1" type="submit" <%= product.inventory <= 0 ? 'disabled' : '' %>>
+              <%= product.inventory > 0 ? 'Add to bag' : 'Sold out' %>
+            </button>
+          </div>
+        </form>
+
+        <ul class="config__assurance">
+          <li>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7l8-4 8 4v6c0 5-3.5 7.5-8 8-4.5-.5-8-3-8-8V7Z"/></svg>
+            <span>Handmade from natural materials. Small differences in colour, texture and finish are part of the piece, not faults in it.</span>
+          </li>
+          <li>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 16V8l9-4 9 4v8l-9 4-9-4Z"/></svg>
+            <span>Dispatched in <%= settings.ship_processing %> by <%= settings.ship_courier %>. Dubai in <%= settings.ship_dubai %>, other emirates in <%= settings.ship_emirates %>.</span>
+          </li>
+          <li>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 14 4 9l5-5"/><path d="M4 9h11a5 5 0 0 1 0 10H9"/></svg>
+            <span><%= settings.returns_days %>-day returns — <%= settings.returns_note.toLowerCase() %> Write to <a href="mailto:<%= settings.shop_email %>"><%= settings.shop_email %></a>.</span>
+          </li>
+        </ul>
+      </div>
+
+      <section class="pdp__story">
+        <div class="stack" data-reveal>
+          <p class="eyebrow">The piece</p>
+          <div class="prose">
+            <% product.story.forEach(function (p) { %><p><%= p %></p><% }) %>
+          </div>
+        </div>
+
+        <div class="accordion" data-reveal>
+          <div class="accordion__item">
+            <button class="accordion__trigger" type="button" aria-expanded="false">
+              Specifications <span class="accordion__sign" aria-hidden="true"></span>
+            </button>
+            <div class="accordion__panel"><div><div class="inner">
+              <dl>
+                <% Object.keys(product.specs).forEach(function (k) { %>
+                <dt><%= k %></dt><dd><%= product.specs[k] %></dd>
+                <% }) %>
+              </dl>
+            </div></div></div>
+          </div>
+          <div class="accordion__item">
+            <button class="accordion__trigger" type="button" aria-expanded="false">
+              Delivery <span class="accordion__sign" aria-hidden="true"></span>
+            </button>
+            <div class="accordion__panel"><div><div class="inner">
+              <dl>
+                <dt>Processing</dt><dd><%= settings.ship_processing %> after payment</dd>
+                <dt>Dubai</dt><dd><%= settings.ship_dubai %></dd>
+                <dt>Other emirates</dt><dd><%= settings.ship_emirates %></dd>
+                <dt>Cost</dt><dd>Free over <%= money(cart.freeThresholdFils) %>; <%= money(deliveryFlatFils) %> below that</dd>
+                <dt>Courier</dt><dd><%= settings.ship_courier %></dd>
+              </dl>
+              <p><a class="link" href="/delivery">Full delivery information</a></p>
+            </div></div></div>
+          </div>
+          <div class="accordion__item">
+            <button class="accordion__trigger" type="button" aria-expanded="false">
+              Returns <span class="accordion__sign" aria-hidden="true"></span>
+            </button>
+            <div class="accordion__panel"><div><div class="inner">
+              <p><%= settings.returns_days %>-day returns from the day your order arrives. <%= settings.returns_note %></p>
+              <p><a class="link" href="/returns">How returns work</a></p>
+            </div></div></div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <% if (related.length) { %>
+  <section class="section">
+    <div class="shell">
+      <div class="section-head" data-reveal>
+        <div class="section-head__text">
+          <p class="eyebrow">The rest of the range</p>
+          <h2 class="display display--m">Shown with</h2>
+        </div>
+        <a class="link" href="/shop">Everything</a>
+      </div>
+      <div class="related__grid" data-reveal data-reveal-stagger>
+        <% related.forEach(function (p) { %>
+        <%- include('partials/product-tile', { p: p }) %>
+        <% }) %>
+      </div>
+    </div>
+  </section>
+  <% } %>
+</main>
+
+<div class="buybar">
+  <div>
+    <p class="tile__meta"><%= product.name %></p>
+    <p class="buybar__price num"><%= money(product.price_fils) %></p>
+  </div>
+  <form method="post" action="/cart/add">
+    <input type="hidden" name="productId" value="<%= product.id %>">
+    <input type="hidden" name="qty" value="1">
+    <button class="btn" type="submit" <%= product.inventory <= 0 ? 'disabled' : '' %>>Add to bag</button>
+  </form>
+</div>
+
+<%- include('partials/footer') %>
+<script src="/assets/js/site.js"></script>
+</body>
+</html>

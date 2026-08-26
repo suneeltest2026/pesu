@@ -1,0 +1,21 @@
+<% if (!orders.length) { %>
+  <p class="adm-empty">No orders yet.</p>
+<% } else { %>
+<div class="adm-table-wrap">
+  <table class="adm-table">
+    <thead><tr><th>Reference</th><th>Customer</th><th>Total</th><th>Payment</th><th>Status</th><th>Placed</th></tr></thead>
+    <tbody>
+      <% orders.forEach(function (o) { %>
+      <tr>
+        <td><a href="/admin/orders/<%= o.reference %>"><%= o.reference %></a></td>
+        <td><%= o.name %><br><span class="adm-dim"><%= o.city %>, <%= o.emirate %></span></td>
+        <td class="num"><%= money(o.total_fils) %></td>
+        <td><span class="adm-pill <%= o.payment_status === 'paid' ? 'is-ok' : 'is-low' %>"><%= o.payment_method %> · <%= o.payment_status %></span></td>
+        <td><span class="adm-pill <%= o.status === 'cancelled' ? 'is-out' : o.status === 'delivered' ? 'is-ok' : '' %>"><%= o.status %></span></td>
+        <td class="adm-dim"><%= o.created_at %></td>
+      </tr>
+      <% }) %>
+    </tbody>
+  </table>
+</div>
+<% } %>

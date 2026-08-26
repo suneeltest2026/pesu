@@ -1,0 +1,13 @@
+<a class="tile" href="/product/<%= p.handle %>" data-reveal-child>
+  <div class="tile__media surface <%= p.swatch %>">
+    <%- img(p, 0, 600) %>
+    <% if (p.inventory <= 0) { %><span class="tile__flag">Sold out</span><% } %>
+  </div>
+  <div class="tile__body">
+    <div>
+      <h3 class="tile__name"><%= p.name %></h3>
+      <p class="tile__meta"><%= p.group_name %></p>
+    </div>
+    <p class="tile__price num"><%= money(p.price_fils) %></p>
+  </div>
+</a>
