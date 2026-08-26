@@ -114,6 +114,22 @@ equivalent route in `routes/webhooks.js`.
 
 ## Deploying to Render
 
+Two blueprints are included.
+
+| File | Cost | Use it for |
+| --- | --- | --- |
+| `render.free.yaml` | Free | Testing and demos. Orders are lost on restart; the service sleeps when idle |
+| `render.yaml` | ~$7/month | Real trading. Persistent disk holds the database and uploaded images |
+
+Start on the free one. Move to the paid one before taking real money — at
+which point it replaces a Shopify Basic subscription costing roughly four
+times as much.
+
+To choose, set **Blueprint Path** on Render's blueprint screen:
+`render.free.yaml` or leave blank for `render.yaml`.
+
+### The paid blueprint
+
 `render.yaml` describes the service: a web instance plus a 1 GB persistent
 disk mounted at `/var/data` holding both the database and admin-uploaded
 images.

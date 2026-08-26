@@ -1,0 +1,47 @@
+# Render blueprint — FREE TIER, FOR TESTING ONLY
+#
+# Same application, no persistent disk, so it costs nothing. The trade-offs
+# are real and you should know them before pointing a customer at it:
+#
+#   * The database lives in the container's temporary filesystem. Every
+#     deploy, restart or crash wipes it. Products come straight back (they
+#     are re-seeded from data/products.json on boot) but ORDERS DO NOT.
+#   * Free instances sleep after ~15 minutes of no traffic. The next visitor
+#     waits roughly 50 seconds for it to wake.
+#   * Admin-uploaded images vanish with the container. Images committed to
+#     public/images survive, because they come from the repository.
+#
+# Fine for showing people the shop and running a full Stripe test payment.
+# Not fine for taking real money. When it is time for that, deploy with
+# render.yaml instead: a Starter instance plus a 1 GB disk, about $7/month,
+# which replaces a Shopify Basic bill roughly four times that.
+#
+# To use this file: in Render's Blueprint screen, set
+#   Blueprint Path: render.free.yaml
+services:
+  - type: web
+    name: pesu-preview
+    runtime: node
+    plan: free
+    buildCommand: npm ci
+    # No disk exists, so the database goes to the container's own filesystem
+    # and is rebuilt from data/products.json on every boot.
+    startCommand: npm run seed && npm start
+    healthCheckPath: /
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_PATH
+        value: /tmp/pesu.db
+      - key: SESSION_SECRET
+        generateValue: true
+      - key: PUBLIC_URL
+        sync: false
+      - key: ADMIN_EMAIL
+        sync: false
+      - key: ADMIN_PASSWORD
+        sync: false
+      - key: STRIPE_SECRET_KEY
+        sync: false
+      - key: STRIPE_WEBHOOK_SECRET
+        sync: false
