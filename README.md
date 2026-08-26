@@ -118,10 +118,20 @@ equivalent route in `routes/webhooks.js`.
 disk mounted at `/var/data` holding both the database and admin-uploaded
 images.
 
-1. Render → New → Blueprint → point at this repository.
+1. Render → New → Blueprint → point at this repository. It reads
+   `render.yaml` and proposes one web service plus a 1 GB disk.
 2. Set the secrets it asks for: `PUBLIC_URL`, `ADMIN_EMAIL`,
-   `ADMIN_PASSWORD`, `STRIPE_SECRET_KEY`, and SMTP if you want order emails.
-3. Deploy. The build runs `npm ci && npm run seed`.
+   `ADMIN_PASSWORD`, `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, and SMTP
+   if you want order emails. `SESSION_SECRET` is generated for you.
+3. Deploy. The build runs `npm ci`; the start command seeds and then serves.
+
+**Seeding runs at start, not at build** — deliberately. Render only mounts
+the persistent disk at runtime, so a build-time seed would write the database
+to a throwaway filesystem and the live site would boot with no catalogue and
+no admin login. The seeder upserts, so running it on every boot is safe.
+
+**Sessions live in the database**, not in memory, so bags survive a restart
+or a deploy and nothing leaks between them.
 
 A persistent disk needs a paid instance type — on the free tier the database
 is wiped on every deploy.

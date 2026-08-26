@@ -6,8 +6,12 @@ services:
     name: pesu
     runtime: node
     plan: starter          # a persistent disk requires a paid instance type
-    buildCommand: npm ci && npm run seed
-    startCommand: npm start
+    buildCommand: npm ci
+    # Seeding happens at start, not at build: the persistent disk is only
+    # mounted at runtime, so a build-time seed would be written to a
+    # throwaway filesystem and the live site would boot with no catalogue.
+    # The seeder upserts, so running it on every boot is safe.
+    startCommand: npm run seed && npm start
     healthCheckPath: /
     disk:
       name: pesu-data

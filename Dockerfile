@@ -15,4 +15,5 @@ ENV DATABASE_PATH=/data/pesu.db
 VOLUME /data
 EXPOSE 3000
 
+# Seed at start: the volume is only present at runtime.
 CMD ["sh", "-c", "npm run seed && npm start"]

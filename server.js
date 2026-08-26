@@ -37,8 +37,11 @@ if (!process.env.SESSION_SECRET) {
   console.warn('SESSION_SECRET is not set — using a temporary secret. Bags will not survive a restart.');
 }
 
+const SqliteStore = require('./lib/session-store')(session);
+
 app.use(session({
   name: 'pesu.sid',
+  store: new SqliteStore(),
   secret: process.env.SESSION_SECRET || require('crypto').randomBytes(32).toString('hex'),
   resave: false,
   saveUninitialized: false,
