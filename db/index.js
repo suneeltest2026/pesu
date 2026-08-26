@@ -10,9 +10,22 @@ const fs = require('fs');
 const path = require('path');
 const { Pool } = require('pg');
 
-const connectionString = process.env.DATABASE_URL;
+/* Hosted Postgres integrations each pick their own variable name — Neon on
+   Vercel sets DATABASE_URL, older Vercel Postgres sets POSTGRES_URL, and some
+   set only the unpooled variant. Accept any of them rather than making the
+   deploy depend on which one turned up. */
+const connectionString =
+  process.env.DATABASE_URL ||
+  process.env.POSTGRES_URL ||
+  process.env.POSTGRES_PRISMA_URL ||
+  process.env.DATABASE_URL_UNPOOLED ||
+  process.env.POSTGRES_URL_NON_POOLING;
+
 if (!connectionString) {
-  throw new Error('DATABASE_URL is not set. Copy .env.example to .env and fill it in.');
+  throw new Error(
+    'No Postgres connection string found. Set DATABASE_URL (or POSTGRES_URL) — ' +
+    'see .env.example.'
+  );
 }
 
 /* Hosted Postgres (Neon, Vercel, Supabase) requires TLS; a local server does
