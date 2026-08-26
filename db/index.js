@@ -1,20 +1,89 @@
 'use strict';
 /* PESU — database
-   SQLite through better-sqlite3: synchronous, transactional, and a single
-   file we own. `DATABASE_PATH` points at a persistent disk in production. */
+   PostgreSQL through a pooled connection. `DATABASE_URL` points at the
+   database; on Vercel that is the Postgres integration's connection string.
+
+   Serverless invocations are short-lived and can start cold at any moment, so
+   schema and seed are applied lazily behind a Postgres advisory lock: whoever
+   gets there first does the work, everyone else waits and finds it done. */
 const fs = require('fs');
 const path = require('path');
-const Database = require('better-sqlite3');
+const { Pool } = require('pg');
 
-const file = process.env.DATABASE_PATH || path.join(__dirname, '..', 'var', 'pesu.db');
-fs.mkdirSync(path.dirname(file), { recursive: true });
-
-const db = new Database(file);
-db.pragma('journal_mode = WAL');
-db.pragma('foreign_keys = ON');
-
-function migrate() {
-  db.exec(fs.readFileSync(path.join(__dirname, 'schema.sql'), 'utf8'));
+const connectionString = process.env.DATABASE_URL;
+if (!connectionString) {
+  throw new Error('DATABASE_URL is not set. Copy .env.example to .env and fill it in.');
 }
 
-module.exports = { db, migrate, file };
+/* Hosted Postgres (Neon, Vercel, Supabase) requires TLS; a local server does
+   not offer it. Opt out only for localhost. */
+const isLocal = /@(localhost|127\.0\.0\.1)/.test(connectionString);
+
+const pool = new Pool({
+  connectionString,
+  ssl: isLocal ? false : { rejectUnauthorized: false },
+  /* Serverless: keep the pool small and let idle clients go. */
+  max: Number(process.env.PG_POOL_MAX || (process.env.VERCEL ? 1 : 5)),
+  idleTimeoutMillis: 10000,
+  connectionTimeoutMillis: 10000
+});
+
+pool.on('error', (err) => console.error('[pg] idle client error', err.message));
+
+function query(text, params) {
+  return pool.query(text, params);
+}
+
+async function one(text, params) {
+  const res = await pool.query(text, params);
+  return res.rows[0] || null;
+}
+
+async function all(text, params) {
+  const res = await pool.query(text, params);
+  return res.rows;
+}
+
+/* Run fn inside a transaction on a dedicated client. */
+async function transaction(fn) {
+  const client = await pool.connect();
+  try {
+    await client.query('BEGIN');
+    const result = await fn(client);
+    await client.query('COMMIT');
+    return result;
+  } catch (err) {
+    try { await client.query('ROLLBACK'); } catch (e) { /* connection already gone */ }
+    throw err;
+  } finally {
+    client.release();
+  }
+}
+
+let readyPromise = null;
+
+async function ensureReady() {
+  if (!readyPromise) readyPromise = initialise();
+  return readyPromise;
+}
+
+async function initialise() {
+  const client = await pool.connect();
+  try {
+    /* Any arbitrary constant; only this application uses it. */
+    await client.query('SELECT pg_advisory_lock(841125)');
+    await client.query(fs.readFileSync(path.join(__dirname, 'schema.sql'), 'utf8'));
+
+    const seeded = await client.query('SELECT COUNT(*)::int AS c FROM products');
+    if (seeded.rows[0].c === 0) {
+      const { seedWith } = require('./seed');
+      await seedWith(client);
+      console.log('[db] seeded from data/products.json');
+    }
+  } finally {
+    try { await client.query('SELECT pg_advisory_unlock(841125)'); } catch (e) { /* lock released with the connection */ }
+    client.release();
+  }
+}
+
+module.exports = { pool, query, one, all, transaction, ensureReady };

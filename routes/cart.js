@@ -20,34 +20,39 @@ router.get('/cart', (req, res) => {
   res.render('cart', { title: 'Your bag — PESU', description: 'The pieces in your bag.' });
 });
 
-router.post('/cart/add', (req, res) => {
-  const { productId, qty } = req.body;
-  const result = cart.add(req.session, productId, qty);
-  const wantsJson = req.get('X-Requested-With') === 'fetch';
+router.post('/cart/add', async (req, res, next) => {
+  try {
+    const { productId, qty } = req.body;
+    const result = await cart.add(req.session, productId, qty);
+    const wantsJson = req.get('X-Requested-With') === 'fetch';
 
-  if (wantsJson) {
-    const summary = cart.summary(req.session);
-    if (!result.ok) return res.json({ ok: false, error: result.error, count: summary.count });
-    return res.render('partials/cart-lines', { cart: summary, money: res.locals.money }, (err, html) => {
-      if (err) return res.json({ ok: true, count: summary.count });
-      res.render('partials/cart-foot', { cart: summary, settings: res.locals.settings, money: res.locals.money },
-        (err2, footHtml) => res.json({ ok: true, count: summary.count, html, footHtml: err2 ? null : footHtml }));
-    });
-  }
+    if (wantsJson) {
+      const summary = await cart.summary(req.session);
+      if (!result.ok) return res.json({ ok: false, error: result.error, count: summary.count });
+      const locals = { cart: summary, money: res.locals.money, settings: res.locals.settings,
+        imageSrc: res.locals.imageSrc };
+      return res.render('partials/cart-lines', locals, (err, html) => {
+        if (err) return next(err);
+        res.render('partials/cart-foot', locals, (err2, footHtml) =>
+          res.json({ ok: true, count: summary.count, html, footHtml: err2 ? null : footHtml }));
+      });
+    }
 
-  if (!result.ok) {
-    const product = shop.product(productId);
-    if (product) return res.redirect(`/product/${product.handle}?error=${encodeURIComponent(result.error)}`);
-    return back(req, res);
-  }
-  req.session.flash = 'Added to your bag';
-  const product = shop.product(productId);
-  res.redirect(product ? `/product/${product.handle}?added=1` : '/cart');
+    const product = await shop.product(productId);
+    if (!result.ok) {
+      if (product) return res.redirect(`/product/${product.handle}?error=${encodeURIComponent(result.error)}`);
+      return back(req, res);
+    }
+    req.session.flash = 'Added to your bag';
+    res.redirect(product ? `/product/${product.handle}?added=1` : '/cart');
+  } catch (err) { next(err); }
 });
 
-router.post('/cart/update', (req, res) => {
-  cart.setQty(req.session, req.body.productId, req.body.qty);
-  back(req, res);
+router.post('/cart/update', async (req, res, next) => {
+  try {
+    await cart.setQty(req.session, req.body.productId, req.body.qty);
+    back(req, res);
+  } catch (err) { next(err); }
 });
 
 router.post('/cart/remove', (req, res) => {

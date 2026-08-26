@@ -1,25 +1,22 @@
 'use strict';
 /* ==========================================================================
    PESU — application server
-   Express + SQLite + EJS. One process, one database file, no third-party
-   service in the request path. Card payments are the only outbound call, and
-   only when a customer chooses to pay by card.
+   Express + PostgreSQL + EJS. Runs as a long-lived process (node server.js)
+   or as a serverless function on Vercel (api/index.js imports this module).
    ========================================================================== */
 require('dotenv').config();
 const path = require('path');
 const express = require('express');
 const session = require('express-session');
 const cookieParser = require('cookie-parser');
+const pgSession = require('connect-pg-simple')(session);
 
-const { migrate } = require('./db');
+const db = require('./db');
 const shop = require('./lib/shop');
 const cart = require('./lib/cart');
 const { format } = require('./lib/money');
 
 const app = express();
-const PORT = process.env.PORT || 3000;
-
-migrate();
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
@@ -37,11 +34,9 @@ if (!process.env.SESSION_SECRET) {
   console.warn('SESSION_SECRET is not set — using a temporary secret. Bags will not survive a restart.');
 }
 
-const SqliteStore = require('./lib/session-store')(session);
-
 app.use(session({
   name: 'pesu.sid',
-  store: new SqliteStore(),
+  store: new pgSession({ pool: db.pool, tableName: 'session', createTableIfMissing: false }),
   secret: process.env.SESSION_SECRET || require('crypto').randomBytes(32).toString('hex'),
   resave: false,
   saveUninitialized: false,
@@ -53,54 +48,72 @@ app.use(session({
   }
 }));
 
-/* Static: the design system, and product photography we host ourselves. */
+/* Static assets. On Vercel these are served from the CDN before the function
+   is reached; this covers running the server directly. */
 app.use('/assets', express.static(path.join(__dirname, 'public', 'assets'), { maxAge: '10m' }));
 app.use('/images', express.static(path.join(__dirname, 'public', 'images'), { maxAge: '7d' }));
-/* Images uploaded through the admin live on the persistent disk in
-   production, so a redeploy never takes product photography with it. */
-if (process.env.UPLOADS_PATH) {
-  app.use('/images', express.static(process.env.UPLOADS_PATH, { maxAge: '7d' }));
-}
 
-/* --- View locals ---------------------------------------------------------
-   Everything a template needs without each route re-assembling it. */
-app.use((req, res, next) => {
-  const settings = shop.settings();
-  const groups = shop.groups();
-  const materials = shop.materials();
-  const products = shop.products();
+/* Images uploaded through the admin live in the database, because serverless
+   hosting has no writable disk that survives an invocation. */
+app.get('/img/:id', async (req, res, next) => {
+  try {
+    const image = await shop.image(Number(req.params.id));
+    if (!image || !image.data) return next();
+    res.set('Content-Type', image.content_type || 'image/jpeg');
+    res.set('Cache-Control', 'public, max-age=604800');
+    res.send(image.data);
+  } catch (err) { next(err); }
+});
 
-  res.locals.settings = settings;
-  res.locals.groups = groups;
-  res.locals.materials = materials;
-  res.locals.navProducts = products.slice(0, 4);
-  res.locals.featured = products[0] || null;
-  res.locals.cart = cart.summary(req.session);
-  res.locals.deliveryFlatFils = Number(settings.ship_flat_fils || 2500);
-  res.locals.money = format;
-  res.locals.title = 'PESU — Handmade home decor, United Arab Emirates';
-  res.locals.description = settings.shop_name +
-    ' makes and curates handmade home decor in natural materials. Delivered across the UAE.';
-  res.locals.error = null;
-  res.locals.flash = req.session.flash || null;
-  delete req.session.flash;
+/* Schema and seed are applied once, lazily, before the first request. */
+app.use(async (req, res, next) => {
+  try { await db.ensureReady(); next(); } catch (err) { next(err); }
+});
 
-  res.locals.handleFor = (id) => {
-    const p = products.find((x) => x.id === id);
-    return p ? p.handle : '';
-  };
-  res.locals.leadFor = (groupId) => products.find((p) => p.group_id === groupId) || null;
-  res.locals.pieceOfMaterial = (materialId) => products.find((p) => p.material_id === materialId) || null;
+/* --- View locals --------------------------------------------------------- */
+app.use(async (req, res, next) => {
+  try {
+    const [settings, groups, materials, products, bag] = await Promise.all([
+      shop.settings(), shop.groups(), shop.materials(), shop.products(), cart.summary(req.session)
+    ]);
 
-  /* One image helper so every <img> gets dimensions and lazy-loading. */
-  res.locals.img = (product, index, width) => {
-    const file = product && product.images && product.images[index || 0];
-    if (!file) return '';
-    const alt = String(product.name || '').replace(/"/g, '&quot;');
-    return `<img src="/images/${file}" alt="${alt}" loading="lazy" decoding="async" width="${width || 800}" height="${width || 800}">`;
-  };
+    res.locals.settings = settings;
+    res.locals.groups = groups;
+    res.locals.materials = materials;
+    res.locals.navProducts = products.slice(0, 4);
+    res.locals.featured = products[0] || null;
+    res.locals.cart = bag;
+    res.locals.deliveryFlatFils = Number(settings.ship_flat_fils || 2500);
+    res.locals.money = format;
+    res.locals.title = 'PESU — Handmade home decor, United Arab Emirates';
+    res.locals.description = (settings.shop_name || 'PESU') +
+      ' makes and curates handmade home decor in natural materials. Delivered across the UAE.';
+    res.locals.error = null;
+    res.locals.flash = req.session.flash || null;
+    delete req.session.flash;
 
-  next();
+    res.locals.handleFor = (id) => {
+      const p = products.find((x) => x.id === id);
+      return p ? p.handle : '';
+    };
+    res.locals.leadFor = (groupId) => products.find((p) => p.group_id === groupId) || null;
+    res.locals.pieceOfMaterial = (materialId) => products.find((p) => p.material_id === materialId) || null;
+
+    /* One image helper: repository files come from /images, uploaded ones
+       from the database at /img/<id>. */
+    res.locals.imageSrc = (file) =>
+      !file ? '' : (String(file).startsWith('db:') ? '/img/' + String(file).slice(3) : '/images/' + file);
+
+    res.locals.img = (product, index, width) => {
+      const file = product && product.images && product.images[index || 0];
+      if (!file) return '';
+      const alt = String(product.name || '').replace(/"/g, '&quot;');
+      return `<img src="${res.locals.imageSrc(file)}" alt="${alt}" loading="lazy" decoding="async"` +
+        ` width="${width || 800}" height="${width || 800}">`;
+    };
+
+    next();
+  } catch (err) { next(err); }
 });
 
 app.use('/', require('./routes/shop'));
@@ -135,4 +148,12 @@ app.use((err, req, res, next) => {
   });
 });
 
-app.listen(PORT, () => console.log(`PESU running on http://localhost:${PORT}`));
+/* Listen only when run directly; on Vercel the app is imported. */
+if (require.main === module) {
+  const PORT = process.env.PORT || 3000;
+  db.ensureReady()
+    .then(() => app.listen(PORT, () => console.log(`PESU running on http://localhost:${PORT}`)))
+    .catch((err) => { console.error('Could not start:', err.message); process.exit(1); });
+}
+
+module.exports = app;

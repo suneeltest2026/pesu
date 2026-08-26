@@ -25,36 +25,37 @@ router.post('/webhooks/stripe', express.raw({ type: 'application/json' }), (req,
     return res.status(400).send('Invalid signature');
   }
 
-  try {
-    handle(event);
-  } catch (err) {
-    console.error('[stripe] handler failed for', event.type, err);
-    /* 500 asks Stripe to retry — better than losing a paid order. */
-    return res.status(500).send('Handler error');
-  }
-
-  res.json({ received: true });
+  handle(event)
+    .then(() => res.json({ received: true }))
+    .catch((err) => {
+      console.error('[stripe] handler failed for', event.type, err);
+      /* 500 asks Stripe to retry — better than losing a paid order. */
+      res.status(500).send('Handler error');
+    });
 });
 
 function referenceFrom(session) {
   return (session.metadata && session.metadata.reference) || session.client_reference_id;
 }
 
-function handle(event) {
+async function handle(event) {
   const session = event.data.object;
 
   switch (event.type) {
     case 'checkout.session.completed':
     case 'checkout.session.async_payment_succeeded': {
       const reference = referenceFrom(session);
-      const order = reference && orders.byReference(reference);
+      const order = reference && await orders.byReference(reference);
       if (!order) { console.warn('[stripe] no order for', reference); return; }
       if (order.payment_status === 'paid') return;             /* idempotent */
       if (session.payment_status && session.payment_status !== 'paid') return;
 
-      orders.markPaid(order.reference, session.id);
+      await orders.markPaid(order.reference, session.id);
       console.log('[stripe] paid:', order.reference);
-      mail.orderPlaced(orders.byReference(order.reference), shop.settings()).catch(() => {});
+      const [placed, settings] = await Promise.all([
+        orders.byReference(order.reference), shop.settings()
+      ]);
+      mail.orderPlaced(placed, settings).catch(() => {});
       break;
     }
 
@@ -62,10 +63,10 @@ function handle(event) {
     case 'checkout.session.async_payment_failed': {
       /* The customer never paid: release the stock rather than holding it. */
       const reference = referenceFrom(session);
-      const order = reference && orders.byReference(reference);
+      const order = reference && await orders.byReference(reference);
       if (!order || order.payment_status === 'paid' || order.status === 'cancelled') return;
-      orders.cancel(order.id);
-      orders.update(order.id, { payment_status: 'failed' });
+      await orders.cancel(order.id);
+      await orders.update(order.id, { payment_status: 'failed' });
       console.log('[stripe] expired, stock returned:', order.reference);
       break;
     }

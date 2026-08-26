@@ -12,10 +12,14 @@ provider, and only when a customer chooses to pay by card.
 
 ```bash
 npm install
-cp .env.example .env          # set SESSION_SECRET, ADMIN_EMAIL, ADMIN_PASSWORD
-npm run seed                  # creates the database from data/products.json
+cp .env.example .env          # set DATABASE_URL, SESSION_SECRET, ADMIN_EMAIL, ADMIN_PASSWORD
+npm run seed                  # creates the schema and loads data/products.json
 npm start                     # http://localhost:3000
 ```
+
+Any PostgreSQL will do — a local server, Neon, Supabase, or Vercel's own.
+Schema and seed also run automatically on first request, so a fresh database
+fills itself in.
 
 Admin is at `/admin`.
 
@@ -24,18 +28,20 @@ Admin is at `/admin`.
 | Piece | Choice | Why |
 | --- | --- | --- |
 | Server | Node + Express | Plain, portable, no framework lock-in |
-| Database | SQLite (better-sqlite3) | One file you own. Back it up by copying it |
+| Database | PostgreSQL (`pg`) | Durable, free tiers everywhere, and the data is exportable |
 | Views | EJS, server-rendered | Every page crawlable, works with JS off |
 | Payments | Adapter per method | Stripe today; a UAE gateway is one new file |
 | Email | Nodemailer, optional | No SMTP configured = no confirmations, orders still work |
-| Hosting | Anything running Node | `render.yaml` and `Dockerfile` included |
+| Hosting | Vercel, or any Node host | `vercel.json` and `Dockerfile` included |
 
 ## How it's laid out
 
 ```
 server.js              Express app, sessions, view locals
+api/index.js           Serverless entry point; imports the same Express app
 db/
-  schema.sql           Products, images, orders, admins, settings
+  index.js             Pooled Postgres connection, transactions, lazy migrate
+  schema.sql           Products, images, orders, admins, settings, sessions
   seed.js              Seeds from data/products.json — safe to re-run
 lib/
   money.js             Integer fils; no float ever touches a price
@@ -61,8 +67,16 @@ totalled as a float, so no rounding drift reaches a customer.
 ids and quantities only; every total is recalculated server-side. A tampered
 form cannot change what an order costs.
 
-**Stock is checked twice** — when adding to the bag, and again inside the
-order transaction. Cancelling an order in the admin returns the stock.
+**Stock is checked twice, and locked once.** It is checked when adding to the
+bag, then re-checked inside the order transaction with `SELECT … FOR UPDATE`,
+so two shoppers racing for the last piece cannot both get it — one gets the
+order, the other gets told how many are left. Cancelling an order returns the
+stock.
+
+**Uploaded images live in the database.** Serverless hosting has no writable
+disk that survives a request, so images added through the admin are stored as
+bytes and served from `/img/<id>`. Photography committed to `public/images`
+is served straight from the CDN.
 
 **The site works without JavaScript.** Add to bag, quantity changes, search
 and checkout are all real form posts. `site.js` upgrades them: it opens the
@@ -112,48 +126,38 @@ To use a different gateway (Telr, PayTabs, Network N-Genius) instead, copy
 `start()`, return `{ redirect: url }`, and point their callback at an
 equivalent route in `routes/webhooks.js`.
 
-## Deploying to Render
+## Deploying to Vercel
 
-Two blueprints are included.
+Free on the Hobby plan, including the database.
 
-| File | Cost | Use it for |
-| --- | --- | --- |
-| `render.free.yaml` | Free | Testing and demos. Orders are lost on restart; the service sleeps when idle |
-| `render.yaml` | ~$7/month | Real trading. Persistent disk holds the database and uploaded images |
+1. **Import the repository** at vercel.com → Add New → Project. No build
+   settings to change; `vercel.json` routes everything to `api/index.js` and
+   serves `public/` from the CDN.
+2. **Add a Postgres store**: project → Storage → Create → Postgres. Vercel
+   sets `DATABASE_URL` (and friends) on the project automatically.
+3. **Set the remaining environment variables** (Settings → Environment
+   Variables):
 
-Start on the free one. Move to the paid one before taking real money — at
-which point it replaces a Shopify Basic subscription costing roughly four
-times as much.
+   | Key | Value |
+   | --- | --- |
+   | `SESSION_SECRET` | 64 random hex characters |
+   | `PUBLIC_URL` | your deployment URL |
+   | `ADMIN_EMAIL` / `ADMIN_PASSWORD` | your admin login |
+   | `STRIPE_SECRET_KEY` | `sk_test_…` to begin |
+   | `STRIPE_WEBHOOK_SECRET` | after registering the webhook |
 
-To choose, set **Blueprint Path** on Render's blueprint screen:
-`render.free.yaml` or leave blank for `render.yaml`.
+4. **Deploy.** On the first request the schema is created and the catalogue
+   seeded, behind a Postgres advisory lock so concurrent cold starts cannot
+   duplicate the work.
 
-### The paid blueprint
+**Sessions live in Postgres**, so a bag survives across serverless
+invocations and deployments.
 
-`render.yaml` describes the service: a web instance plus a 1 GB persistent
-disk mounted at `/var/data` holding both the database and admin-uploaded
-images.
+### Running it anywhere else
 
-1. Render → New → Blueprint → point at this repository. It reads
-   `render.yaml` and proposes one web service plus a 1 GB disk.
-2. Set the secrets it asks for: `PUBLIC_URL`, `ADMIN_EMAIL`,
-   `ADMIN_PASSWORD`, `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, and SMTP
-   if you want order emails. `SESSION_SECRET` is generated for you.
-3. Deploy. The build runs `npm ci`; the start command seeds and then serves.
-
-**Seeding runs at start, not at build** — deliberately. Render only mounts
-the persistent disk at runtime, so a build-time seed would write the database
-to a throwaway filesystem and the live site would boot with no catalogue and
-no admin login. The seeder upserts, so running it on every boot is safe.
-
-**Sessions live in the database**, not in memory, so bags survive a restart
-or a deploy and nothing leaks between them.
-
-A persistent disk needs a paid instance type — on the free tier the database
-is wiped on every deploy.
-
-**Back-ups:** the database is one file. `cp /var/data/pesu.db backup.db` is a
-complete back-up, and there is no export process to depend on.
+`Dockerfile` builds the same app for a VPS or any container host. Set
+`DATABASE_URL` and it behaves identically — nothing in the code is
+Vercel-specific.
 
 ## Outstanding before this replaces pesu.ae
 
@@ -167,4 +171,4 @@ complete back-up, and there is no export process to depend on.
 3. **SMTP.** Without it, order confirmations aren't sent. Orders are still
    taken and visible in the admin.
 4. **DNS.** Point pesu.ae at the deployment only once 1–3 are done. Until
-   then use a subdomain.
+   then use the Vercel URL or a subdomain.

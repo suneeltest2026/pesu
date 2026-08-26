@@ -4,16 +4,19 @@
   "private": true,
   "description": "PESU — independent storefront, admin and checkout",
   "main": "server.js",
-  "engines": { "node": ">=20" },
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
     "start": "node server.js",
+    "vercel-build": "echo no build step",
     "dev": "node --watch server.js",
     "seed": "node db/seed.js",
     "fetch-images": "node scripts/fetch-images.js"
   },
   "dependencies": {
     "bcryptjs": "^3.0.2",
-    "better-sqlite3": "^11.7.0",
+    "connect-pg-simple": "^10.0.0",
     "cookie-parser": "^1.4.7",
     "dotenv": "^16.4.7",
     "ejs": "^3.1.10",
@@ -21,6 +24,7 @@
     "express-session": "^1.18.1",
     "multer": "^1.4.5-lts.1",
     "nodemailer": "^6.9.16",
+    "pg": "^8.23.0",
     "stripe": "^17.5.0"
   }
 }

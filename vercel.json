@@ -1,25 +1,15 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "cleanUrls": true,
-  "trailingSlash": false,
-  "headers": [
-    {
-      "source": "/assets/(.*)",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "public, max-age=600, stale-while-revalidate=86400"
-        }
-      ]
-    },
-    {
-      "source": "/(.*)",
-      "headers": [
-        { "key": "X-Content-Type-Options", "value": "nosniff" },
-        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
-        { "key": "X-Frame-Options", "value": "SAMEORIGIN" },
-        { "key": "Permissions-Policy", "value": "geolocation=(), microphone=(), camera=()" }
-      ]
-    }
+  "version": 2,
+  "builds": [
+    { "src": "api/index.js", "use": "@vercel/node" },
+    { "src": "public/**", "use": "@vercel/static" }
+  ],
+  "routes": [
+    { "src": "/assets/(.*)", "dest": "/public/assets/$1",
+      "headers": { "Cache-Control": "public, max-age=600, stale-while-revalidate=86400" } },
+    { "src": "/images/(.*)", "dest": "/public/images/$1",
+      "headers": { "Cache-Control": "public, max-age=604800" } },
+    { "src": "/(.*)", "dest": "/api/index.js" }
   ]
 }

@@ -24,15 +24,19 @@ function renderCheckout(req, res, { error, form } = {}) {
   });
 }
 
-router.get('/checkout', (req, res) => {
-  const summary = cart.summary(req.session);
-  if (!summary.items.length) return res.redirect('/cart');
-  renderCheckout(req, res, { error: req.query.cancelled ? 'Payment was cancelled — nothing has been charged.' : null });
+router.get('/checkout', async (req, res, next) => {
+  try {
+    const summary = await cart.summary(req.session);
+    if (!summary.items.length) return res.redirect('/cart');
+    renderCheckout(req, res, {
+      error: req.query.cancelled ? 'Payment was cancelled — nothing has been charged.' : null
+    });
+  } catch (err) { next(err); }
 });
 
 router.post('/checkout', async (req, res, next) => {
   const form = req.body;
-  const summary = cart.summary(req.session);
+  const summary = await cart.summary(req.session);
   if (!summary.items.length) return res.redirect('/cart');
 
   const required = ['name', 'email', 'phone', 'address1', 'city', 'emirate'];
@@ -49,7 +53,7 @@ router.post('/checkout', async (req, res, next) => {
 
   let order;
   try {
-    order = orders.create(req.session, form, method.id);
+    order = await orders.create(req.session, form, method.id);
   } catch (err) {
     return renderCheckout(req, res, { form, error: err.message });
   }
@@ -63,18 +67,22 @@ router.post('/checkout', async (req, res, next) => {
     if (started.redirect) {
       /* Keep the gateway's session id: it is how the webhook and the return
          journey both identify this order. */
-      if (started.reference) orders.setPaymentRef(order.reference, started.reference);
+      if (started.reference) await orders.setPaymentRef(order.reference, started.reference);
       /* The bag is only emptied once the customer is safely at the gateway. */
       cart.clear(req.session);
       return res.redirect(303, started.redirect);
     }
 
     cart.clear(req.session);
-    mail.orderPlaced(orders.byReference(order.reference), shop.settings()).catch(() => {});
+    const [placed, settings] = await Promise.all([
+      orders.byReference(order.reference), shop.settings()
+    ]);
+    mail.orderPlaced(placed, settings).catch(() => {});
     return res.redirect(303, '/order/' + order.reference);
   } catch (err) {
     /* Payment could not start: put the stock back rather than stranding it. */
-    orders.cancel(order.id);
+    console.error('[checkout] payment start failed:', err.message);
+    await orders.cancel(order.id);
     return renderCheckout(req, res, {
       form,
       error: 'We could not reach the payment provider. Nothing has been charged — please try again.'
@@ -83,7 +91,8 @@ router.post('/checkout', async (req, res, next) => {
 });
 
 router.get('/order/:reference', async (req, res, next) => {
-  const order = orders.byReference(req.params.reference);
+  try {
+  const order = await orders.byReference(req.params.reference);
   if (!order) return next();
 
   /* A customer returning from the gateway: verify with the provider, never
@@ -92,9 +101,9 @@ router.get('/order/:reference', async (req, res, next) => {
     try {
       const card = payments.get('card');
       if (card && card.verify && order.payment_ref && await card.verify(order.payment_ref)) {
-        orders.markPaid(order.reference, order.payment_ref);
+        await orders.markPaid(order.reference, order.payment_ref);
         order.payment_status = 'paid';
-        mail.orderPlaced(order, shop.settings()).catch(() => {});
+        mail.orderPlaced(order, await shop.settings()).catch(() => {});
       }
     } catch (err) { /* show the order regardless; the admin can confirm */ }
   }
@@ -106,14 +115,16 @@ router.get('/order/:reference', async (req, res, next) => {
     title: 'Order ' + order.reference + ' — PESU',
     description: 'Your PESU order.'
   });
+  } catch (err) { next(err); }
 });
 
 router.get('/order-lookup', (req, res) => {
   res.render('order-lookup', { title: 'Track an order — PESU', description: 'Find your order.', error: null });
 });
 
-router.post('/order-lookup', (req, res) => {
-  const order = orders.byReference(String(req.body.reference || '').trim().toUpperCase());
+router.post('/order-lookup', async (req, res, next) => {
+  try {
+  const order = await orders.byReference(String(req.body.reference || '').trim().toUpperCase());
   const email = String(req.body.email || '').trim().toLowerCase();
   if (!order || order.email.toLowerCase() !== email) {
     return res.render('order-lookup', {
@@ -123,6 +134,7 @@ router.post('/order-lookup', (req, res) => {
     });
   }
   res.redirect('/order/' + order.reference);
+  } catch (err) { next(err); }
 });
 
 module.exports = router;
