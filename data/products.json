@@ -1,0 +1,192 @@
+{
+  "_comment": "Canonical PESU product data, exported from Shopify on 2026-08-26. This file is the source of truth for the independent store; the database is seeded from it. Image URLs still point at the Shopify CDN and MUST be replaced with self-hosted files before Shopify is closed.",
+  "exportedAt": "2026-08-26",
+  "currency": "AED",
+  "shop": {
+    "name": "PESU",
+    "email": "care@pesu.ae",
+    "phone": "+971 56 712 6966",
+    "address": "Ajman, United Arab Emirates",
+    "returnsAddress": "C1 Building, Ajman Free Zone, Ajman"
+  },
+  "shipping": {
+    "processing": "1–2 business days",
+    "dubai": "1–3 business days",
+    "emirates": "5–7 business days",
+    "international": "up to 15 business days",
+    "freeThresholdAED": 200,
+    "flatAED": 25,
+    "outsideUaeAED": 75,
+    "courier": "Quiqup"
+  },
+  "returns": { "days": 15, "note": "Unused, in original packaging, with proof of purchase." },
+  "groups": [
+    { "id": "ritual", "name": "Ritual", "line": "Incense, tea lights and the quiet minutes" },
+    { "id": "light", "name": "Light", "line": "Hand-woven shades and warm, uneven glow" },
+    { "id": "wall", "name": "Wall", "line": "Hand-painted frames and gallery walls" },
+    { "id": "table", "name": "Table", "line": "Centrepieces, bowls and small green things" }
+  ],
+  "materials": [
+    { "id": "marble", "name": "Marble", "short": "Marble", "swatch": "mat-travertine", "origin": "Hand-finished natural stone", "note": "Cool to the touch, honest in texture — no two pieces exactly alike." },
+    { "id": "bamboo", "name": "Bamboo & cane", "short": "Cane", "swatch": "mat-boucle", "origin": "Traditional hand-weaving", "note": "Light passes through in soft, uneven patterns — never harsh, never perfect." },
+    { "id": "wood", "name": "Hand-painted wood", "short": "Wood", "swatch": "mat-oak", "origin": "Painted by hand, piece by piece", "note": "Brushwork you can read up close, on a frame built to outlast a trend." },
+    { "id": "sabai", "name": "Sabai grass", "short": "Sabai", "swatch": "mat-clay", "origin": "Mayurbhanj, Odisha", "note": "Sun-dried, hand-twisted into rope, then braided by rural artisans." },
+    { "id": "silver", "name": "Silver finish", "short": "Silver", "swatch": "mat-brass", "origin": "Premium metal finish", "note": "A quiet shine that holds the light without shouting about it." },
+    { "id": "ply", "name": "Wood & glass", "short": "Glass", "swatch": "mat-basalt", "origin": "Handmade, dovetailed", "note": "Knots, scratches and blemishes left in place — the evidence of real wood." }
+  ],
+  "products": [
+    {
+      "id": "marble-incense",
+      "handle": "marble-incense-holder",
+      "legacyHandle": "luxury-marble-incense-holder-handmade-minimal-home-decor-pesu-uae",
+      "name": "Marble Incense Holder",
+      "fullTitle": "Handcrafted Marble Incense Holder — Raw Stone, Quiet Ritual",
+      "group": "ritual", "material": "marble",
+      "priceAED": 89, "compareAtAED": 129, "inventory": 10, "active": true,
+      "blurb": "A small ritual, carved in stone",
+      "seoDescription": "Elevate your daily rituals with a handcrafted marble incense holder. Premium home décor designed for calm, mindful living across the UAE.",
+      "images": ["IMG-8088.png"],
+      "story": [
+        "A small ritual, carved in stone. This incense holder is cut from natural marble — cool to the touch, honest in texture, with no two pieces exactly alike.",
+        "Light it during meditation, prayer, or simply the quiet minutes before bed. Let the smoke settle the room, and let the stone settle you."
+      ],
+      "features": ["Natural marble, hand-finished", "Minimal form, raw material", "A daily reset for your space"],
+      "specs": { "Material": "Natural marble, hand-finished", "Finish": "Raw stone, honest texture", "Care": "Wipe with a soft, dry cloth", "Note": "Handmade — colour and veining vary piece to piece" },
+      "tags": ["incense holder", "marble", "meditation décor", "wellness"]
+    },
+    {
+      "id": "bamboo-lamps",
+      "handle": "bamboo-cane-hanging-lamps",
+      "legacyHandle": "handmade-bamboo-cane-hanging-lamps-set-of-3",
+      "name": "Bamboo & Cane Hanging Lamps",
+      "fullTitle": "Handmade Bamboo & Cane Hanging Lamps — Set of 3",
+      "group": "light", "material": "bamboo",
+      "priceAED": 149, "compareAtAED": 199, "inventory": 5, "active": true,
+      "blurb": "Set of three, hand-woven",
+      "seoDescription": "Handcrafted bamboo and cane hanging lamps (set of 3) offering warm, natural lighting. Ideal for living rooms, dining areas and cosy interiors.",
+      "images": ["IMG-8060.jpg", "IMG-8061.jpg", "IMG-8062.jpg", "IMG-8063.jpg"],
+      "story": [
+        "Light, filtered through something real. Hand-woven from natural bamboo and cane, these lamps let light pass through in soft, uneven patterns — never harsh, never perfect.",
+        "Hang them over a dining table, a reading corner, or a quiet hallway, and watch the room settle into a warmer glow. No two lamps are identical — the small irregularities are part of the craft, not a flaw in it."
+      ],
+      "features": ["Hand-woven bamboo and cane, set of 3", "Soft, ambient light with natural shadow texture", "Lightweight, easy to hang", "Eco-friendly, sustainably made"],
+      "specs": { "Set includes": "3 hanging lamps", "Material": "Natural bamboo & cane", "Dimensions": "17 cm diameter × 19 cm height, each", "Includes": "Bulb holder + 2 m wire with plug", "Care": "Wipe gently with a soft, dry cloth" },
+      "tags": ["lighting", "bamboo", "cane", "hanging lamp"]
+    },
+    {
+      "id": "frames-classic",
+      "handle": "handpainted-wall-frames-classic",
+      "legacyHandle": "classic-handpainted-wooden-wall-frames-elegant-artistic-wall-decor",
+      "name": "Handpainted Wall Frames, Classic",
+      "fullTitle": "Classic Handpainted Wooden Wall Frames — Elegant Artistic Wall Décor",
+      "group": "wall", "material": "wood",
+      "priceAED": 199, "compareAtAED": 299, "inventory": 10, "active": true,
+      "blurb": "Intricate brushwork on wood",
+      "seoDescription": "Classic handpainted wooden wall frames — artistic detailing and premium craftsmanship for gallery walls and statement interiors.",
+      "images": ["IMG-8059.png", "IMG-8058.png", "IMG-8057.png", "IMG-8056.png", "IMG-8055.png"],
+      "story": [
+        "Intricate handpainted detailing on premium wood, for walls that need warmth rather than another print.",
+        "Built for gallery arrangements and statement walls — living rooms, hallways, entryways — and equally at home in modern, traditional or layered interiors."
+      ],
+      "features": ["Handpainted detailing, piece by piece", "Premium wooden craftsmanship", "Made for gallery walls and statement arrangements"],
+      "specs": { "Type": "Decorative wall frames", "Material": "Wood", "Finish": "Handpainted", "Spaces": "Living room, bedroom, hallway, entryway, office", "Care": "Wipe with a soft, dry cloth only" },
+      "tags": ["wall décor", "frames", "handpainted", "wood"]
+    },
+    {
+      "id": "frame-turquoise",
+      "handle": "handpainted-wall-frame-turquoise",
+      "legacyHandle": "turquoise-handpainted-wooden-wall-frame-artistic-luxury-wall-decor",
+      "name": "Handpainted Wall Frame, Turquoise",
+      "fullTitle": "Turquoise Handpainted Wooden Wall Frame — Artistic Luxury Wall Décor",
+      "group": "wall", "material": "wood",
+      "priceAED": 69, "compareAtAED": 89, "inventory": 25, "active": true,
+      "blurb": "One colour, held against a neutral wall",
+      "seoDescription": "Turquoise handpainted wooden wall frame — artistic detailing and a rich finish for modern and bohemian interiors.",
+      "images": ["IMG-8054.png", "IMG-8053.png"],
+      "story": [
+        "A rich turquoise finish over handpainted detailing — colour used the way a room can take it, in one place rather than everywhere.",
+        "Hang it alone against a neutral wall, or let it anchor a gallery arrangement of quieter frames."
+      ],
+      "features": ["Rich turquoise finish, handpainted", "Artistic detailing on premium wood", "Anchors a gallery wall or stands alone"],
+      "specs": { "Type": "Decorative wall frame", "Material": "Wood", "Finish": "Handpainted turquoise", "Spaces": "Living room, bedroom, hallway, entryway, office", "Care": "Wipe with a soft, dry cloth only" },
+      "tags": ["wall décor", "frames", "turquoise", "handpainted"]
+    },
+    {
+      "id": "krishna-tlight",
+      "handle": "krishna-t-light-holder",
+      "legacyHandle": "krishna-t-light-candle-holder-elegant-spiritual-home-decor",
+      "name": "Krishna T-Light Holder",
+      "fullTitle": "Krishna T-Light Candle Holder — Elegant Spiritual Home Décor",
+      "group": "ritual", "material": "silver",
+      "priceAED": 49, "compareAtAED": 69, "inventory": 10, "active": true,
+      "blurb": "Candlelight for a prayer corner",
+      "seoDescription": "Krishna t-light candle holder — intricate detailing and warm candlelight for prayer corners, festive setups and modern interiors.",
+      "images": ["IMG-8052.jpg", "IMG-8051.jpg", "IMG-8050.png", "IMG-8049.png"],
+      "story": [
+        "A Krishna-inspired form with intricate detailing, made to hold a single tea light and the warmth that comes with it.",
+        "For coffee tables, prayer corners, shelves and festive setups — Ramadan, Eid, Diwali, or an ordinary evening that deserves better light."
+      ],
+      "features": ["Krishna-inspired decorative design", "Warm, peaceful candlelight ambiance", "For festive setups, prayer corners and shelves"],
+      "specs": { "Type": "T-light candle holder", "Material": "Premium decorative finish", "Spaces": "Living room, prayer room, bedroom, entryway, office", "Care": "Wipe with a soft, dry cloth only" },
+      "tags": ["candle holder", "festive", "spiritual décor", "gifting"]
+    },
+    {
+      "id": "elephant-bowl",
+      "handle": "silver-elephant-bowl",
+      "legacyHandle": "silver-elephant-decorative-bowl-elegant-luxury-home-decor",
+      "name": "Silver Elephant Bowl",
+      "fullTitle": "Silver Elephant Decorative Bowl — Elegant Luxury Home Décor",
+      "group": "table", "material": "silver",
+      "priceAED": 99, "compareAtAED": 129, "inventory": 10, "active": true,
+      "blurb": "A centrepiece that carries symbolism",
+      "seoDescription": "Silver elephant decorative bowl — a premium centrepiece for coffee tables, consoles and dining tables.",
+      "images": ["kTcMELfR_C31DFRVVG2_2025-03-19_4.webp", "kTcMELfR_8ZNGJOKFMI_2025-03-19_3.webp", "kTcMELfR_ICMVLCFBU5_2025-03-19_2.webp", "kTcMELfR_LOV9P61VHQ_2025-03-19_1.webp"],
+      "story": [
+        "An elephant-inspired form in a premium silver finish — a centrepiece for a coffee table, a console, or a dining table that needs one considered object rather than five.",
+        "The elephant carries its own symbolism: wisdom, prosperity, strength. It reads as decoration first and meaning second, which is the right order."
+      ],
+      "features": ["Luxury silver finish with premium detailing", "Elephant-inspired decorative form", "Centrepiece for coffee tables, consoles and shelves"],
+      "specs": { "Type": "Decorative bowl", "Material": "Premium metal, silver finish", "Spaces": "Living room, dining room, bedroom, office, entryway", "Care": "Wipe with a soft, dry cloth only" },
+      "tags": ["decorative bowl", "centrepiece", "silver", "gifting"]
+    },
+    {
+      "id": "sabai-tealight",
+      "handle": "sabai-grass-tea-light-holder",
+      "legacyHandle": "handwoven-sabai-grass-tea-light-holder",
+      "name": "Sabai Grass Tea Light Holder",
+      "fullTitle": "Handwoven Sabai Grass Tea Light Holder",
+      "group": "ritual", "material": "sabai",
+      "priceAED": 24.99, "compareAtAED": 39.99, "inventory": 20, "active": true,
+      "blurb": "Hand-twisted grass, braided by artisans",
+      "seoDescription": "Handwoven sabai grass tea light holder, made by rural artisans in Mayurbhanj, Odisha. Eco-friendly and one of a kind.",
+      "images": ["HR6010134010200_1.jpg", "6010134010200_2.jpg", "6010134010200_3.jpg"],
+      "story": [
+        "Mayurbhanj in Odisha is known as the land of tigers, and also for its handicrafts. This holder is woven there, by rural artisans, from sabai grass.",
+        "The grass is sun-dried, hand-twisted into rope, rubbed against tree bark to take off the rough edges, then braided. It is slow work, and it shows in the object."
+      ],
+      "features": ["Handwoven sabai grass", "Eco-friendly and artisanal", "One-of-a-kind by nature of the process"],
+      "specs": { "Material": "Sabai grass", "Dimensions": "1.7 in × 1.7 in", "Weight": "20 g", "Method": "Handwoven", "Care": "Wipe clean or dust with a soft, damp cloth" },
+      "tags": ["tea light", "sabai grass", "handwoven", "eco-friendly"]
+    },
+    {
+      "id": "dovetail-planter",
+      "handle": "dovetail-test-tube-planter",
+      "legacyHandle": "dovetail-wooden-test-tube-planter",
+      "name": "Dovetail Test Tube Planter",
+      "fullTitle": "Dovetail Wooden Test Tube Planter",
+      "group": "table", "material": "ply",
+      "priceAED": 69, "compareAtAED": 99, "inventory": 5, "active": true,
+      "blurb": "Cuttings, held in glass and wood",
+      "seoDescription": "Dovetail wooden test tube planter — handmade from plywood and glass for cuttings and single stems.",
+      "images": ["IMG-7931.jpg", "IMG-7932.jpg", "IMG-7933.jpg"],
+      "options": [{ "name": "Size — inches", "values": ["9.75 × 2.5 × 7.25"] }],
+      "story": [
+        "Test tubes set into dovetailed wood, for cuttings, single stems and the kind of green that does not need a pot.",
+        "Made from wood, and left with its rustic aesthetic intact: knot holes, scratches and blemishes are part of the offering rather than faults in it."
+      ],
+      "features": ["Handmade, dovetailed construction", "Plywood and glass test tubes", "Table-top scale"],
+      "specs": { "Material": "Plywood & glass test tubes", "Dimensions": "9.75 in × 2.5 in × 7.25 in", "Weight": "434 g", "Method": "Handmade", "Care": "Wipe with a soft cloth" },
+      "tags": ["planter", "wood", "glass", "table top"]
+    }
+  ]
+}
