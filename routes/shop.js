@@ -120,6 +120,56 @@ router.get('/search', async (req, res, next) => {
   } catch (err) { next(err); }
 });
 
+/* --- Legacy Shopify URLs -------------------------------------------------
+   Search engines, old links and anything a customer bookmarked still point at
+   Shopify's URL shapes. Redirect them permanently rather than serving a 404
+   and losing the ranking that took months to earn. */
+
+router.get('/products/:handle', async (req, res, next) => {
+  try {
+    const product = await shop.product(req.params.handle);
+    res.redirect(301, product ? '/product/' + product.handle : '/shop');
+  } catch (err) { next(err); }
+});
+
+router.get('/collections/:handle', async (req, res, next) => {
+  try {
+    const handle = req.params.handle;
+    if (handle === 'all' || handle === 'home-decor') return res.redirect(301, '/shop');
+    const group = await shop.group(handle);
+    if (group) return res.redirect(301, '/shop/' + group.id);
+    const material = await shop.material(handle);
+    if (material) return res.redirect(301, '/materials/' + material.id);
+    res.redirect(301, '/shop');
+  } catch (err) { next(err); }
+});
+
+router.get('/collections/:handle/products/:product', (req, res) => {
+  res.redirect(301, '/products/' + req.params.product);
+});
+
+const POLICY_REDIRECTS = {
+  'refund-policy': '/returns',
+  'shipping-policy': '/delivery',
+  'terms-of-service': '/terms',
+  'privacy-policy': '/privacy',
+  'contact-information': '/contact',
+  'legal-notice': '/terms'
+};
+router.get('/policies/:slug', (req, res) => {
+  res.redirect(301, POLICY_REDIRECTS[req.params.slug] || '/terms');
+});
+
+router.get('/pages/:slug', (req, res) => {
+  const known = ['about', 'delivery', 'returns', 'contact', 'gifting', 'terms', 'privacy'];
+  res.redirect(301, known.includes(req.params.slug) ? '/' + req.params.slug : '/');
+});
+
+/* Shopify's account and collection index. */
+router.get('/account', (req, res) => res.redirect(301, '/order-lookup'));
+router.get('/account/login', (req, res) => res.redirect(301, '/order-lookup'));
+router.get('/collections', (req, res) => res.redirect(301, '/shop'));
+
 /* --- Content pages, written from the store's real policies --------------- */
 const pages = require('../lib/pages');
 Object.keys(pages).forEach((slug) => {
