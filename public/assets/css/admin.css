@@ -71,3 +71,63 @@ body.adm {
 .adm-image.is-missing { background: repeating-linear-gradient(45deg, #e6ded2 0 6px, #ded5c8 6px 12px); }
 .adm-image.is-missing::after { content: "missing"; font-size: 0.6rem; letter-spacing: .1em; text-transform: uppercase; color: var(--fg-faint); }
 .adm-image { width: 90px; display: grid; place-items: center; }
+
+/* --- Forms ---------------------------------------------------------------
+   The shop's .field and .btn live in components.css, which the admin does
+   not load — it is a tool, not a shopfront, so it gets boxed inputs and
+   plain buttons rather than the storefront's hairline underlines. */
+.field { display: block; margin-bottom: var(--sp-3); }
+.field__label {
+  display: block;
+  font-size: var(--step--2);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+  margin-bottom: 0.4rem;
+}
+.field__opt { color: var(--fg-faint); text-transform: none; letter-spacing: 0; }
+.field__input {
+  width: 100%;
+  font: inherit;
+  font-size: var(--step--1);
+  color: var(--ink);
+  background: var(--alabaster);
+  border: 1px solid var(--line);
+  border-radius: 2px;
+  padding: 0.6rem 0.7rem;
+  transition: border-color var(--dur-fast) var(--ease);
+}
+.field__input:focus { outline: none; border-color: var(--gilt); }
+textarea.field__input { min-height: 8rem; resize: vertical; line-height: 1.55; }
+select.field__input { appearance: auto; }
+
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 0.6em;
+  font: inherit;
+  font-size: var(--step--2);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 0.85em 1.8em;
+  color: var(--alabaster);
+  background: var(--ink);
+  border: 1px solid var(--ink);
+  border-radius: 2px;
+  cursor: pointer;
+  transition: background var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease);
+}
+.btn:hover, .btn:focus-visible { background: var(--gilt-deep); border-color: var(--gilt-deep); }
+.btn[disabled] { opacity: 0.45; pointer-events: none; }
+.btn--ghost { color: var(--ink); background: transparent; border-color: var(--line); }
+.btn--ghost:hover, .btn--ghost:focus-visible { color: var(--ink); background: var(--gypsum); border-color: var(--gilt); }
+.btn--block { width: 100%; }
+
+.wordmark {
+  font-family: var(--font-display);
+  font-weight: 300;
+  letter-spacing: 0.28em;
+  text-indent: 0.28em;
+  text-transform: uppercase;
+  line-height: 1;
+  display: inline-block;
+  white-space: nowrap;
+}
