@@ -131,3 +131,7 @@ select.field__input { appearance: auto; }
   display: inline-block;
   white-space: nowrap;
 }
+
+/* The admin bar carries the same lockup as the shop, at bar scale. */
+.adm-lockup { display: inline-flex; align-items: center; gap: 0.7rem; }
+.adm-lockup .monogram { --mono: 1.9rem; border-color: rgba(247,243,237,.7); }

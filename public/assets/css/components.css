@@ -16,6 +16,32 @@
   white-space: nowrap;
 }
 .wordmark--header { font-size: 1.6rem; }
+
+/* The monogram: PE over SU inside a hairline square. One geometry at every
+   size — set --mono and the type follows. Tracking tightens on the small
+   modifier, because the em value that looks composed large pushes the
+   letters into the rule when the square shrinks. */
+.monogram {
+  --mono: 2.6rem;
+  width: var(--mono);
+  height: var(--mono);
+  flex: none;
+  border: 1px solid currentColor;
+  display: grid;
+  place-items: center;
+  font-family: var(--font-display);
+  font-weight: 300;
+  font-size: calc(var(--mono) * 0.35);
+  line-height: 0.92;
+  letter-spacing: 0.08em;
+  text-indent: 0.08em;
+  text-transform: uppercase;
+  text-align: center;
+  white-space: nowrap;
+}
+.monogram > span { display: block; }
+.monogram--sm { letter-spacing: 0.05em; text-indent: 0.05em; }
+
 .wordmark--hero   { font-size: clamp(4.2rem, 17vw, 17rem); letter-spacing: 0.30em; text-indent: 0.30em; }
 .wordmark--footer { font-size: clamp(3.4rem, 14vw, 12rem); letter-spacing: 0.26em; text-indent: 0.26em; }
 
@@ -170,7 +196,8 @@ a:hover > .seal { opacity: 1; }
 .navlink:hover::after, .navlink[aria-expanded="true"]::after,
 .navlink.is-current::after { transform: scaleX(1); transform-origin: left; }
 
-.header__brand { display: inline-flex; align-items: center; gap: 0.75rem; }
+.header__brand { display: inline-flex; align-items: center; gap: 0.9rem; }
+.header__brand .monogram { --mono: 2.15rem; }
 
 .icon-btn {
   display: inline-flex;
@@ -569,6 +596,7 @@ a:hover > .seal { opacity: 1; }
   .cart-line { grid-template-columns: 68px 1fr; }
 }
 @media (max-width: 560px) {
+  .header__brand .monogram { display: none; }
   .footer__grid { grid-template-columns: 1fr; gap: var(--sp-5); }
   .footer__legal { flex-direction: column; align-items: flex-start; }
   .drawer { width: 100%; }
