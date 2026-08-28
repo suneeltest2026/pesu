@@ -77,13 +77,27 @@
       <div>
         <span class="field__label">Photographs</span>
         <div class="adm-images">
-          <% product.images.forEach(function (file) { %>
+          <% product.imageRows.forEach(function (image, i) { %>
           <figure class="adm-image">
-            <img src="<%= imageSrc(file) %>" alt="" onerror="this.hidden=true">
-            <figcaption class="adm-dim"><%= String(file).startsWith('db:') ? 'uploaded' : file %></figcaption>
+            <img src="<%= imageSrc(image.ref) %>" alt="" onerror="this.hidden=true;this.parentNode.classList.add('is-missing')">
+            <figcaption class="adm-dim">
+              <%= i === 0 ? 'Main · ' : '' %><%= image.uploaded ? 'uploaded' : image.filename %>
+            </figcaption>
           </figure>
           <% }) %>
         </div>
+        <% if (product.imageRows.length) { %>
+        <div class="adm-image-actions">
+          <% product.imageRows.forEach(function (image, i) { %>
+          <form method="post" action="/admin/products/<%= product.id %>/images/<%= image.id %>/delete"
+                onsubmit="return confirm('Remove this image?')">
+            <button class="adm-link adm-link--danger" type="submit">Remove <%= i + 1 %></button>
+          </form>
+          <% }) %>
+        </div>
+        <p class="adm-dim">The first image is the one shown on listings. Remove a broken
+          placeholder, then upload the real photograph below.</p>
+        <% } %>
         <label class="field">
           <span class="field__label">Add images</span>
           <input class="field__input" type="file" name="images" accept="image/*" multiple>
