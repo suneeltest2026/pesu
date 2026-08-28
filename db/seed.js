@@ -97,6 +97,7 @@ async function ensureAdmin(client) {
      ON CONFLICT (email) DO UPDATE SET password_hash = $2`,
     [email.toLowerCase(), bcrypt.hashSync(password, 12)]
   );
+  console.log('[db] administrator ready:', email.toLowerCase());
   return true;
 }
 

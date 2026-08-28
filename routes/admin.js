@@ -38,7 +38,23 @@ function view(res, template, extra) {
 }
 
 /* --- Auth ---------------------------------------------------------------- */
-router.get('/login', (req, res) => view(res, 'login', { error: null }));
+/* Distinguishing "no account yet" from "wrong password" gives nothing away:
+   an administrator can only be created by setting ADMIN_EMAIL and
+   ADMIN_PASSWORD and deploying, which is not something a visitor can do. */
+async function noAdminYet() {
+  const row = await db.one('SELECT COUNT(*)::int AS c FROM admins');
+  return row.c === 0;
+}
+
+router.get('/login', async (req, res, next) => {
+  try {
+    view(res, 'login', {
+      error: (await noAdminYet())
+        ? 'No administrator exists yet. Set ADMIN_EMAIL and ADMIN_PASSWORD, then redeploy.'
+        : null
+    });
+  } catch (err) { next(err); }
+});
 
 router.post('/login', async (req, res, next) => {
   try {
@@ -46,8 +62,11 @@ router.post('/login', async (req, res, next) => {
   const admin = await db.one('SELECT * FROM admins WHERE lower(email) = $1', [email]);
   const ok = admin && bcrypt.compareSync(String(req.body.password || ''), admin.password_hash);
   if (!ok) {
-    /* Same message either way — never reveal whether an account exists. */
-    return view(res, 'login', { error: 'Email or password is wrong.' });
+    return view(res, 'login', {
+      error: (await noAdminYet())
+        ? 'No administrator exists yet. Set ADMIN_EMAIL and ADMIN_PASSWORD, then redeploy.'
+        : 'Email or password is wrong.'
+    });
   }
   req.session.adminId = admin.id;
   const to = req.session.returnTo || '/admin';
