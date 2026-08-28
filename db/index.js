@@ -95,6 +95,9 @@ async function initialise() {
       await seedWith(client);
       console.log('[db] seeded from data/products.json');
     }
+
+    const { ensureAdmin } = require('./seed');
+    await ensureAdmin(client);
   });
 }
 

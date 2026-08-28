@@ -82,19 +82,25 @@ async function seedWith(client) {
     );
   }
 
-  /* First admin, from the environment. Never a default password. */
-  const email = process.env.ADMIN_EMAIL;
-  const password = process.env.ADMIN_PASSWORD;
-  if (email && password) {
-    await client.query(
-      `INSERT INTO admins (email, password_hash) VALUES ($1, $2)
-       ON CONFLICT (email) DO UPDATE SET password_hash = $2`,
-      [email.toLowerCase(), bcrypt.hashSync(password, 12)]
-    );
-  }
+  await ensureAdmin(client);
 }
 
-module.exports = { seedWith };
+/* The administrator comes from the environment, never from a default
+   password. This runs on every boot, not only the first one: the catalogue is
+   seeded once, but the credentials may be set long afterwards. */
+async function ensureAdmin(client) {
+  const email = process.env.ADMIN_EMAIL;
+  const password = process.env.ADMIN_PASSWORD;
+  if (!email || !password) return false;
+  await client.query(
+    `INSERT INTO admins (email, password_hash) VALUES ($1, $2)
+     ON CONFLICT (email) DO UPDATE SET password_hash = $2`,
+    [email.toLowerCase(), bcrypt.hashSync(password, 12)]
+  );
+  return true;
+}
+
+module.exports = { seedWith, ensureAdmin };
 
 /* CLI entry point. */
 if (require.main === module) {
