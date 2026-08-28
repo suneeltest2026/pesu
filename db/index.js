@@ -96,7 +96,8 @@ async function initialise() {
       console.log('[db] seeded from data/products.json');
     }
 
-    const { ensureAdmin } = require('./seed');
+    const { ensureAdmin, ensureSettings } = require('./seed');
+    await ensureSettings(client);
     await ensureAdmin(client);
   });
 }

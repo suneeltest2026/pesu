@@ -1,7 +1,7 @@
 # PESU
 
 Handmade home decor in natural materials — marble, bamboo and cane,
-hand-painted wood, sabai grass. Ajman, United Arab Emirates.
+hand-painted wood, sabai grass. Dubai, United Arab Emirates.
 
 An independent storefront: catalogue, bag, checkout, orders and admin, all
 running on one server against one database. **No Shopify, and no third-party

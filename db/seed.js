@@ -64,6 +64,15 @@ async function seedWith(client) {
     }
   }
 
+  await ensureSettings(client);
+  await ensureAdmin(client);
+}
+
+/* The shop's own facts — address, contact, shipping, returns — live in
+   data/products.json and are mirrored into settings on every boot, so editing
+   the file is enough to change the policy pages. Nothing edits these rows but
+   this function; an admin screen for them would need a different rule. */
+async function ensureSettings(client) {
   const s = data.shop, sh = data.shipping, r = data.returns;
   const settings = {
     shop_name: s.name, shop_email: s.email, shop_phone: s.phone,
@@ -81,8 +90,6 @@ async function seedWith(client) {
       [key, value]
     );
   }
-
-  await ensureAdmin(client);
 }
 
 /* The administrator comes from the environment, never from a default
@@ -101,7 +108,7 @@ async function ensureAdmin(client) {
   return true;
 }
 
-module.exports = { seedWith, ensureAdmin };
+module.exports = { seedWith, ensureAdmin, ensureSettings };
 
 /* CLI entry point. */
 if (require.main === module) {

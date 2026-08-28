@@ -1,6 +1,6 @@
 # PESU — Brand, Experience & Platform Notes
 
-_Handmade home decor in natural materials. Ajman, United Arab Emirates._
+_Handmade home decor in natural materials. Dubai, United Arab Emirates._
 
 > **Status.** This front end was first built as a concept for a made-to-order
 > luxury furniture house. It has since been re-pointed at the real pesu.ae
@@ -43,7 +43,7 @@ mirrors the store:
 | Dispatch 1–2 days; Dubai 1–3; other emirates 5–7 | Shipping policy |
 | 15-day returns, unused, original packaging | Refund policy |
 | Handmade variation is not a defect | Legal notice |
-| care@pesu.ae · +971 56 712 6966 · Ajman | Contact policy |
+| care@pesu.ae · +971 56 712 6966 · Dubai | Contact policy |
 
 ---
 
