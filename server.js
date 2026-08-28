@@ -48,6 +48,21 @@ app.use(session({
   }
 }));
 
+/* Which product photographs we actually host ourselves. Read once at start:
+   the set decides, per image, whether to serve it locally or fall back to the
+   Shopify CDN, so dropping files into public/images migrates them with no
+   code change and no database edit. */
+const localImages = (() => {
+  try {
+    return new Set(require('fs').readdirSync(path.join(__dirname, 'public', 'images')));
+  } catch (err) {
+    return new Set();
+  }
+})();
+
+const IMAGE_FALLBACK = process.env.IMAGE_FALLBACK_BASE ||
+  'https://cdn.shopify.com/s/files/1/0769/8962/8589/files/';
+
 /* Static assets. On Vercel these are served from the CDN before the function
    is reached; this covers running the server directly. */
 app.use('/assets', express.static(path.join(__dirname, 'public', 'assets'), { maxAge: '10m' }));
@@ -101,8 +116,14 @@ app.use(async (req, res, next) => {
 
     /* One image helper: repository files come from /images, uploaded ones
        from the database at /img/<id>. */
-    res.locals.imageSrc = (file) =>
-      !file ? '' : (String(file).startsWith('db:') ? '/img/' + String(file).slice(3) : '/images/' + file);
+    res.locals.imageSrc = (file) => {
+      if (!file) return '';
+      const name = String(file);
+      if (name.startsWith('db:')) return '/img/' + name.slice(3);
+      if (localImages.has(name)) return '/images/' + name;
+      /* Not self-hosted yet — serve it from where it already lives. */
+      return IMAGE_FALLBACK + encodeURIComponent(name) + '?width=1200';
+    };
 
     res.locals.img = (product, index, width) => {
       const file = product && product.images && product.images[index || 0];

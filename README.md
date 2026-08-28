@@ -161,10 +161,15 @@ Vercel-specific.
 
 ## Outstanding before this replaces pesu.ae
 
-1. **Product photography.** `public/images/` is empty. Run
-   `npm run fetch-images` from a machine that can reach the Shopify CDN, or
-   download from Shopify admin → Content → Files and drop the files in with
-   their names unchanged. See `data/README.md`.
+1. **Self-host the photography.** Images fall back to the Shopify CDN when a
+   file is not present in `public/images/`, so the shop looks right today —
+   but those URLs die when the Shopify store closes. Drop the 26 files into
+   `public/images/` (names unchanged) and each one switches to being served
+   from here automatically, no code or database change. `npm run fetch-images`
+   does it from any machine that can reach the CDN; `data/README.md` lists
+   which file belongs to which product.
+
+   **Do this before cancelling Shopify.**
 2. **Stripe keys.** Set `STRIPE_SECRET_KEY` and `STRIPE_WEBHOOK_SECRET` and
    register the webhook endpoint (see Stripe setup above). Until then,
    checkout offers cash on delivery only.
