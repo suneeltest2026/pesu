@@ -161,6 +161,21 @@ app.use((req, res) => {
 
 app.use((err, req, res, next) => {
   console.error(err);
+  /* The error may have come from the middleware that fills in the view
+     locals, so the error page cannot assume any of them are present. */
+  const nothing = () => '';
+  const defaults = {
+    flash: null, error: null, settings: {}, groups: [], materials: [],
+    navProducts: [], featured: null, cartCount: 0,
+    cart: { items: [], count: 0, subtotal: 0, delivery: 0, remaining: 0, free: false },
+    deliveryFlatFils: 0, imageFallbackBase: '',
+    money: nothing, imageSrc: nothing, img: nothing, handleFor: nothing,
+    leadFor: () => null, pieceOfMaterial: () => null
+  };
+  for (const [key, value] of Object.entries(defaults)) {
+    if (res.locals[key] === undefined) res.locals[key] = value;
+  }
+  if (res.headersSent) return next(err);
   res.status(500).render('page', {
     title: 'Something went wrong — PESU',
     description: 'An error occurred.',
