@@ -79,7 +79,7 @@
         <div class="adm-images">
           <% product.imageRows.forEach(function (image, i) { %>
           <figure class="adm-image">
-            <img src="<%= imageSrc(image.ref) %>" alt="" onerror="this.hidden=true;this.parentNode.classList.add('is-missing')">
+            <img src="<%= imageSrc(image.ref) %>" alt="" onerror="pesuImage(this)">
             <figcaption class="adm-dim">
               <%= i === 0 ? 'Main · ' : '' %><%= image.uploaded ? 'uploaded' : image.filename %>
             </figcaption>

@@ -1,0 +1,15 @@
+<script>
+/* A photograph missing from /images is retried once against its old home,
+   then hidden rather than left as a broken-image icon. */
+window.pesuImage = function (img) {
+  var base = <%- JSON.stringify(typeof imageFallbackBase === 'string' ? imageFallbackBase : '') %>;
+  var match = base && !img.dataset.retried && img.getAttribute('src').match(/^\/images\/(.+)$/);
+  if (!match) {
+    img.hidden = true;
+    if (img.parentNode) img.parentNode.classList.add('is-missing');
+    return;
+  }
+  img.dataset.retried = '1';
+  img.src = base + match[1] + '?width=1200';
+};
+</script>

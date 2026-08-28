@@ -52,16 +52,12 @@ app.use(session({
    the set decides, per image, whether to serve it locally or fall back to the
    Shopify CDN, so dropping files into public/images migrates them with no
    code change and no database edit. */
-const localImages = (() => {
-  try {
-    return new Set(require('fs').readdirSync(path.join(__dirname, 'public', 'images')));
-  } catch (err) {
-    return new Set();
-  }
-})();
-
-const IMAGE_FALLBACK = process.env.IMAGE_FALLBACK_BASE ||
-  'https://cdn.shopify.com/s/files/1/0769/8962/8589/files/';
+/* Photographs are served from /images. While they are being moved off the
+   old Shopify CDN a browser-side fallback covers any that are not here yet;
+   set IMAGE_FALLBACK_BASE to an empty string once the move is complete. */
+const IMAGE_FALLBACK = process.env.IMAGE_FALLBACK_BASE === undefined
+  ? 'https://cdn.shopify.com/s/files/1/0769/8962/8589/files/'
+  : process.env.IMAGE_FALLBACK_BASE;
 
 /* Static assets. On Vercel these are served from the CDN before the function
    is reached; this covers running the server directly. */
@@ -111,6 +107,7 @@ app.use(async (req, res, next) => {
     res.locals.description = (settings.shop_name || 'PESU') +
       ' makes and curates handmade home decor in natural materials. Delivered across the UAE.';
     res.locals.error = null;
+    res.locals.imageFallbackBase = IMAGE_FALLBACK;
     res.locals.flash = req.session.flash || null;
     delete req.session.flash;
 
@@ -127,9 +124,7 @@ app.use(async (req, res, next) => {
       if (!file) return '';
       const name = String(file);
       if (name.startsWith('db:')) return '/img/' + name.slice(3);
-      if (localImages.has(name)) return '/images/' + name;
-      /* Not self-hosted yet — serve it from where it already lives. */
-      return IMAGE_FALLBACK + encodeURIComponent(name) + '?width=1200';
+      return '/images/' + encodeURIComponent(name);
     };
 
     res.locals.img = (product, index, width) => {
@@ -139,7 +134,7 @@ app.use(async (req, res, next) => {
       /* A missing photograph degrades to the material texture behind it,
          rather than a broken-image icon with alt text spilling across it. */
       return `<img src="${res.locals.imageSrc(file)}" alt="${alt}" loading="lazy" decoding="async"` +
-        ` width="${width || 800}" height="${width || 800}" onerror="this.hidden=true">`;
+        ` width="${width || 800}" height="${width || 800}" onerror="pesuImage(this)">`;
     };
 
     next();
