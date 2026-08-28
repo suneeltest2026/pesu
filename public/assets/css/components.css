@@ -606,8 +606,8 @@ a:hover > .seal { opacity: 1; }
   .cart-line { grid-template-columns: 68px 1fr; }
 }
 @media (max-width: 560px) {
-  .header__brand .monogram--sm { display: none; }
-  .header__brand .monogram--p { display: grid; --mono: 1.9rem; }
+  .header__brand { gap: 0.65rem; }
+  .header__brand .monogram { --mono: 2rem; }
   .footer__grid { grid-template-columns: 1fr; gap: var(--sp-5); }
   .footer__legal { flex-direction: column; align-items: flex-start; }
   .drawer { width: 100%; }
@@ -633,3 +633,15 @@ a:hover > .seal { opacity: 1; }
 .material-card .surface,
 .search__result .surface { position: relative; overflow: hidden; }
 .manifesto__media img { object-position: center 40%; }
+
+/* Narrowest phones: the header runs out of room, and shrinking the square to
+   fit would take it under the monogram's 32px floor. The single P instead. */
+@media (max-width: 359px) {
+  .header__brand .monogram--sm { display: none; }
+  .header__brand .monogram--p { display: grid; }
+}
+/* Below this the four utilities and the wordmark already fill the bar, with or
+   without a mark, so the wordmark stands alone rather than pushing them out. */
+@media (max-width: 339px) {
+  .header__brand .monogram { display: none; }
+}
