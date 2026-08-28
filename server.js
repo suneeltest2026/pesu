@@ -68,6 +68,13 @@ const IMAGE_FALLBACK = process.env.IMAGE_FALLBACK_BASE ||
 app.use('/assets', express.static(path.join(__dirname, 'public', 'assets'), { maxAge: '10m' }));
 app.use('/images', express.static(path.join(__dirname, 'public', 'images'), { maxAge: '7d' }));
 
+/* Temporary: a page that pulls the photography off the old Shopify CDN.
+   Remove once every photograph is uploaded through the admin. */
+app.get('/rescue-images', (req, res) => {
+  res.set('Cache-Control', 'no-store');
+  res.type('html').send(require('./lib/rescue-page').render());
+});
+
 /* Images uploaded through the admin live in the database, because serverless
    hosting has no writable disk that survives an invocation. */
 app.get('/img/:id', async (req, res, next) => {
