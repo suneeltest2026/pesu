@@ -59,6 +59,12 @@ const IMAGE_FALLBACK = process.env.IMAGE_FALLBACK_BASE === undefined
   ? 'https://cdn.shopify.com/s/files/1/0769/8962/8589/files/'
   : process.env.IMAGE_FALLBACK_BASE;
 
+/* Stylesheets and scripts are cached hard, so their URLs carry the build's
+   identity: new markup can never be served against an older stylesheet. */
+const ASSET_VERSION =
+  (process.env.VERCEL_GIT_COMMIT_SHA || '').slice(0, 8) ||
+  String(Math.floor(Date.now() / 1000));
+
 /* Static assets. On Vercel these are served from the CDN before the function
    is reached; this covers running the server directly. */
 app.use('/assets', express.static(path.join(__dirname, 'public', 'assets'), { maxAge: '10m' }));
@@ -108,6 +114,7 @@ app.use(async (req, res, next) => {
       ' makes and curates handmade home decor in natural materials. Delivered across the UAE.';
     res.locals.error = null;
     res.locals.imageFallbackBase = IMAGE_FALLBACK;
+    res.locals.v = ASSET_VERSION;
     res.locals.flash = req.session.flash || null;
     delete req.session.flash;
 
@@ -168,7 +175,7 @@ app.use((err, req, res, next) => {
     flash: null, error: null, settings: {}, groups: [], materials: [],
     navProducts: [], featured: null, cartCount: 0,
     cart: { items: [], count: 0, subtotal: 0, delivery: 0, remaining: 0, free: false },
-    deliveryFlatFils: 0, imageFallbackBase: '',
+    deliveryFlatFils: 0, imageFallbackBase: '', v: ASSET_VERSION,
     money: nothing, imageSrc: nothing, img: nothing, handleFor: nothing,
     leadFor: () => null, pieceOfMaterial: () => null
   };

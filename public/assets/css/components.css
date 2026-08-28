@@ -42,6 +42,15 @@
 .monogram > span { display: block; }
 .monogram--sm { letter-spacing: 0.05em; text-indent: 0.05em; }
 
+/* Below the monogram's floor the square carries a single P instead. Four
+   letters in a small square close up; one does not. */
+.monogram--p {
+  font-size: calc(var(--mono) * 0.52);
+  line-height: 1;
+  letter-spacing: 0;
+  text-indent: 0;
+}
+
 .wordmark--hero   { font-size: clamp(4.2rem, 17vw, 17rem); letter-spacing: 0.30em; text-indent: 0.30em; }
 .wordmark--footer { font-size: clamp(3.4rem, 14vw, 12rem); letter-spacing: 0.26em; text-indent: 0.26em; }
 
@@ -198,6 +207,7 @@ a:hover > .seal { opacity: 1; }
 
 .header__brand { display: inline-flex; align-items: center; gap: 0.9rem; }
 .header__brand .monogram { --mono: 2.15rem; }
+.header__brand .monogram--p { display: none; }
 
 .icon-btn {
   display: inline-flex;
@@ -596,7 +606,8 @@ a:hover > .seal { opacity: 1; }
   .cart-line { grid-template-columns: 68px 1fr; }
 }
 @media (max-width: 560px) {
-  .header__brand .monogram { display: none; }
+  .header__brand .monogram--sm { display: none; }
+  .header__brand .monogram--p { display: grid; --mono: 1.9rem; }
   .footer__grid { grid-template-columns: 1fr; gap: var(--sp-5); }
   .footer__legal { flex-direction: column; align-items: flex-start; }
   .drawer { width: 100%; }
