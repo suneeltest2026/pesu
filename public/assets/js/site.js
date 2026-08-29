@@ -41,15 +41,13 @@
     if (!header) return;
     var overlay = document.body.getAttribute('data-header') === 'overlay';
     var hero = $('.hero');
-    var last = window.scrollY;
+    /* The header stays put. It used to slide away on the way down and return
+       on the way up, which reads as the bar going missing on a phone, where
+       most of a page is spent scrolling one way. */
     function update() {
       var y = window.scrollY;
       var threshold = overlay && hero ? hero.offsetHeight - 120 : -1;
       header.classList.toggle('is-solid', y > threshold);
-      if (!document.body.classList.contains('is-locked')) {
-        header.classList.toggle('is-hidden', y > last && y > threshold + 200);
-      }
-      last = y;
       document.documentElement.style.setProperty('--scroll', String(y));
     }
     update();

@@ -169,7 +169,6 @@ a:hover > .seal { opacity: 1; }
   border-bottom-color: var(--line-soft);
 }
 .header.is-solid::before { opacity: 0; }
-.header.is-hidden { transform: translate3d(0, -100%, 0); transition: transform var(--dur) var(--ease); }
 .header.is-inverted { color: var(--ink); }
 
 .header__inner {
