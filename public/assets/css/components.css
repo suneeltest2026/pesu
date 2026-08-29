@@ -515,31 +515,59 @@ a:hover > .seal { opacity: 1; }
 
 /* --- Footer ------------------------------------------------------------- */
 .footer { padding-top: var(--section-y); overflow: hidden; }
-.footer__grid {
-  display: grid;
-  grid-template-columns: 1.2fr repeat(3, minmax(140px, 0.7fr));
-  gap: var(--sp-6);
-  padding-bottom: var(--sp-7);
-}
-.footer__col h3 {
-  font-size: var(--step--2);
-  font-weight: 400;
-  letter-spacing: var(--tracking-wide);
-  text-transform: uppercase;
-  color: var(--fg-faint);
-  margin-bottom: var(--sp-3);
-}
-.footer__col li + li { margin-top: 0.65rem; }
-.footer__col a { font-size: var(--step--1); color: var(--fg-muted); transition: color var(--dur-fast) var(--ease); }
-.footer__col a:hover { color: var(--fg); }
 
-.footer__wordmark {
+/* Intro on the left, the three real destinations on the right. */
+.footer__top {
+  display: grid;
+  grid-template-columns: 1.15fr minmax(300px, 0.85fr);
+  gap: var(--sp-6);
+  align-items: start;
+  padding-bottom: var(--sp-6);
+}
+.footer__lockup { display: inline-flex; align-items: center; gap: 0.85rem; color: var(--fg); }
+.footer__lockup .monogram { --mono: 2.15rem; }
+.footer__word { font-size: 1.2rem; letter-spacing: var(--tracking-wider); text-indent: var(--tracking-wider); }
+
+.footer__actions { display: grid; gap: 0.6rem; }
+.footer__action {
+  display: flex; align-items: center; justify-content: space-between; gap: var(--sp-3);
+  border: 1px solid var(--line);
+  padding: 1rem 1.15rem;
+  color: var(--fg);
+  font-size: var(--step--1);
+  font-weight: 300;
+  transition: border-color var(--dur-fast) var(--ease), background var(--dur-fast) var(--ease);
+}
+.footer__action:hover, .footer__action:focus-visible {
+  border-color: var(--gilt-soft);
+  background: rgba(247, 243, 237, 0.04);
+}
+.footer__tag {
+  font-size: var(--step--2); letter-spacing: var(--tracking-wide);
+  text-transform: uppercase; color: var(--gilt-soft);
+}
+
+.footer__quiet {
+  display: flex; flex-wrap: wrap; gap: 0.6rem var(--sp-5);
+  padding-bottom: var(--sp-6);
+}
+.footer__quiet a {
+  font-size: var(--step--1); color: var(--fg-muted);
+  transition: color var(--dur-fast) var(--ease);
+}
+.footer__quiet a:hover { color: var(--fg); }
+
+/* The stacked lockup as a sign-off — the same variant the identity uses for
+   packaging and stamps. */
+.footer__sign {
   border-top: 1px solid var(--line);
   padding-top: var(--sp-5);
-  text-align: center;
+  display: flex; flex-direction: column; align-items: center; gap: var(--sp-4);
   color: var(--fg);
   opacity: 0.9;
 }
+.footer__sign .monogram { --mono: clamp(3rem, 5vw, 4.5rem); }
+
 .footer__legal {
   display: flex; flex-wrap: wrap; gap: var(--sp-4);
   align-items: center; justify-content: space-between;
@@ -586,7 +614,7 @@ a:hover > .seal { opacity: 1; }
 
 /* --- Responsive --------------------------------------------------------- */
 @media (max-width: 1080px) {
-  .footer__grid { grid-template-columns: 1fr 1fr; }
+  .footer__top { grid-template-columns: 1fr; }
 }
 @media (max-width: 900px) {
   :root { --header-h: 66px; }
@@ -607,8 +635,8 @@ a:hover > .seal { opacity: 1; }
 @media (max-width: 560px) {
   .header__brand { gap: 0.65rem; }
   .header__brand .monogram { --mono: 2rem; }
-  .footer__grid { grid-template-columns: 1fr; gap: var(--sp-5); }
-  .footer__legal { flex-direction: column; align-items: flex-start; }
+  .footer__top { grid-template-columns: 1fr; gap: var(--sp-5); }
+  .footer__legal { flex-direction: column-reverse; align-items: flex-start; gap: var(--sp-3); }
   .drawer { width: 100%; }
   .newsletter { max-width: none; }
 }
