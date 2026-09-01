@@ -115,6 +115,7 @@ app.use(async (req, res, next) => {
     res.locals.error = null;
     res.locals.imageFallbackBase = IMAGE_FALLBACK;
     res.locals.v = ASSET_VERSION;
+    res.locals.mailEnabled = Boolean(process.env.SMTP_HOST);
     res.locals.flash = req.session.flash || null;
     delete req.session.flash;
 
@@ -175,7 +176,7 @@ app.use((err, req, res, next) => {
     flash: null, error: null, settings: {}, groups: [], materials: [],
     navProducts: [], featured: null, cartCount: 0,
     cart: { items: [], count: 0, subtotal: 0, delivery: 0, remaining: 0, free: false },
-    deliveryFlatFils: 0, imageFallbackBase: '', v: ASSET_VERSION,
+    deliveryFlatFils: 0, imageFallbackBase: '', v: ASSET_VERSION, mailEnabled: false,
     money: nothing, imageSrc: nothing, img: nothing, handleFor: nothing,
     leadFor: () => null, pieceOfMaterial: () => null
   };

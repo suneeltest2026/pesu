@@ -13,7 +13,8 @@
         <% } else if (order.payment_method === 'cod') { %>Thank you. Pay on delivery.
         <% } else { %>Thank you. One step left.<% } %>
       </h1>
-      <p class="lede">We have emailed a copy to <%= order.email %>. Keep the reference
+      <p class="lede"><% if (mailEnabled) { %>We have emailed a copy to <%= order.email %>. Keep
+        the reference<% } else { %>Please keep the reference<% } %>
         <strong><%= order.reference %></strong> — it's how you track this order.</p>
     </header>
 
