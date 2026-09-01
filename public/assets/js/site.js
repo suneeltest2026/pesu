@@ -196,7 +196,16 @@
         if (e) e.preventDefault();
         var piece;
         try { piece = JSON.parse(btn.getAttribute('data-piece')); } catch (err) { return; }
-        if (piece.img) object.innerHTML = '<img src="' + piece.img + '" alt="' + piece.name + '">';
+        if (piece.img) {
+          /* Built as a node, not markup: the name would otherwise need
+             escaping, and the swapped-in image needs the same missing-photo
+             fallback the server-rendered ones carry. */
+          var photo = document.createElement('img');
+          photo.src = piece.img;
+          photo.alt = piece.name;
+          photo.onerror = function () { window.pesuImage(photo); };
+          object.replaceChildren(photo);
+        }
         preview.className = 'configure__preview surface ' + piece.swatch;
         if (caption) caption.textContent = piece.name + ' — ' + piece.price;
         if (note) note.textContent = piece.note;

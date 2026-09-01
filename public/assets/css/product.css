@@ -354,3 +354,7 @@
 .config__features svg { width: 13px; height: 13px; stroke: var(--accent); fill: none; stroke-width: 1.4; margin-top: 0.5em; }
 [data-stock].is-low { color: var(--clay); }
 .wish-btn[data-shop-link] { text-align: center; }
+
+/* A thumbnail whose photograph never loaded is an empty box to tap, so it
+   takes itself out of the strip. pesuImage marks the parent. */
+.gallery__thumb.is-missing { display: none; }
