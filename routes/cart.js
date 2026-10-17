@@ -22,8 +22,8 @@ router.get('/cart', (req, res) => {
 
 router.post('/cart/add', async (req, res, next) => {
   try {
-    const { productId, qty } = req.body;
-    const result = await cart.add(req.session, productId, qty);
+    const { productId, qty, option } = req.body;
+    const result = await cart.add(req.session, productId, qty, option);
     const wantsJson = req.get('X-Requested-With') === 'fetch';
 
     if (wantsJson) {
@@ -50,13 +50,13 @@ router.post('/cart/add', async (req, res, next) => {
 
 router.post('/cart/update', async (req, res, next) => {
   try {
-    await cart.setQty(req.session, req.body.productId, req.body.qty);
+    await cart.setQty(req.session, req.body.productId, req.body.qty, req.body.option);
     back(req, res);
   } catch (err) { next(err); }
 });
 
 router.post('/cart/remove', (req, res) => {
-  cart.remove(req.session, req.body.productId);
+  cart.remove(req.session, req.body.productId, req.body.option);
   back(req, res);
 });
 

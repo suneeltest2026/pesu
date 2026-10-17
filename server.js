@@ -109,9 +109,9 @@ app.use(async (req, res, next) => {
     res.locals.cart = bag;
     res.locals.deliveryFlatFils = Number(settings.ship_flat_fils || 2500);
     res.locals.money = format;
-    res.locals.title = 'PESU — Handmade home decor, United Arab Emirates';
+    res.locals.title = 'PESU — Home decor, United Arab Emirates';
     res.locals.description = (settings.shop_name || 'PESU') +
-      ' makes and curates handmade home decor in natural materials. Delivered across the UAE.';
+      ' curates home decor — lamps, vases, trays and small sculptures. Delivered across the UAE.';
     res.locals.error = null;
     res.locals.imageFallbackBase = IMAGE_FALLBACK;
     res.locals.v = ASSET_VERSION;
@@ -127,11 +127,13 @@ app.use(async (req, res, next) => {
     res.locals.pieceOfMaterial = (materialId) => products.find((p) => p.material_id === materialId) || null;
 
     /* One image helper: repository files come from /images, uploaded ones
-       from the database at /img/<id>. */
+       from the database at /img/<id>, and supplier photographs are used from
+       the supplier's own image server at their full https address. */
     res.locals.imageSrc = (file) => {
       if (!file) return '';
       const name = String(file);
       if (name.startsWith('db:')) return '/img/' + name.slice(3);
+      if (/^https:\/\//.test(name)) return name;
       return '/images/' + encodeURIComponent(name);
     };
 

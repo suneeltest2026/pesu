@@ -29,15 +29,15 @@
     <h1 class="wordmark wordmark--hero hero__wordmark" aria-label="PESU">
       <span style="--i:0" aria-hidden="true">P</span><span style="--i:1" aria-hidden="true">E</span><span style="--i:2" aria-hidden="true">S</span><span style="--i:3" aria-hidden="true">U</span>
     </h1>
-    <p class="hero__tagline" style="animation-delay:1.1s">Calm, made by hand</p>
-    <p class="hero__sub">Marble, bamboo and cane, hand-painted wood and sabai grass — small objects made by hand, for rooms that need less rather than more.</p>
+    <p class="hero__tagline" style="animation-delay:1.1s">Create your calm</p>
+    <p class="hero__sub">Lamps, vases, trays and small sculptures — simple pieces for rooms that need less rather than more.</p>
     <div class="hero__cta">
       <a class="btn btn--light" href="/shop">Shop the range</a>
     </div>
   </div>
 
   <div class="hero__foot shell">
-    <p>Handmade · natural materials</p>
+    <p>Calm home decor</p>
     <div class="hero__scroll"><i></i><span>Scroll</span></div>
     <p>Free UAE delivery over AED&nbsp;200</p>
   </div>
@@ -46,11 +46,11 @@
 <!-- ======================= TICKER ======================= -->
 <div class="ticker" aria-hidden="true">
   <div class="ticker__track">
-    <span>Handmade from natural materials</span>
+    <span>Lamps, vases and small sculptures</span>
     <span>Free delivery across the UAE over AED 200</span>
-    <span>Dispatched in 1–2 business days</span>
+    <span>Delivered in 8–12 business days</span>
     <span>15-day returns</span>
-    <span>No two pieces exactly alike</span>
+    <span>Tracked to your door</span>
   </div>
 </div>
 
@@ -60,21 +60,22 @@
     <div class="manifesto__statement stack-lg" data-reveal>
       <p class="eyebrow">About PESU</p>
       <h2 class="display display--l">
-        <span class="line-mask"><span>Objects that were</span></span>
-        <span class="line-mask" style="--reveal-delay:90ms"><span>something else</span></span>
-        <span class="line-mask" style="--reveal-delay:180ms"><span><em>first</em>.</span></span>
+        <span class="line-mask"><span>A few good things,</span></span>
+        <span class="line-mask" style="--reveal-delay:90ms"><span>chosen</span></span>
+        <span class="line-mask" style="--reveal-delay:180ms"><span><em>well</em>.</span></span>
       </h2>
       <div class="manifesto__body prose">
-        <p>Grass that grew in Odisha and was sun-dried, twisted into rope and braided by hand. Marble cut from a block and finished until it is cool and honest to the touch. Bamboo woven into a shade that throws uneven shadows across a wall.</p>
-        <p>We look for objects that carry the evidence of the person who made them. That means colour, texture and finish vary from one piece to the next — a fact we would rather state plainly than photograph around. It is not a defect. It is the reason to buy the thing at all.</p>
-        <p>Everything is chosen to work in a calm room: few materials, small scale, nothing that shouts. Priced so that a considered object is an ordinary purchase rather than an event.</p>
+        <p>A lamp that throws a soft glow across the wall in the evening. A vase that holds three stems and looks right empty. A tray that gives the keys and the rings somewhere to go.</p>
+        <p>We choose pieces that make a room feel settled: simple shapes, quiet colours, a few good objects rather than a crowd of them. Each one is described plainly — what it is made of, how big it is, and how long it takes to reach you.</p>
+        <p>Priced so that a considered object is an ordinary purchase rather than an event, and delivered to every emirate.</p>
       </div>
       <p class="manifesto__sig">— PESU, Dubai</p>
     </div>
 
-    <figure class="manifesto__media surface mat-travertine" data-reveal style="--reveal-delay:120ms">
-      <img src="/images/IMG-8088.png" alt="Handcrafted marble incense holder" onerror="pesuImage(this)">
-      <figcaption>Marble incense holder — natural stone, hand-finished</figcaption>
+    <% var hero = products.find(function (p) { return p.id === 'crystal-candle-holder'; }) || products[0]; %>
+    <figure class="manifesto__media surface <%= hero ? hero.swatch : 'mat-travertine' %>" data-reveal style="--reveal-delay:120ms">
+      <% if (hero) { %><%- img(hero, 0, 900) %>
+      <figcaption><%= hero.name %> — <%= hero.material_name.toLowerCase() %></figcaption><% } %>
     </figure>
   </div>
 </section>
@@ -85,9 +86,9 @@
     <div class="section-head" data-reveal>
       <div class="section-head__text">
         <p class="eyebrow">The range</p>
-        <h2 class="display display--m">Eight pieces, four rooms</h2>
+        <h2 class="display display--m">The range, room by room</h2>
       </div>
-      <a class="link" href="https://pesu.ae/collections/home-decor">Shop everything</a>
+      <a class="link" href="/shop">Shop everything</a>
     </div>
 
     <div class="collections__grid collections__grid--four" data-reveal data-reveal-stagger>
@@ -144,13 +145,13 @@
     <div class="stack-lg" data-reveal>
       <p class="eyebrow">Shop by material</p>
       <h2 class="display display--m">Start with what<br>it is made of</h2>
-      <p class="lede">Six materials run through the range. Pick one and see what it becomes — marble for the incense holder, cane for the lamps, sabai grass braided into a tea light holder.</p>
+      <p class="lede">Ceramic, glass, metal, wood and more run through the range. Pick one and see what it becomes.</p>
       <div class="swatches swatches--labelled" data-teaser-swatches role="group" aria-label="Materials">
         <% materials.forEach(function (m, i) { var piece = pieceOfMaterial(m.id); %>
         <span class="swatch-item">
           <a class="swatch surface <%= m.swatch %>" href="/materials/<%= m.id %>"
              data-material="<%= m.id %>"
-             data-piece='<%- JSON.stringify({ name: piece ? piece.name : "", price: piece ? money(piece.price_fils) : "", img: piece && piece.images[0] ? "/images/" + piece.images[0] : "", href: piece ? "/product/" + piece.handle : "#", note: m.note, swatch: m.swatch }) %>'
+             data-piece='<%- JSON.stringify({ name: piece ? piece.name : "", price: piece ? money(piece.price_fils) : "", img: piece && piece.images[0] ? imageSrc(piece.images[0]) : "", href: piece ? "/product/" + piece.handle : "#", note: m.note, swatch: m.swatch }) %>'
              aria-pressed="<%= i === 0 %>" aria-label="<%= m.name %>"></a>
           <span class="swatch__label"><%= m.short %></span>
         </span>
@@ -179,7 +180,7 @@
     <div class="section-head" data-reveal>
       <div class="section-head__text">
         <p class="eyebrow">Materials</p>
-        <h2 class="display display--m">Six materials, named</h2>
+        <h2 class="display display--m">The materials, named</h2>
       </div>
       <p class="tile__meta">Drag to explore →</p>
     </div>
@@ -203,8 +204,8 @@
   <div class="shell bespoke__inner bespoke__grid">
     <div class="stack-lg" data-reveal>
       <p class="eyebrow">Gifting</p>
-      <h2 class="display display--l">Packed with care,<br>checked,<br>on its <em>way</em></h2>
-      <p class="lede">Every order is packed carefully and checked before it leaves us — which makes most of the range a gift you can send straight to the person receiving it.</p>
+      <h2 class="display display--l">Something<br>for their<br><em>home</em></h2>
+      <p class="lede">Send a piece straight to the person receiving it — add their address at checkout, and allow 8–12 business days for it to arrive.</p>
       <div style="display:flex;gap:1rem;flex-wrap:wrap">
         <a class="btn btn--light" href="/shop">Find a gift</a>
         <a class="link" href="/contact" style="align-self:center">Ask about a gift order</a>
@@ -215,25 +216,25 @@
       <article class="bespoke__step" data-reveal-child>
         <div>
           <h3>Housewarming</h3>
-          <p>The marble incense holder or the sabai grass tea light — small, considered, and not something they already own.</p>
+          <p>A twisted ceramic vase or a round metal tray — useful, pretty, and not something they already own.</p>
         </div>
       </article>
       <article class="bespoke__step" data-reveal-child>
         <div>
           <h3>Ramadan &amp; Eid</h3>
-          <p>Candlelight and calm: the Krishna t-light holder, or a pair of them for a table.</p>
+          <p>Candlelight for the table: the crystal candle holder, or a bamboo incense burner.</p>
         </div>
       </article>
       <article class="bespoke__step" data-reveal-child>
         <div>
-          <h3>Diwali</h3>
-          <p>Warm metal and light — the silver elephant bowl as a centrepiece that carries its own symbolism.</p>
+          <h3>Weddings &amp; anniversaries</h3>
+          <p>The dancing couple sculpture, or the glass dome rose lamp — both made for two.</p>
         </div>
       </article>
       <article class="bespoke__step" data-reveal-child>
         <div>
           <h3>For a new home</h3>
-          <p>The hanging lamps, or a wall frame that turns an empty hallway into something finished.</p>
+          <p>Cotton ball string lights over a headboard, or a soft cloud rug beside the bed.</p>
         </div>
       </article>
     </div>
@@ -253,7 +254,7 @@
       <article class="concierge__item" data-reveal-child>
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 16V8l9-4 9 4v8l-9 4-9-4Z"/><path d="M3 8l9 4 9-4M12 12v8"/></svg>
         <h3>UAE delivery</h3>
-        <p>Dispatched in 1–2 business days by Quiqup. Dubai in 1–3 business days, other emirates in 5–7. Free over AED 200, AED 25 below it.</p>
+        <p>Delivered to every emirate in 8–12 business days, with tracking, straight from our fulfilment partner. Free over AED 200, AED 25 below it.</p>
       </article>
       <article class="concierge__item" data-reveal-child>
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 14 4 9l5-5"/><path d="M4 9h11a5 5 0 0 1 0 10H9"/></svg>
@@ -262,8 +263,8 @@
       </article>
       <article class="concierge__item" data-reveal-child>
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l2.6 5.6 6.4.8-4.7 4.3 1.3 6.3L12 17l-5.6 3 1.3-6.3L3 9.4l6.4-.8L12 3Z"/></svg>
-        <h3>Handmade variation</h3>
-        <p>Colour, texture, size and finish differ slightly from piece to piece. Natural materials behave that way, and we do not consider it a fault.</p>
+        <h3>Described plainly</h3>
+        <p>Every piece lists what it is made of and its size. If something arrives damaged or is not what you ordered, we put it right.</p>
       </article>
       <article class="concierge__item" data-reveal-child>
         <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
@@ -283,25 +284,20 @@
         <h2 class="display display--m">Three short notes</h2>
       </div>
     </div>
+    <% var note = function (id) { return products.find(function (p) { return p.id === id; }); }; %>
     <div class="journal__grid" data-reveal data-reveal-stagger>
+      <% [
+        { id: 'nordic-ceramic-vase', kicker: 'Ceramic', title: 'A soft cloth, and no soaking', body: 'Glazed ceramic only needs wiping. Empty and rinse vases between bunches so the water stays fresh.' },
+        { id: 'crystal-candle-holder', kicker: 'Candles', title: 'Never leave a flame alone', body: 'Burn candles and incense on a heat-resistant surface, away from curtains, and put them out before you leave the room.' },
+        { id: 'flip-clock', kicker: 'Metal & wood', title: 'Dry, and out of the sun', body: 'Wipe metal with a damp cloth and dry it straight away. Keep wood out of direct sun so the grain does not fade.' }
+      ].forEach(function (n) { var piece = note(n.id); %>
       <article class="tile journal-card" data-reveal-child>
-        <div class="tile__media surface mat-travertine"><img src="/images/IMG-8088.png" alt="" loading="lazy" onerror="pesuImage(this)"></div>
-        <span class="journal-card__kicker">Marble</span>
-        <h3>Dust it dry, and let it age</h3>
-        <p>A soft, dry cloth is all it needs. Stone takes on the character of the room it sits in — that is the point of it.</p>
+        <div class="tile__media surface <%= piece ? piece.swatch : 'mat-travertine' %>"><% if (piece) { %><%- img(piece, 0, 600) %><% } %></div>
+        <span class="journal-card__kicker"><%= n.kicker %></span>
+        <h3><%= n.title %></h3>
+        <p><%= n.body %></p>
       </article>
-      <article class="tile journal-card" data-reveal-child>
-        <div class="tile__media surface mat-boucle"><img src="/images/IMG-8062.jpg" alt="" loading="lazy" onerror="pesuImage(this)"></div>
-        <span class="journal-card__kicker">Cane &amp; grass</span>
-        <h3>Keep the weave out of wet</h3>
-        <p>Dust gently with a dry cloth. Woven bamboo, cane and sabai grass are happiest away from steam and direct water.</p>
-      </article>
-      <article class="tile journal-card" data-reveal-child>
-        <div class="tile__media surface mat-oak"><img src="/images/IMG-8057.png" alt="" loading="lazy" onerror="pesuImage(this)"></div>
-        <span class="journal-card__kicker">Hand-painted wood</span>
-        <h3>No polish, no solvents</h3>
-        <p>Wipe with a soft dry cloth only. Painted surfaces do not want cleaning products, and they do not need them.</p>
-      </article>
+      <% }) %>
     </div>
   </div>
 </section>
@@ -315,7 +311,7 @@
     <form class="newsletter" method="post" action="/subscribe">
       <label class="field">
         <span class="visually-hidden">Email address</span>
-        <input class="field__input" type="email" required placeholder="your@email.com" autocomplete="email">
+        <input class="field__input" type="email" name="email" required placeholder="your@email.com" autocomplete="email">
       </label>
       <button type="submit">Join</button>
     </form>

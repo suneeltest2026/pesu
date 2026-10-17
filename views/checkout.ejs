@@ -90,7 +90,7 @@
         <% cart.items.forEach(function (item) { %>
         <div class="checkout__line">
           <span class="checkout__line-qty"><%= item.qty %>×</span>
-          <span><%= item.name %></span>
+          <span><%= item.orderName %></span>
           <span class="num"><%= money(item.lineFils) %></span>
         </div>
         <% }) %>

@@ -1,5 +1,5 @@
 {
-  "_comment": "Canonical PESU product data, exported from Shopify on 2026-08-26. This file is the source of truth for the independent store; the database is seeded from it. Image URLs still point at the Shopify CDN and MUST be replaced with self-hosted files before Shopify is closed.",
+  "_comment": "PESU catalogue. Products are supplied and shipped by Zendrop (see docs/zendrop-orders.md). Bump catalogVersion whenever this file changes so the live database picks the change up on the next deploy.",
   "exportedAt": "2026-08-26",
   "currency": "AED",
   "shop": {
@@ -10,183 +10,1146 @@
     "returnsAddress": "C1 Building, Ajman Free Zone, Ajman"
   },
   "shipping": {
-    "processing": "1–2 business days",
-    "dubai": "1–3 business days",
-    "emirates": "5–7 business days",
+    "processing": "1–3 business days",
+    "dubai": "8–12 business days from your order",
+    "emirates": "8–12 business days from your order",
     "international": "up to 15 business days",
     "freeThresholdAED": 200,
     "flatAED": 25,
     "outsideUaeAED": 75,
-    "courier": "Quiqup"
+    "courier": "tracked international post"
   },
-  "returns": { "days": 15, "note": "Unused, in original packaging, with proof of purchase." },
+  "returns": {
+    "days": 15,
+    "note": "Unused, in original packaging, with proof of purchase."
+  },
   "groups": [
-    { "id": "ritual", "name": "Ritual", "line": "Incense, tea lights and the quiet minutes" },
-    { "id": "light", "name": "Light", "line": "Hand-woven shades and warm, uneven glow" },
-    { "id": "wall", "name": "Wall", "line": "Hand-painted frames and gallery walls" },
-    { "id": "table", "name": "Table", "line": "Centrepieces, bowls and small green things" }
+    {
+      "id": "light",
+      "name": "Light",
+      "line": "Lamps, candlelight and soft glow"
+    },
+    {
+      "id": "vases",
+      "name": "Vases",
+      "line": "For fresh flowers, dried stems and cuttings"
+    },
+    {
+      "id": "table",
+      "name": "Table",
+      "line": "Trays and clocks for tables, desks and consoles"
+    },
+    {
+      "id": "accents",
+      "name": "Accents",
+      "line": "Small sculptures, candles, incense and a soft rug"
+    }
   ],
   "materials": [
-    { "id": "marble", "name": "Marble", "short": "Marble", "swatch": "mat-travertine", "origin": "Hand-finished natural stone", "note": "Cool to the touch, honest in texture — no two pieces exactly alike." },
-    { "id": "bamboo", "name": "Bamboo & cane", "short": "Cane", "swatch": "mat-boucle", "origin": "Traditional hand-weaving", "note": "Light passes through in soft, uneven patterns — never harsh, never perfect." },
-    { "id": "wood", "name": "Hand-painted wood", "short": "Wood", "swatch": "mat-oak", "origin": "Painted by hand, piece by piece", "note": "Brushwork you can read up close, on a frame built to outlast a trend." },
-    { "id": "sabai", "name": "Sabai grass", "short": "Sabai", "swatch": "mat-clay", "origin": "Mayurbhanj, Odisha", "note": "Sun-dried, hand-twisted into rope, then braided by rural artisans." },
-    { "id": "silver", "name": "Silver finish", "short": "Silver", "swatch": "mat-brass", "origin": "Premium metal finish", "note": "A quiet shine that holds the light without shouting about it." },
-    { "id": "ply", "name": "Wood & glass", "short": "Glass", "swatch": "mat-basalt", "origin": "Handmade, dovetailed", "note": "Knots, scratches and blemishes left in place — the evidence of real wood." }
+    {
+      "id": "ceramic",
+      "name": "Ceramic",
+      "short": "Ceramic",
+      "swatch": "mat-alabaster",
+      "origin": "Glazed ceramic",
+      "note": "Smooth, glazed and easy to live with."
+    },
+    {
+      "id": "glass",
+      "name": "Glass & crystal",
+      "short": "Glass",
+      "swatch": "mat-basalt",
+      "origin": "Glass, crystal and acrylic",
+      "note": "Clear forms that catch and carry the light."
+    },
+    {
+      "id": "metal",
+      "name": "Metal",
+      "short": "Metal",
+      "swatch": "mat-brass",
+      "origin": "Steel and coated metal",
+      "note": "Clean lines and a sturdy, lasting finish."
+    },
+    {
+      "id": "wood",
+      "name": "Wood & bamboo",
+      "short": "Wood",
+      "swatch": "mat-oak",
+      "origin": "Wood and bamboo",
+      "note": "Warm grain that softens a room."
+    },
+    {
+      "id": "resin",
+      "name": "Resin",
+      "short": "Resin",
+      "swatch": "mat-clay",
+      "origin": "Cast resin",
+      "note": "Small sculptures with fine detail."
+    },
+    {
+      "id": "textile",
+      "name": "Cotton & soft fibres",
+      "short": "Soft",
+      "swatch": "mat-boucle",
+      "origin": "Cotton and polyester",
+      "note": "Soft to the touch, gentle on the eye."
+    },
+    {
+      "id": "wax",
+      "name": "Soy wax",
+      "short": "Wax",
+      "swatch": "mat-travertine",
+      "origin": "Soy wax",
+      "note": "Candles made to look at as well as light."
+    }
   ],
   "products": [
     {
-      "id": "marble-incense",
-      "handle": "marble-incense-holder",
-      "legacyHandle": "luxury-marble-incense-holder-handmade-minimal-home-decor-pesu-uae",
-      "name": "Marble Incense Holder",
-      "fullTitle": "Handcrafted Marble Incense Holder — Raw Stone, Quiet Ritual",
-      "group": "ritual", "material": "marble",
-      "priceAED": 89, "compareAtAED": 129, "inventory": 10, "active": true,
-      "blurb": "A small ritual, carved in stone",
-      "seoDescription": "Elevate your daily rituals with a handcrafted marble incense holder. Premium home décor designed for calm, mindful living across the UAE.",
-      "images": ["IMG-8088.png"],
-      "story": [
-        "A small ritual, carved in stone. This incense holder is cut from natural marble — cool to the touch, honest in texture, with no two pieces exactly alike.",
-        "Light it during meditation, prayer, or simply the quiet minutes before bed. Let the smoke settle the room, and let the stone settle you."
+      "id": "ceramic-tray",
+      "handle": "ceramic-tray",
+      "name": "Glazed Ceramic Serving Tray",
+      "fullTitle": "Glazed Ceramic Serving Tray — Patterned, Rectangular",
+      "group": "table",
+      "material": "ceramic",
+      "priceAED": 249,
+      "inventory": 50,
+      "active": true,
+      "blurb": "A tray that earns its place on the table",
+      "seoDescription": "A generous rectangular tray in glazed ceramic, printed with a dense, colourful pattern and finished with raised handles at each end.",
+      "images": [
+        "https://file.zendrop.com/products/ea/df/71bce1ba45c9b6db69d49cc112ef_import.webp",
+        "https://file.zendrop.com/products/ea/8e/e92d6f2f47e0851e6a1fbde2268d_import.webp",
+        "https://file.zendrop.com/products/f3/34/c37349b64d27961bcaae7754919d_import.webp",
+        "https://file.zendrop.com/products/fd/c1/3cec09cd4bdca6166e88b2daa2db_import.webp",
+        "https://file.zendrop.com/products/ef/a5/637c7200484696f1c09275accbc3_import.webp"
       ],
-      "features": ["Natural marble, hand-finished", "Minimal form, raw material", "A daily reset for your space"],
-      "specs": { "Material": "Natural marble, hand-finished", "Finish": "Raw stone, honest texture", "Care": "Wipe with a soft, dry cloth", "Note": "Handmade — colour and veining vary piece to piece" },
-      "tags": ["incense holder", "marble", "meditation décor", "wellness"]
+      "story": [
+        "A generous rectangular tray in glazed ceramic, printed with a dense, colourful pattern and finished with raised handles at each end.",
+        "Use it for tea and dates when guests arrive, or leave it on an ottoman or console as a place for the small things that otherwise drift around a room."
+      ],
+      "features": [
+        "Glazed ceramic with a printed pattern",
+        "Raised handles at each end",
+        "Large enough for a full tea service"
+      ],
+      "specs": {
+        "Material": "Glazed ceramic",
+        "Dimensions": "46 × 31 × 11 cm",
+        "Weight": "2.0 kg",
+        "Care": "Wipe clean; not for oven use",
+        "Delivery": "Ships in 8–12 business days across the UAE"
+      },
+      "options": [
+        {
+          "name": "Pattern",
+          "values": [
+            "Happy",
+            "Sunny Red",
+            "Mandis",
+            "Dubai Light"
+          ]
+        }
+      ],
+      "tags": [
+        "tray",
+        "serving tray",
+        "ceramic",
+        "tea"
+      ],
+      "supplier": {
+        "zendropProductId": 2903371,
+        "zendropUrl": "https://app.zendrop.com/product/2903371",
+        "variant": "Same name as the pattern chosen (e.g. \"Sunny Red (22-02P)\")"
+      }
     },
     {
-      "id": "bamboo-lamps",
-      "handle": "bamboo-cane-hanging-lamps",
-      "legacyHandle": "handmade-bamboo-cane-hanging-lamps-set-of-3",
-      "name": "Bamboo & Cane Hanging Lamps",
-      "fullTitle": "Handmade Bamboo & Cane Hanging Lamps — Set of 3",
-      "group": "light", "material": "bamboo",
-      "priceAED": 149, "compareAtAED": 199, "inventory": 5, "active": true,
-      "blurb": "Set of three, hand-woven",
-      "seoDescription": "Handcrafted bamboo and cane hanging lamps (set of 3) offering warm, natural lighting. Ideal for living rooms, dining areas and cosy interiors.",
-      "images": ["IMG-8060.jpg", "IMG-8061.jpg", "IMG-8062.jpg", "IMG-8063.jpg"],
-      "story": [
-        "Light, filtered through something real. Hand-woven from natural bamboo and cane, these lamps let light pass through in soft, uneven patterns — never harsh, never perfect.",
-        "Hang them over a dining table, a reading corner, or a quiet hallway, and watch the room settle into a warmer glow. No two lamps are identical — the small irregularities are part of the craft, not a flaw in it."
+      "id": "acrylic-night-light",
+      "handle": "acrylic-night-light",
+      "name": "Acrylic Night Light",
+      "fullTitle": "3D Acrylic Night Light — Warm Orange Glow, 18 cm",
+      "group": "light",
+      "material": "glass",
+      "priceAED": 299,
+      "inventory": 50,
+      "active": true,
+      "blurb": "A soft glow for a desk or bedside",
+      "seoDescription": "An acrylic panel lit from its base, so the shape inside it seems to float in a warm orange glow.",
+      "images": [
+        "https://file.zendrop.com/products/9e/4e/83d679774fe7b046fe823a069903_import.webp",
+        "https://file.zendrop.com/products/3f/cc/a9193dd049fe8e2d55391006b5c7_import.webp"
       ],
-      "features": ["Hand-woven bamboo and cane, set of 3", "Soft, ambient light with natural shadow texture", "Lightweight, easy to hang", "Eco-friendly, sustainably made"],
-      "specs": { "Set includes": "3 hanging lamps", "Material": "Natural bamboo & cane", "Dimensions": "17 cm diameter × 19 cm height, each", "Includes": "Bulb holder + 2 m wire with plug", "Care": "Wipe gently with a soft, dry cloth" },
-      "tags": ["lighting", "bamboo", "cane", "hanging lamp"]
+      "story": [
+        "An acrylic panel lit from its base, so the shape inside it seems to float in a warm orange glow.",
+        "Low enough to leave on beside a bed or on a desk in the evening. It arrives individually boxed, which makes it an easy gift."
+      ],
+      "features": [
+        "Acrylic panel with an illuminated base",
+        "Warm orange light",
+        "Individually boxed"
+      ],
+      "specs": {
+        "Material": "Acrylic with LED base",
+        "Height": "18 cm",
+        "Colour": "Orange",
+        "Delivery": "Ships in 8–12 business days across the UAE"
+      },
+      "options": [],
+      "tags": [
+        "night light",
+        "lamp",
+        "acrylic",
+        "gift"
+      ],
+      "supplier": {
+        "zendropProductId": 2903763,
+        "zendropUrl": "https://app.zendrop.com/product/2903763",
+        "variant": "Orange / 18cm"
+      }
     },
     {
-      "id": "frames-classic",
-      "handle": "handpainted-wall-frames-classic",
-      "legacyHandle": "classic-handpainted-wooden-wall-frames-elegant-artistic-wall-decor",
-      "name": "Handpainted Wall Frames, Classic",
-      "fullTitle": "Classic Handpainted Wooden Wall Frames — Elegant Artistic Wall Décor",
-      "group": "wall", "material": "wood",
-      "priceAED": 199, "compareAtAED": 299, "inventory": 10, "active": true,
-      "blurb": "Intricate brushwork on wood",
-      "seoDescription": "Classic handpainted wooden wall frames — artistic detailing and premium craftsmanship for gallery walls and statement interiors.",
-      "images": ["IMG-8059.png", "IMG-8058.png", "IMG-8057.png", "IMG-8056.png", "IMG-8055.png"],
-      "story": [
-        "Intricate handpainted detailing on premium wood, for walls that need warmth rather than another print.",
-        "Built for gallery arrangements and statement walls — living rooms, hallways, entryways — and equally at home in modern, traditional or layered interiors."
+      "id": "morandi-metal-tray",
+      "handle": "morandi-metal-tray",
+      "name": "Round Metal Tray",
+      "fullTitle": "Round Metal Tray in Muted Morandi Colours, 32 cm",
+      "group": "table",
+      "material": "metal",
+      "priceAED": 189,
+      "inventory": 50,
+      "active": true,
+      "blurb": "Soft colour, clean edge",
+      "seoDescription": "A round metal tray in one of four quiet, muted colours, with a low rim that keeps things from sliding off.",
+      "images": [
+        "https://file.zendrop.com/products/80/18/9c05a71e44d6925dbd3aaca194b5_import.webp",
+        "https://file.zendrop.com/products/c3/63/6190f9014c6ba76841847eeae66c_import.webp",
+        "https://file.zendrop.com/products/75/6d/c11ce1c0470192b23b5acb5eb398_import.webp",
+        "https://file.zendrop.com/products/84/8d/37f5c5bc4ab485d32822578063fe_import.webp",
+        "https://file.zendrop.com/products/46/01/11c8161c44febc2b7c5a9b0618d4_import.webp"
       ],
-      "features": ["Handpainted detailing, piece by piece", "Premium wooden craftsmanship", "Made for gallery walls and statement arrangements"],
-      "specs": { "Type": "Decorative wall frames", "Material": "Wood", "Finish": "Handpainted", "Spaces": "Living room, bedroom, hallway, entryway, office", "Care": "Wipe with a soft, dry cloth only" },
-      "tags": ["wall décor", "frames", "handpainted", "wood"]
+      "story": [
+        "A round metal tray in one of four quiet, muted colours, with a low rim that keeps things from sliding off.",
+        "It works on a dressing table for perfume and jewellery, on a coffee table under candles, or simply for carrying cups."
+      ],
+      "features": [
+        "Powder-coated metal, four muted colours",
+        "Low rim, flat base",
+        "Sturdy enough for daily use"
+      ],
+      "specs": {
+        "Material": "Metal",
+        "Dimensions": "32 cm diameter × 7 cm",
+        "Weight": "1.3 kg",
+        "Care": "Wipe with a damp cloth and dry",
+        "Delivery": "Ships in 8–12 business days across the UAE"
+      },
+      "options": [
+        {
+          "name": "Colour",
+          "values": [
+            "Beige",
+            "Grey",
+            "Blue",
+            "Green"
+          ]
+        }
+      ],
+      "tags": [
+        "tray",
+        "metal",
+        "storage",
+        "vanity"
+      ],
+      "supplier": {
+        "zendropProductId": 2903342,
+        "zendropUrl": "https://app.zendrop.com/product/2903342",
+        "variant": "Beige → \"Beige-Yellow\", Grey → \"Grey-Grey\", Blue → \"Blue-Blue\", Green → \"Green-Green\""
+      }
     },
     {
-      "id": "frame-turquoise",
-      "handle": "handpainted-wall-frame-turquoise",
-      "legacyHandle": "turquoise-handpainted-wooden-wall-frame-artistic-luxury-wall-decor",
-      "name": "Handpainted Wall Frame, Turquoise",
-      "fullTitle": "Turquoise Handpainted Wooden Wall Frame — Artistic Luxury Wall Décor",
-      "group": "wall", "material": "wood",
-      "priceAED": 69, "compareAtAED": 89, "inventory": 25, "active": true,
-      "blurb": "One colour, held against a neutral wall",
-      "seoDescription": "Turquoise handpainted wooden wall frame — artistic detailing and a rich finish for modern and bohemian interiors.",
-      "images": ["IMG-8054.png", "IMG-8053.png"],
-      "story": [
-        "A rich turquoise finish over handpainted detailing — colour used the way a room can take it, in one place rather than everywhere.",
-        "Hang it alone against a neutral wall, or let it anchor a gallery arrangement of quieter frames."
+      "id": "wooden-weather-clock",
+      "handle": "wooden-weather-clock",
+      "name": "Wooden Weather Station Clock",
+      "fullTitle": "Wooden Weather Station Clock with LCD Display and Alarm",
+      "group": "table",
+      "material": "wood",
+      "priceAED": 259,
+      "inventory": 50,
+      "active": true,
+      "blurb": "Time, temperature and humidity, in wood",
+      "seoDescription": "A small block of solid wood with a clear LCD face showing the time, the temperature and the humidity, indoors and out.",
+      "images": [
+        "https://file.zendrop.com/products/6e/c7/f3b5f5024237a8c3fd30267c7543_import.webp",
+        "https://file.zendrop.com/products/8e/60/6793fd4b49c7859ff190532957ed_import.webp",
+        "https://file.zendrop.com/products/af/67/0d1473e04d22b830048de30bf92a_import.webp"
       ],
-      "features": ["Rich turquoise finish, handpainted", "Artistic detailing on premium wood", "Anchors a gallery wall or stands alone"],
-      "specs": { "Type": "Decorative wall frame", "Material": "Wood", "Finish": "Handpainted turquoise", "Spaces": "Living room, bedroom, hallway, entryway, office", "Care": "Wipe with a soft, dry cloth only" },
-      "tags": ["wall décor", "frames", "turquoise", "handpainted"]
+      "story": [
+        "A small block of solid wood with a clear LCD face showing the time, the temperature and the humidity, indoors and out.",
+        "It sets an alarm too, so it can replace the clock on a bedside table — and a summer in the UAE gives the humidity reading plenty to do."
+      ],
+      "features": [
+        "Solid wood case",
+        "Indoor and outdoor temperature and humidity",
+        "Alarm clock"
+      ],
+      "specs": {
+        "Case": "Solid wood",
+        "Display": "LCD",
+        "Weight": "0.8 kg",
+        "Delivery": "Ships in 8–12 business days across the UAE"
+      },
+      "options": [],
+      "tags": [
+        "clock",
+        "weather station",
+        "wood",
+        "bedside"
+      ],
+      "supplier": {
+        "zendropProductId": 2917094,
+        "zendropUrl": "https://app.zendrop.com/product/2917094",
+        "variant": "Solid Wood weather clock"
+      }
     },
     {
-      "id": "krishna-tlight",
-      "handle": "krishna-t-light-holder",
-      "legacyHandle": "krishna-t-light-candle-holder-elegant-spiritual-home-decor",
-      "name": "Krishna T-Light Holder",
-      "fullTitle": "Krishna T-Light Candle Holder — Elegant Spiritual Home Décor",
-      "group": "ritual", "material": "silver",
-      "priceAED": 49, "compareAtAED": 69, "inventory": 10, "active": true,
-      "blurb": "Candlelight for a prayer corner",
-      "seoDescription": "Krishna t-light candle holder — intricate detailing and warm candlelight for prayer corners, festive setups and modern interiors.",
-      "images": ["IMG-8052.jpg", "IMG-8051.jpg", "IMG-8050.png", "IMG-8049.png"],
-      "story": [
-        "A Krishna-inspired form with intricate detailing, made to hold a single tea light and the warmth that comes with it.",
-        "For coffee tables, prayer corners, shelves and festive setups — Ramadan, Eid, Diwali, or an ordinary evening that deserves better light."
+      "id": "cloud-rug",
+      "handle": "cloud-rug",
+      "name": "Cream Cloud Rug",
+      "fullTitle": "Soft Cream Cloud Rug, 80 × 120 cm",
+      "group": "accents",
+      "material": "textile",
+      "priceAED": 189,
+      "inventory": 50,
+      "active": true,
+      "blurb": "Soft underfoot, 80 × 120 cm",
+      "seoDescription": "A thick, soft rug in creamy, cloud-like tones, with a short pile that feels plush underfoot.",
+      "images": [
+        "https://file.zendrop.com/products/12/b6/b132d06c477b9552bdc01b2c79d1_import.webp",
+        "https://file.zendrop.com/products/41/cc/c7ca769440659fd3b142b322f5b5_import.webp",
+        "https://file.zendrop.com/products/a6/81/86d921f148228ab23e0b3be6907b_import.webp",
+        "https://file.zendrop.com/products/d8/cb/bfc280184f009d8a67e2dd6af012_import.webp",
+        "https://file.zendrop.com/products/97/b5/cfe25b1746bc8c80f203b1b72c62_import.webp"
       ],
-      "features": ["Krishna-inspired decorative design", "Warm, peaceful candlelight ambiance", "For festive setups, prayer corners and shelves"],
-      "specs": { "Type": "T-light candle holder", "Material": "Premium decorative finish", "Spaces": "Living room, prayer room, bedroom, entryway, office", "Care": "Wipe with a soft, dry cloth only" },
-      "tags": ["candle holder", "festive", "spiritual décor", "gifting"]
+      "story": [
+        "A thick, soft rug in creamy, cloud-like tones, with a short pile that feels plush underfoot.",
+        "Sized for beside a bed, in front of a sofa or in a reading corner. Vacuum it gently to keep the pile lifted."
+      ],
+      "features": [
+        "Soft polyester pile",
+        "80 × 120 cm",
+        "Easy to vacuum"
+      ],
+      "specs": {
+        "Material": "Polyester fibre",
+        "Size": "80 × 120 cm",
+        "Care": "Vacuum gently; spot clean",
+        "Delivery": "Ships in 8–12 business days across the UAE"
+      },
+      "options": [
+        {
+          "name": "Style",
+          "values": [
+            "Style 1",
+            "Style 2",
+            "Style 3",
+            "Style 4",
+            "Style 5",
+            "Style 6",
+            "Style 7",
+            "Style 8"
+          ]
+        }
+      ],
+      "tags": [
+        "rug",
+        "carpet",
+        "bedroom",
+        "soft"
+      ],
+      "supplier": {
+        "zendropProductId": 2909238,
+        "zendropUrl": "https://app.zendrop.com/product/2909238",
+        "variant": "\"Soft candy cream style-N\" (N = style chosen), size 80*120cm"
+      }
     },
     {
-      "id": "elephant-bowl",
-      "handle": "silver-elephant-bowl",
-      "legacyHandle": "silver-elephant-decorative-bowl-elegant-luxury-home-decor",
-      "name": "Silver Elephant Bowl",
-      "fullTitle": "Silver Elephant Decorative Bowl — Elegant Luxury Home Décor",
-      "group": "table", "material": "silver",
-      "priceAED": 99, "compareAtAED": 129, "inventory": 10, "active": true,
-      "blurb": "A centrepiece that carries symbolism",
-      "seoDescription": "Silver elephant decorative bowl — a premium centrepiece for coffee tables, consoles and dining tables.",
-      "images": ["kTcMELfR_C31DFRVVG2_2025-03-19_4.webp", "kTcMELfR_8ZNGJOKFMI_2025-03-19_3.webp", "kTcMELfR_ICMVLCFBU5_2025-03-19_2.webp", "kTcMELfR_LOV9P61VHQ_2025-03-19_1.webp"],
-      "story": [
-        "An elephant-inspired form in a premium silver finish — a centrepiece for a coffee table, a console, or a dining table that needs one considered object rather than five.",
-        "The elephant carries its own symbolism: wisdom, prosperity, strength. It reads as decoration first and meaning second, which is the right order."
+      "id": "acrylic-flower-vase",
+      "handle": "acrylic-flower-vase",
+      "name": "Clear Acrylic Flower Rack",
+      "fullTitle": "Clear Acrylic Flower Rack Vase — 12 Stems, 30 cm",
+      "group": "vases",
+      "material": "glass",
+      "priceAED": 129,
+      "inventory": 50,
+      "active": true,
+      "blurb": "Twelve stems in a single clear line",
+      "seoDescription": "A long, clear acrylic block with twelve holes in a row, so each stem stands on its own instead of crowding a single neck.",
+      "images": [
+        "https://file.zendrop.com/products/ef/6c/27d972564bda85b2bf7780bef629_import.webp",
+        "https://file.zendrop.com/products/83/a9/8b1109d045b08f8f06bf74a23f2d_import.webp",
+        "https://file.zendrop.com/products/8b/ed/61ab28634aabb4627f16e05d787e_import.webp",
+        "https://file.zendrop.com/products/60/c4/fe73dea74057ba4f4e25ab94af12_import.webp"
       ],
-      "features": ["Luxury silver finish with premium detailing", "Elephant-inspired decorative form", "Centrepiece for coffee tables, consoles and shelves"],
-      "specs": { "Type": "Decorative bowl", "Material": "Premium metal, silver finish", "Spaces": "Living room, dining room, bedroom, office, entryway", "Care": "Wipe with a soft, dry cloth only" },
-      "tags": ["decorative bowl", "centrepiece", "silver", "gifting"]
+      "story": [
+        "A long, clear acrylic block with twelve holes in a row, so each stem stands on its own instead of crowding a single neck.",
+        "Fill it with water and short-stemmed flowers along a dining table or a windowsill. It is lighter and tougher than glass."
+      ],
+      "features": [
+        "Clear acrylic, lighter than glass",
+        "Twelve stem holes in a row",
+        "Holds water"
+      ],
+      "specs": {
+        "Material": "Acrylic",
+        "Dimensions": "30 × 10 × 6 cm",
+        "Holes": "12",
+        "Delivery": "Ships in 8–12 business days across the UAE"
+      },
+      "options": [],
+      "tags": [
+        "vase",
+        "acrylic",
+        "flowers",
+        "table"
+      ],
+      "supplier": {
+        "zendropProductId": 2922743,
+        "zendropUrl": "https://app.zendrop.com/product/2922743",
+        "variant": "30*10 * 6cm 12 holes"
+      }
     },
     {
-      "id": "sabai-tealight",
-      "handle": "sabai-grass-tea-light-holder",
-      "legacyHandle": "handwoven-sabai-grass-tea-light-holder",
-      "name": "Sabai Grass Tea Light Holder",
-      "fullTitle": "Handwoven Sabai Grass Tea Light Holder",
-      "group": "ritual", "material": "sabai",
-      "priceAED": 24.99, "compareAtAED": 39.99, "inventory": 20, "active": true,
-      "blurb": "Hand-twisted grass, braided by artisans",
-      "seoDescription": "Handwoven sabai grass tea light holder, made by rural artisans in Mayurbhanj, Odisha. Eco-friendly and one of a kind.",
-      "images": ["HR6010134010200_1.jpg", "6010134010200_2.jpg", "6010134010200_3.jpg"],
-      "story": [
-        "Mayurbhanj in Odisha is known as the land of tigers, and also for its handicrafts. This holder is woven there, by rural artisans, from sabai grass.",
-        "The grass is sun-dried, hand-twisted into rope, rubbed against tree bark to take off the rough edges, then braided. It is slow work, and it shows in the object."
+      "id": "nordic-ceramic-vase",
+      "handle": "nordic-ceramic-vase",
+      "name": "Twisted Ceramic Vase",
+      "fullTitle": "Twisted Nordic-Style Ceramic Vase for Dried Flowers",
+      "group": "vases",
+      "material": "ceramic",
+      "priceAED": 139,
+      "inventory": 50,
+      "active": true,
+      "blurb": "A twisted form for dried stems",
+      "seoDescription": "A glazed ceramic vase with a gentle twist in its body, in plain white or a soft coffee brown.",
+      "images": [
+        "https://file.zendrop.com/products/37/32/0d88a226404db436e2f72d3b8347_import.webp"
       ],
-      "features": ["Handwoven sabai grass", "Eco-friendly and artisanal", "One-of-a-kind by nature of the process"],
-      "specs": { "Material": "Sabai grass", "Dimensions": "1.7 in × 1.7 in", "Weight": "20 g", "Method": "Handwoven", "Care": "Wipe clean or dust with a soft, damp cloth" },
-      "tags": ["tea light", "sabai grass", "handwoven", "eco-friendly"]
+      "story": [
+        "A glazed ceramic vase with a gentle twist in its body, in plain white or a soft coffee brown.",
+        "It suits dried stems, pampas or a single branch, and stands on its own when it is empty."
+      ],
+      "features": [
+        "Glazed ceramic",
+        "Twisted, sculptural form",
+        "White or soft coffee"
+      ],
+      "specs": {
+        "Material": "Glazed ceramic",
+        "Care": "Wipe with a soft cloth",
+        "Delivery": "Ships in 8–12 business days across the UAE"
+      },
+      "options": [
+        {
+          "name": "Colour",
+          "values": [
+            "White",
+            "Coffee"
+          ]
+        }
+      ],
+      "tags": [
+        "vase",
+        "ceramic",
+        "dried flowers",
+        "nordic"
+      ],
+      "supplier": {
+        "zendropProductId": 2925638,
+        "zendropUrl": "https://app.zendrop.com/product/2925638",
+        "variant": "White → \"Twist Flower Device (Plain White)\", Coffee → \"Twist Flower (Shallow Coffee)\""
+      }
     },
     {
-      "id": "dovetail-planter",
-      "handle": "dovetail-test-tube-planter",
-      "legacyHandle": "dovetail-wooden-test-tube-planter",
-      "name": "Dovetail Test Tube Planter",
-      "fullTitle": "Dovetail Wooden Test Tube Planter",
-      "group": "table", "material": "ply",
-      "priceAED": 69, "compareAtAED": 99, "inventory": 5, "active": true,
-      "blurb": "Cuttings, held in glass and wood",
-      "seoDescription": "Dovetail wooden test tube planter — handmade from plywood and glass for cuttings and single stems.",
-      "images": ["IMG-7931.jpg", "IMG-7932.jpg", "IMG-7933.jpg"],
-      "options": [{ "name": "Size — inches", "values": ["9.75 × 2.5 × 7.25"] }],
-      "story": [
-        "Test tubes set into dovetailed wood, for cuttings, single stems and the kind of green that does not need a pot.",
-        "Made from wood, and left with its rustic aesthetic intact: knot holes, scratches and blemishes are part of the offering rather than faults in it."
+      "id": "glass-dome-rose-lamp",
+      "handle": "glass-dome-rose-lamp",
+      "name": "Glass Dome Rose Lamp",
+      "fullTitle": "Glass Dome LED Lamp with Gold-Foil Rose and Couple Figurine",
+      "group": "light",
+      "material": "glass",
+      "priceAED": 119,
+      "inventory": 50,
+      "active": true,
+      "blurb": "A gold-foil rose under glass",
+      "seoDescription": "A gold-foil rose and a small couple figurine under a glass dome, lit from below with a warm LED.",
+      "images": [
+        "https://file.zendrop.com/products/8d/df/014881b14d1fba650d6a2bfbafdc_import.webp",
+        "https://file.zendrop.com/products/4e/02/c13ca637431792aa7951cda20fca_import.webp",
+        "https://file.zendrop.com/products/06/1f/5f5dc6cc4e268f9ab034e454ebb9_import.webp"
       ],
-      "features": ["Handmade, dovetailed construction", "Plywood and glass test tubes", "Table-top scale"],
-      "specs": { "Material": "Plywood & glass test tubes", "Dimensions": "9.75 in × 2.5 in × 7.25 in", "Weight": "434 g", "Method": "Handmade", "Care": "Wipe with a soft cloth" },
-      "tags": ["planter", "wood", "glass", "table top"]
+      "story": [
+        "A gold-foil rose and a small couple figurine under a glass dome, lit from below with a warm LED.",
+        "A romantic gift for an anniversary or a new couple, and a small light for a shelf or dressing table."
+      ],
+      "features": [
+        "Glass dome on an LED-lit base",
+        "Gold-foil rose with couple figurine",
+        "Individually boxed"
+      ],
+      "specs": {
+        "Material": "Glass dome, LED base",
+        "Dimensions": "11 × 22 cm",
+        "Delivery": "Ships in 8–12 business days across the UAE"
+      },
+      "options": [
+        {
+          "name": "Colour",
+          "values": [
+            "White",
+            "Blue",
+            "Rose Red",
+            "Red"
+          ]
+        }
+      ],
+      "tags": [
+        "lamp",
+        "rose",
+        "gift",
+        "anniversary"
+      ],
+      "supplier": {
+        "zendropProductId": 2903801,
+        "zendropUrl": "https://app.zendrop.com/product/2903801",
+        "variant": "White → \"Phantom White\", Blue → \"magic blue\", Rose Red → \"Fantasy Rose Red\", Red → \"magic red\""
+      }
+    },
+    {
+      "id": "flip-clock",
+      "handle": "flip-clock",
+      "name": "Flip Clock",
+      "fullTitle": "Automatic Flip Clock — Stainless Steel, 12-Hour",
+      "group": "table",
+      "material": "metal",
+      "priceAED": 279,
+      "inventory": 50,
+      "active": true,
+      "blurb": "Time, turning over page by page",
+      "seoDescription": "A desk clock with numbered leaves that flip over as the minutes pass — a small, quiet movement on a shelf or desk.",
+      "images": [
+        "https://file.zendrop.com/products/05/a9/e82492674cd39227a43c1e41c003_import.webp",
+        "https://file.zendrop.com/products/d0/b3/068b730c4d4981dd5609ff354730_import.webp",
+        "https://file.zendrop.com/products/59/c2/6faed2c747f6830b3c6aefd8ba85_import.webp",
+        "https://file.zendrop.com/products/26/f8/6036fe544c1eafd6a9c3568ee76b_import.webp",
+        "https://file.zendrop.com/products/60/14/7058ad8348c182d3eba63e3a1a67_import.webp"
+      ],
+      "story": [
+        "A desk clock with numbered leaves that flip over as the minutes pass — a small, quiet movement on a shelf or desk.",
+        "Stainless steel with white or black pages, in a simple retro shape that sits well in a modern room."
+      ],
+      "features": [
+        "Mechanical flip display",
+        "Stainless steel frame",
+        "White or black pages"
+      ],
+      "specs": {
+        "Frame": "Stainless steel",
+        "Display": "12-hour flip pages",
+        "Delivery": "Ships in 8–12 business days across the UAE"
+      },
+      "options": [
+        {
+          "name": "Pages",
+          "values": [
+            "White",
+            "Black"
+          ]
+        }
+      ],
+      "tags": [
+        "clock",
+        "flip clock",
+        "desk",
+        "retro"
+      ],
+      "supplier": {
+        "zendropProductId": 2923943,
+        "zendropUrl": "https://app.zendrop.com/product/2923943",
+        "variant": "White → \"12 hours stainless steel white\", Black → \"12 hours stainless steel black\""
+      }
+    },
+    {
+      "id": "thinker-bookend",
+      "handle": "thinker-bookend",
+      "name": "Thinker Bookend",
+      "fullTitle": "Minimalist Thinker Figure Bookend",
+      "group": "accents",
+      "material": "resin",
+      "priceAED": 109,
+      "inventory": 50,
+      "active": true,
+      "blurb": "A quiet figure to hold the books up",
+      "seoDescription": "A minimal seated figure, chin on hand, made to hold a row of books upright at the end of a shelf.",
+      "images": [
+        "https://file.zendrop.com/products/c8/dc/31f98a554c07a26664fcb1acff4b_import.webp",
+        "https://file.zendrop.com/products/4c/ee/33766f9343cb9e19340261d009b7_import.webp",
+        "https://file.zendrop.com/products/ea/77/cc0f050b453eb3b6caeeb0e5f12a_import.webp",
+        "https://file.zendrop.com/products/59/2d/fd06ac9048ada5468e9ec61b6aa7_import.webp",
+        "https://file.zendrop.com/products/27/7a/c4f491bd4ee4a99737984e4bc452_import.webp"
+      ],
+      "story": [
+        "A minimal seated figure, chin on hand, made to hold a row of books upright at the end of a shelf.",
+        "Choose the full figure or the head alone, in black or white. It works just as well on its own, as a small sculpture."
+      ],
+      "features": [
+        "Minimal sculptural figure",
+        "Holds books upright",
+        "Black or white"
+      ],
+      "specs": {
+        "Material": "Resin",
+        "Delivery": "Ships in 8–12 business days across the UAE"
+      },
+      "options": [
+        {
+          "name": "Style",
+          "values": [
+            "Thinker — Black",
+            "Thinker — White",
+            "Head — Black",
+            "Head — White"
+          ]
+        }
+      ],
+      "tags": [
+        "bookend",
+        "figurine",
+        "shelf",
+        "office"
+      ],
+      "supplier": {
+        "zendropProductId": 2926592,
+        "zendropUrl": "https://app.zendrop.com/product/2926592",
+        "variant": "Thinker — Black → \"Thinking Man-Black\", Thinker — White → \"Thinking about people-white.\", Head — Black → \"Thinking Man's Head-Black\", Head — White → \"Thinking Man's Head-White\""
+      }
+    },
+    {
+      "id": "wood-frame-glass-vase",
+      "handle": "wood-frame-glass-vase",
+      "name": "Wood Frame Propagation Vase",
+      "fullTitle": "Wooden Frame Hydroponic Glass Vase for Cuttings",
+      "group": "vases",
+      "material": "wood",
+      "priceAED": 119,
+      "inventory": 50,
+      "active": true,
+      "blurb": "Cuttings in glass, held in wood",
+      "seoDescription": "Small glass bottles held in a wooden frame — for pothos cuttings, a few stems, or anything you are trying to root in water.",
+      "images": [
+        "https://file.zendrop.com/products/8e/d4/d89623e04d15808ef2b7109bb192_import.webp",
+        "https://file.zendrop.com/products/47/d4/54da0e2343ca9431db9b4e0bd7a2_import.webp"
+      ],
+      "story": [
+        "Small glass bottles held in a wooden frame — for pothos cuttings, a few stems, or anything you are trying to root in water.",
+        "Watching the roots grow through the glass is half the point. Choose one, two or three bottles."
+      ],
+      "features": [
+        "Glass bottles in a wooden frame",
+        "For cuttings and single stems",
+        "One, two or three bottles"
+      ],
+      "specs": {
+        "Material": "Wood frame, glass bottles",
+        "Delivery": "Ships in 8–12 business days across the UAE"
+      },
+      "options": [
+        {
+          "name": "Bottles",
+          "values": [
+            "One bottle",
+            "Two bottles",
+            "Three bottles"
+          ]
+        }
+      ],
+      "tags": [
+        "vase",
+        "propagation",
+        "plants",
+        "glass"
+      ],
+      "supplier": {
+        "zendropProductId": 2909321,
+        "zendropUrl": "https://app.zendrop.com/product/2909321",
+        "variant": "One → \"Retro rack + a bottle\", Two → \"Retro rack + two bottles\", Three → \"Retro rack + three bottles\""
+      }
+    },
+    {
+      "id": "crystal-candle-holder",
+      "handle": "crystal-candle-holder",
+      "name": "Crystal Candle Holder",
+      "fullTitle": "K9 Crystal Candle Holder",
+      "group": "light",
+      "material": "glass",
+      "priceAED": 99,
+      "inventory": 50,
+      "active": true,
+      "blurb": "Candlelight, multiplied",
+      "seoDescription": "A heavy, clear crystal candle holder that catches a flame and scatters it across the table.",
+      "images": [
+        "https://file.zendrop.com/products/6b/bb/93fecf564cd9b95bb10369b17158_import.webp",
+        "https://file.zendrop.com/products/9b/e4/bee9fdd74d798a846e032c3bb1ce_import.webp",
+        "https://file.zendrop.com/products/ad/1b/9a08e7f54290a4ab0949fd680f2e_import.webp"
+      ],
+      "story": [
+        "A heavy, clear crystal candle holder that catches a flame and scatters it across the table.",
+        "For a dinner table, a Ramadan iftar, or a quiet evening at home. Never leave a lit candle unattended."
+      ],
+      "features": [
+        "Clear K9 crystal",
+        "Weighty and stable",
+        "For pillar or taper candles"
+      ],
+      "specs": {
+        "Material": "K9 crystal glass",
+        "Weight": "0.45 kg",
+        "Care": "Wash by hand",
+        "Delivery": "Ships in 8–12 business days across the UAE"
+      },
+      "options": [],
+      "tags": [
+        "candle holder",
+        "crystal",
+        "dining",
+        "ramadan"
+      ],
+      "supplier": {
+        "zendropProductId": 2918194,
+        "zendropUrl": "https://app.zendrop.com/product/2918194",
+        "variant": "K9"
+      }
+    },
+    {
+      "id": "soy-sculpture-candle",
+      "handle": "soy-sculpture-candle",
+      "name": "Sculpted Soy Candle",
+      "fullTitle": "Sculpted Body-Form Soy Wax Candle",
+      "group": "accents",
+      "material": "wax",
+      "priceAED": 69,
+      "inventory": 50,
+      "active": true,
+      "blurb": "A candle to look at as much as light",
+      "seoDescription": "A soy wax candle cast in a sculptural body form — something to keep on a shelf as an object as much as to burn.",
+      "images": [
+        "https://file.zendrop.com/products/2a/c6/76c642a64310966c0abab68242d1_import.webp",
+        "https://file.zendrop.com/products/14/e7/5e10957342d49337df7ab9cae550_import.webp",
+        "https://file.zendrop.com/products/40/de/9aba292e4c8c8538fb7f4a9a11a0_import.webp",
+        "https://file.zendrop.com/products/30/84/f86ce9384857b3088bc2327f7a1d_import.webp"
+      ],
+      "story": [
+        "A soy wax candle cast in a sculptural body form — something to keep on a shelf as an object as much as to burn.",
+        "Four colours: white, ivory, brown and black. Burn it on a heat-resistant dish and never leave it unattended."
+      ],
+      "features": [
+        "Soy wax",
+        "Sculptural cast form",
+        "Four colours"
+      ],
+      "specs": {
+        "Material": "Soy wax",
+        "Weight": "0.16 kg",
+        "Delivery": "Ships in 8–12 business days across the UAE"
+      },
+      "options": [
+        {
+          "name": "Colour",
+          "values": [
+            "White",
+            "Ivory",
+            "Brown",
+            "Black"
+          ]
+        }
+      ],
+      "tags": [
+        "candle",
+        "soy wax",
+        "sculpture",
+        "gift"
+      ],
+      "supplier": {
+        "zendropProductId": 2909200,
+        "zendropUrl": "https://app.zendrop.com/product/2909200",
+        "variant": "Same name as the colour chosen"
+      }
+    },
+    {
+      "id": "spiral-ceramic-vase",
+      "handle": "spiral-ceramic-vase",
+      "name": "Spiral Ceramic Vase",
+      "fullTitle": "Small Spiral Ceramic Vase, White",
+      "group": "vases",
+      "material": "ceramic",
+      "priceAED": 79,
+      "inventory": 50,
+      "active": true,
+      "blurb": "A small white spiral for one or two stems",
+      "seoDescription": "A small white ceramic vase with a spiral form, sized for one or two stems or a cutting in water.",
+      "images": [
+        "https://file.zendrop.com/products/db/c0/ae36a0fd4c3ab14a3178fa799741_import.webp",
+        "https://file.zendrop.com/products/22/9d/34190c7b47f4b56290bdd08a7265_import.webp",
+        "https://file.zendrop.com/products/68/12/b68fa8ee4399accee55c04bdb3c2_import.webp",
+        "https://file.zendrop.com/products/1a/75/4011f06a4a5cb5eadd3d0f5cdce8_import.webp",
+        "https://file.zendrop.com/products/8d/dd/95a8f5324228be04441cdce002a3_import.webp"
+      ],
+      "story": [
+        "A small white ceramic vase with a spiral form, sized for one or two stems or a cutting in water.",
+        "Choose a soft frosted finish or a smoother glaze. A few of them grouped together make a quiet centrepiece."
+      ],
+      "features": [
+        "White ceramic",
+        "Spiral form",
+        "Frosted or glazed finish"
+      ],
+      "specs": {
+        "Material": "Ceramic",
+        "Care": "Wipe with a soft cloth",
+        "Delivery": "Ships in 8–12 business days across the UAE"
+      },
+      "options": [
+        {
+          "name": "Finish",
+          "values": [
+            "Frosted",
+            "Glazed"
+          ]
+        }
+      ],
+      "tags": [
+        "vase",
+        "ceramic",
+        "white",
+        "small"
+      ],
+      "supplier": {
+        "zendropProductId": 2911788,
+        "zendropUrl": "https://app.zendrop.com/product/2911788",
+        "variant": "Frosted → \"Spiral (frosted)\", Glazed → \"Spiral (Yurun)\""
+      }
+    },
+    {
+      "id": "glass-mushroom-lamp",
+      "handle": "glass-mushroom-lamp",
+      "name": "Glass Mushroom Lamp",
+      "fullTitle": "Glass Mushroom Table Lamp and Bud Vase",
+      "group": "light",
+      "material": "glass",
+      "priceAED": 69,
+      "inventory": 50,
+      "active": true,
+      "blurb": "A little mushroom of light",
+      "seoDescription": "A small glass mushroom that lights up — and whose stem doubles as a bud vase for a single flower.",
+      "images": [
+        "https://file.zendrop.com/products/a9/d1/400891154ca39315b4497a1d379e_import.webp",
+        "https://file.zendrop.com/products/ca/3e/b57df85641f9a8f79fd3327bbf92_import.webp",
+        "https://file.zendrop.com/products/e3/34/d111b615481380780d9ea7fc223f_import.webp",
+        "https://file.zendrop.com/products/bd/bf/b13b88e6471f96c26f9f745cb48f_import.webp",
+        "https://file.zendrop.com/products/a0/29/ba5157884494a88770dbe09c528a_import.webp"
+      ],
+      "story": [
+        "A small glass mushroom that lights up — and whose stem doubles as a bud vase for a single flower.",
+        "Compact enough for a bedside table, a bookshelf or a child's room. Clear, pink, or yellow and purple."
+      ],
+      "features": [
+        "Glass lamp and bud vase in one",
+        "Compact, 15 cm tall",
+        "Three colours"
+      ],
+      "specs": {
+        "Material": "Glass",
+        "Dimensions": "15 × 11 × 6.5 cm",
+        "Delivery": "Ships in 8–12 business days across the UAE"
+      },
+      "options": [
+        {
+          "name": "Colour",
+          "values": [
+            "Clear",
+            "Pink",
+            "Yellow & Purple"
+          ]
+        }
+      ],
+      "tags": [
+        "lamp",
+        "mushroom",
+        "glass",
+        "bedside"
+      ],
+      "supplier": {
+        "zendropProductId": 2925916,
+        "zendropUrl": "https://app.zendrop.com/product/2925916",
+        "variant": "Clear → \"SKU-01-transparent\", Pink → \"SKU-02-Pink\", Yellow & Purple → \"SKU-03-yellow purple\""
+      }
+    },
+    {
+      "id": "vintage-tea-tray",
+      "handle": "vintage-tea-tray",
+      "name": "Vintage Square Tray",
+      "fullTitle": "Vintage-Print Wooden Square Tray, Camel",
+      "group": "table",
+      "material": "wood",
+      "priceAED": 89,
+      "inventory": 50,
+      "active": true,
+      "blurb": "For keys, rings and a cup of tea",
+      "seoDescription": "A shallow wooden tray with a vintage printed surface in a warm camel tone.",
+      "images": [
+        "https://file.zendrop.com/products/fa/6b/f12fabf145efade579b3631365eb_import.webp",
+        "https://file.zendrop.com/products/ca/7d/0a7fde3e48f682e43727f35a46b8_import.webp",
+        "https://file.zendrop.com/products/5c/50/f43e14c34a34bc926b1d3b50e9b7_import.webp",
+        "https://file.zendrop.com/products/22/87/1284fe8e437eb34ce9fd12eb642c_import.webp",
+        "https://file.zendrop.com/products/53/6a/7273043443cd8c53c68dc30ba0ee_import.webp"
+      ],
+      "story": [
+        "A shallow wooden tray with a vintage printed surface in a warm camel tone.",
+        "By the door for keys and sunglasses, on a dressing table for rings, or under a single cup of tea."
+      ],
+      "features": [
+        "Wood with a printed vintage surface",
+        "Shallow, square tray",
+        "Warm camel colour"
+      ],
+      "specs": {
+        "Material": "Wood",
+        "Dimensions": "21 × 30.5 × 3.5 cm",
+        "Care": "Wipe dry",
+        "Delivery": "Ships in 8–12 business days across the UAE"
+      },
+      "options": [],
+      "tags": [
+        "tray",
+        "wood",
+        "entryway",
+        "jewellery"
+      ],
+      "supplier": {
+        "zendropProductId": 2903369,
+        "zendropUrl": "https://app.zendrop.com/product/2903369",
+        "variant": "Camel"
+      }
+    },
+    {
+      "id": "bamboo-incense-burner",
+      "handle": "bamboo-incense-burner",
+      "name": "Bamboo Incense Burner",
+      "fullTitle": "Bamboo Incense Stick Burner with Lid",
+      "group": "accents",
+      "material": "wood",
+      "priceAED": 59,
+      "inventory": 50,
+      "active": true,
+      "blurb": "A long, low holder for incense sticks",
+      "seoDescription": "A long, slim bamboo box that holds an incense stick and catches its ash, with a carved pattern on the lid.",
+      "images": [
+        "https://file.zendrop.com/products/35/16/43f2ab6d43199e34fde8d788b91a_import.webp",
+        "https://file.zendrop.com/products/ef/26/de08ddec4e7eb5cc77067662c6f5_import.webp",
+        "https://file.zendrop.com/products/85/1d/fdcdeadc40579e5c92f25dbbd7c2_import.webp",
+        "https://file.zendrop.com/products/2c/d9/e9623d13487ea014889677f69e12_import.webp",
+        "https://file.zendrop.com/products/2a/d4/d80482d044eda7d03777325d7f27_import.webp"
+      ],
+      "story": [
+        "A long, slim bamboo box that holds an incense stick and catches its ash, with a carved pattern on the lid.",
+        "For a study, a tea corner or a prayer space. Four carved patterns to choose from."
+      ],
+      "features": [
+        "Bamboo with a carved lid",
+        "Catches the ash as the stick burns",
+        "Four patterns"
+      ],
+      "specs": {
+        "Material": "Bamboo",
+        "Dimensions": "23 × 3.7 × 2 cm",
+        "Delivery": "Ships in 8–12 business days across the UAE"
+      },
+      "options": [
+        {
+          "name": "Pattern",
+          "values": [
+            "Chevron",
+            "Water Ripple",
+            "Window",
+            "Grass"
+          ]
+        }
+      ],
+      "tags": [
+        "incense",
+        "bamboo",
+        "meditation",
+        "ritual"
+      ],
+      "supplier": {
+        "zendropProductId": 2769170,
+        "zendropUrl": "https://app.zendrop.com/product/2769170",
+        "variant": "Chevron → \"Chevron Pattern\", Water Ripple → \"Water Ripple\", Window → \"Hi-Window Pattern\", Grass → \"Tang Grass Pattern\""
+      }
+    },
+    {
+      "id": "ceramic-bird",
+      "handle": "ceramic-bird",
+      "name": "Ceramic Bird",
+      "fullTitle": "Abstract Ceramic Bird Ornament, Large",
+      "group": "accents",
+      "material": "ceramic",
+      "priceAED": 59,
+      "inventory": 50,
+      "active": true,
+      "blurb": "A small abstract bird for a shelf",
+      "seoDescription": "A simplified, abstract bird in glazed ceramic — the kind of small object that makes a bookshelf look finished.",
+      "images": [
+        "https://file.zendrop.com/products/88/db/db9625124cdb8f95aa7468afd7d2_import.webp",
+        "https://file.zendrop.com/products/50/3d/bd51fd77449f82dd8cd304d67415_import.webp",
+        "https://file.zendrop.com/products/79/4c/20b2c6d44b26b769fde8ecddef53_import.webp",
+        "https://file.zendrop.com/products/c9/f0/438be5b2490ba5e241a8064519f7_import.webp",
+        "https://file.zendrop.com/products/d2/74/5e2ae7c6461a92554b61476e67c2_import.webp"
+      ],
+      "story": [
+        "A simplified, abstract bird in glazed ceramic — the kind of small object that makes a bookshelf look finished.",
+        "In white, black, silver or gold. Two or three together on a shelf look like they are in conversation."
+      ],
+      "features": [
+        "Glazed ceramic",
+        "Abstract, minimal form",
+        "Four finishes"
+      ],
+      "specs": {
+        "Material": "Ceramic",
+        "Size": "Large",
+        "Delivery": "Ships in 8–12 business days across the UAE"
+      },
+      "options": [
+        {
+          "name": "Finish",
+          "values": [
+            "White",
+            "Black",
+            "Silver",
+            "Gold"
+          ]
+        }
+      ],
+      "tags": [
+        "ornament",
+        "bird",
+        "ceramic",
+        "shelf"
+      ],
+      "supplier": {
+        "zendropProductId": 2619237,
+        "zendropUrl": "https://app.zendrop.com/product/2619237",
+        "variant": "\"Big White Bird\" / \"Big Black Bird\" / \"Big Silver Bird\" / \"Big Golden Bird\""
+      }
+    },
+    {
+      "id": "cotton-ball-lights",
+      "handle": "cotton-ball-lights",
+      "name": "Cotton Ball String Lights",
+      "fullTitle": "Cotton Thread Ball LED String Lights",
+      "group": "light",
+      "material": "textile",
+      "priceAED": 59,
+      "inventory": 50,
+      "active": true,
+      "blurb": "Soft light, strung along a wall",
+      "seoDescription": "A string of small LED lights, each wrapped in a ball of cotton thread so the glow comes through soft and diffused.",
+      "images": [
+        "https://file.zendrop.com/products/41/2d/3d6ad3b246d597227987fecbd595_import.webp",
+        "https://file.zendrop.com/products/77/93/e412652749a3890bb9b47b17b806_import.webp",
+        "https://file.zendrop.com/products/86/44/15a9ff65453b9865799ff097e082_import.webp",
+        "https://file.zendrop.com/products/4d/98/7a8a66254a49807c42b8c6f24204_import.webp",
+        "https://file.zendrop.com/products/f7/d3/0f1c92fa43158d0496f842edf20f_import.webp"
+      ],
+      "story": [
+        "A string of small LED lights, each wrapped in a ball of cotton thread so the glow comes through soft and diffused.",
+        "Drape it over a headboard, along a shelf or around a mirror. Five colours."
+      ],
+      "features": [
+        "Cotton thread balls over LEDs",
+        "Soft, diffused light",
+        "Five colours"
+      ],
+      "specs": {
+        "Material": "Cotton thread, LED",
+        "Delivery": "Ships in 8–12 business days across the UAE"
+      },
+      "options": [
+        {
+          "name": "Colour",
+          "values": [
+            "White",
+            "Grey",
+            "Pink",
+            "Blue",
+            "Mixed colours"
+          ]
+        }
+      ],
+      "tags": [
+        "string lights",
+        "led",
+        "bedroom",
+        "cotton"
+      ],
+      "supplier": {
+        "zendropProductId": 2708147,
+        "zendropUrl": "https://app.zendrop.com/product/2708147",
+        "variant": "Same name as the colour chosen (\"Mixed colours\" → \"Colorful\")"
+      }
+    },
+    {
+      "id": "dancing-couple",
+      "handle": "dancing-couple",
+      "name": "Dancing Couple Sculpture",
+      "fullTitle": "Dancing Couple Resin Sculpture",
+      "group": "accents",
+      "material": "resin",
+      "priceAED": 99,
+      "inventory": 50,
+      "active": true,
+      "blurb": "One lift, held in a single moment",
+      "seoDescription": "A small resin sculpture of a dancer lifting his partner, caught at the top of the movement.",
+      "images": [
+        "https://file.zendrop.com/products/1d/b4/d7bb3da14081b57c26310cdfae08_import.webp",
+        "https://file.zendrop.com/products/5f/26/5f44e1384f64b3bdaa094689114c_import.webp",
+        "https://file.zendrop.com/products/ac/f2/6921d7214da9a54546553bc88461_import.webp",
+        "https://file.zendrop.com/products/52/75/cb75021f4719b93bc2c56aaf76f4_import.webp",
+        "https://file.zendrop.com/products/13/ff/f29dd5d94324a0008657870481fb_import.webp"
+      ],
+      "story": [
+        "A small resin sculpture of a dancer lifting his partner, caught at the top of the movement.",
+        "For a shelf, a desk or a console — and a natural gift for a wedding or an anniversary."
+      ],
+      "features": [
+        "Resin sculpture",
+        "Compact, shelf-sized",
+        "A wedding or anniversary gift"
+      ],
+      "specs": {
+        "Material": "Resin",
+        "Weight": "0.5 kg",
+        "Delivery": "Ships in 8–12 business days across the UAE"
+      },
+      "options": [],
+      "tags": [
+        "sculpture",
+        "figurine",
+        "couple",
+        "gift"
+      ],
+      "supplier": {
+        "zendropProductId": 2889410,
+        "zendropUrl": "https://app.zendrop.com/product/2889410",
+        "variant": "A"
+      }
     }
-  ]
+  ],
+  "catalogVersion": "2026-10-17-zendrop"
 }

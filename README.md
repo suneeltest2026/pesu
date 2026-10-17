@@ -1,7 +1,8 @@
 # PESU
 
-Handmade home decor in natural materials — marble, bamboo and cane,
-hand-painted wood, sabai grass. Dubai, United Arab Emirates.
+Home decor — lamps, vases, trays and small sculptures. Dubai, United Arab
+Emirates. Products are supplied and shipped by Zendrop; see
+[docs/zendrop-orders.md](docs/zendrop-orders.md) for how each order is fulfilled.
 
 An independent storefront: catalogue, bag, checkout, orders and admin, all
 running on one server against one database. **No Shopify, and no third-party
@@ -55,7 +56,7 @@ routes/                shop · cart · checkout · admin
 views/                 EJS templates and partials
 public/assets/         The design system (CSS) and site.js
 public/images/         Product photography, self-hosted
-data/products.json     The canonical catalogue
+data/products.json     The canonical catalogue (bump catalogVersion to publish a change)
 ```
 
 ## Things worth knowing

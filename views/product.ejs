@@ -69,18 +69,23 @@
           <% }) %>
         </ul>
 
-        <% product.options.forEach(function (opt) { %>
-        <div class="config__group">
-          <div class="config__group-head"><span class="config__group-label"><%= opt.name %></span></div>
+        <% /* The first option list is the one a customer chooses from; it is
+              sent with the order so the right colour or size is shipped. */ %>
+        <% product.options.slice(0, 1).forEach(function (opt) { %>
+        <fieldset class="config__group">
+          <legend class="config__group-head"><span class="config__group-label"><%= opt.name %></span></legend>
           <div class="options">
             <% opt.values.forEach(function (v, i) { %>
-            <button class="option" type="button" aria-pressed="<%= i === 0 %>"><%= v %></button>
+            <label class="option">
+              <input class="visually-hidden" type="radio" name="option" value="<%= v %>" form="buy-form"<%= i === 0 ? ' checked' : '' %>>
+              <%= v %>
+            </label>
             <% }) %>
           </div>
-        </div>
+        </fieldset>
         <% }) %>
 
-        <form class="config__actions" data-buy-anchor method="post" action="/cart/add">
+        <form class="config__actions" id="buy-form" data-buy-anchor method="post" action="/cart/add">
           <input type="hidden" name="productId" value="<%= product.id %>">
           <% if (error) { %><p class="form-error"><%= error %></p><% } %>
           <div class="config__row">
@@ -99,11 +104,11 @@
         <ul class="config__assurance">
           <li>
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7l8-4 8 4v6c0 5-3.5 7.5-8 8-4.5-.5-8-3-8-8V7Z"/></svg>
-            <span>Handmade from natural materials. Small differences in colour, texture and finish are part of the piece, not faults in it.</span>
+            <span>Colours can look slightly different on screen than in your room. If what arrives is damaged or not what you ordered, we will put it right.</span>
           </li>
           <li>
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 16V8l9-4 9 4v8l-9 4-9-4Z"/></svg>
-            <span>Dispatched in <%= settings.ship_processing %> by <%= settings.ship_courier %>. Dubai in <%= settings.ship_dubai %>, other emirates in <%= settings.ship_emirates %>.</span>
+            <span>Ships to anywhere in the UAE in <%= settings.ship_dubai %>, with tracking.</span>
           </li>
           <li>
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 14 4 9l5-5"/><path d="M4 9h11a5 5 0 0 1 0 10H9"/></svg>

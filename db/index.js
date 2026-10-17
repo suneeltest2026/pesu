@@ -89,11 +89,16 @@ async function initialise() {
     await client.query('SELECT pg_advisory_xact_lock(841125)');
     await client.query(fs.readFileSync(path.join(__dirname, 'schema.sql'), 'utf8'));
 
+    /* Seed on an empty database, and again whenever data/products.json
+       carries a catalogVersion the database has not seen yet — that is how a
+       new range reaches the live store on deploy. */
+    const { seedWith, catalogVersion } = require('./seed');
     const seeded = await client.query('SELECT COUNT(*)::int AS c FROM products');
-    if (seeded.rows[0].c === 0) {
-      const { seedWith } = require('./seed');
+    const seen = await client.query("SELECT value FROM settings WHERE key = 'catalog_version'");
+    const current = seen.rows[0] ? seen.rows[0].value : null;
+    if (seeded.rows[0].c === 0 || (catalogVersion && current !== catalogVersion)) {
       await seedWith(client);
-      console.log('[db] seeded from data/products.json');
+      console.log('[db] seeded from data/products.json', catalogVersion || '');
     }
 
     const { ensureAdmin, ensureSettings } = require('./seed');

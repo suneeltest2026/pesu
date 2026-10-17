@@ -1,7 +1,8 @@
 'use strict';
-/* Seeds the catalogue from data/products.json — the export taken out of
-   Shopify. Idempotent: products are upserted by id, orders are never touched.
-   Runs either from the CLI (`npm run seed`) or lazily on first boot. */
+/* Seeds the catalogue from data/products.json. Idempotent: products are
+   upserted by id, orders are never touched. Runs from the CLI (`npm run
+   seed`), on first boot, and on any boot where the file's catalogVersion is
+   new to the database. */
 require('dotenv').config();
 const fs = require('fs');
 const path = require('path');
@@ -64,6 +65,17 @@ async function seedWith(client) {
     }
   }
 
+  /* Anything no longer in the file comes off sale. Rows are kept, not
+     deleted, because past orders still point at them. */
+  await client.query('UPDATE products SET active = FALSE, updated_at = now() WHERE NOT (id = ANY($1))',
+    [data.products.map((p) => p.id)]);
+
+  if (data.catalogVersion) {
+    await client.query(
+      `INSERT INTO settings (key, value) VALUES ('catalog_version', $1)
+       ON CONFLICT (key) DO UPDATE SET value = $1`, [data.catalogVersion]);
+  }
+
   await ensureSettings(client);
   await ensureAdmin(client);
 }
@@ -108,7 +120,7 @@ async function ensureAdmin(client) {
   return true;
 }
 
-module.exports = { seedWith, ensureAdmin, ensureSettings };
+module.exports = { seedWith, ensureAdmin, ensureSettings, catalogVersion: data.catalogVersion || null };
 
 /* CLI entry point. */
 if (require.main === module) {

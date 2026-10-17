@@ -23,7 +23,7 @@ async function listing(res, { products, heading, activeGroup, activeMaterial }) 
     activeMaterial: activeMaterial || null,
     totalCount: all.length,
     title: heading.title + ' — PESU',
-    description: heading.line || 'Handmade home decor from PESU.'
+    description: heading.line || 'Home decor from PESU.'
   });
 }
 
@@ -31,7 +31,7 @@ router.get('/shop', async (req, res, next) => {
   try {
     await listing(res, {
       products: await shop.products(),
-      heading: { eyebrow: 'The range', title: 'Everything', line: 'Made by hand from natural materials.' }
+      heading: { eyebrow: 'The range', title: 'Everything', line: 'Lamps, vases, trays and small sculptures.' }
     });
   } catch (err) { next(err); }
 });
@@ -40,8 +40,11 @@ router.get('/shop/:group', async (req, res, next) => {
   try {
     const group = await shop.group(req.params.group);
     if (!group) return next();
+    const products = await shop.products({ group: group.id });
+    /* A room with nothing in it (an old link to a retired range) goes to the shop. */
+    if (!products.length) return res.redirect(302, '/shop');
     await listing(res, {
-      products: await shop.products({ group: group.id }),
+      products,
       activeGroup: group.id,
       heading: { eyebrow: 'The range', title: group.name, line: group.line, crumb: group.name }
     });
@@ -55,7 +58,7 @@ router.get('/materials', async (req, res, next) => {
     heading: {
       eyebrow: 'Materials',
       title: 'Shop by material',
-      line: 'Six materials run through the range. Pick one and see what it becomes.',
+      line: 'Pick a material and see what it becomes.',
         crumb: 'Materials'
       }
     });
@@ -66,8 +69,10 @@ router.get('/materials/:material', async (req, res, next) => {
   try {
     const material = await shop.material(req.params.material);
     if (!material) return next();
+    const products = await shop.products({ material: material.id });
+    if (!products.length) return res.redirect(302, '/shop');
     await listing(res, {
-      products: await shop.products({ material: material.id }),
+      products,
       activeMaterial: material.id,
       heading: { eyebrow: 'Material', title: material.name, line: material.note, crumb: material.name }
     });
@@ -77,7 +82,9 @@ router.get('/materials/:material', async (req, res, next) => {
 router.get('/product/:handle', async (req, res, next) => {
   try {
     const product = await shop.product(req.params.handle);
-    if (!product || !product.active) return next();
+    if (!product) return next();
+    /* A retired piece: send old links and pins to the current range. */
+    if (!product.active) return res.redirect(302, '/shop');
 
   /* Old Shopify URLs keep working. */
   if (product.handle !== req.params.handle) {

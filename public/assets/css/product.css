@@ -188,7 +188,12 @@
 }
 .option small { font-size: 0.68rem; color: var(--fg-faint); letter-spacing: 0.06em; }
 .option:hover { border-color: var(--fg-muted); }
-.option[aria-pressed="true"] { background: var(--ink); border-color: var(--ink); color: var(--alabaster); }
+.option[aria-pressed="true"],
+.option:has(input:checked) { background: var(--ink); border-color: var(--ink); color: var(--alabaster); }
+.option { cursor: pointer; }
+.option:has(input:focus-visible) { outline: 2px solid var(--ink); outline-offset: 2px; }
+fieldset.config__group { border: 0; padding: 0; margin-inline: 0; min-width: 0; }
+fieldset.config__group > legend { padding: 0; width: 100%; }
 .option[aria-pressed="true"] small { color: rgba(247,243,237,0.6); }
 .option[disabled] { opacity: 0.32; pointer-events: none; text-decoration: line-through; }
 
