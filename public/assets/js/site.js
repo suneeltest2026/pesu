@@ -67,6 +67,7 @@
       lastFocus = document.activeElement;
       el.classList.add('is-open');
       el.removeAttribute('aria-hidden');
+      document.body.classList.toggle('is-mega-open', el.classList.contains('megamenu'));
       if (scrim) scrim.classList.add('is-open');
       document.body.classList.add('is-locked');
       openPanel = el;
@@ -75,6 +76,7 @@
     } else {
       el.classList.remove('is-open');
       el.setAttribute('aria-hidden', 'true');
+      document.body.classList.remove('is-mega-open');
       if (scrim) scrim.classList.remove('is-open');
       document.body.classList.remove('is-locked');
       if (openPanel === el) openPanel = null;
