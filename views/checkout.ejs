@@ -80,7 +80,7 @@
             <% }) %>
           </div>
           <% if (!methods.length) { %>
-          <p class="form-error">No payment method is configured yet. Set STRIPE_SECRET_KEY, or enable cash on delivery.</p>
+          <p class="form-error">Online payment is being set up. Please check back shortly, or write to <%= settings.shop_email %> to order.</p>
           <% } %>
         </fieldset>
       </div>
