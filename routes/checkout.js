@@ -101,7 +101,7 @@ router.post('/checkout', async (req, res, next) => {
     const [placed, settings] = await Promise.all([
       orders.byReference(order.reference), shop.settings()
     ]);
-    mail.orderPlaced(placed, settings).catch(() => {});
+    await mail.orderPlaced(placed, settings).catch((err) => console.error('[mail]', err.message));
     return res.redirect(303, '/order/' + order.reference);
   } catch (err) {
     /* Payment could not start: put the stock back rather than stranding it. */
@@ -127,7 +127,7 @@ router.get('/order/:reference', async (req, res, next) => {
       if (card && card.verify && order.payment_ref && await card.verify(order.payment_ref)) {
         await orders.markPaid(order.reference, order.payment_ref);
         order.payment_status = 'paid';
-        mail.orderPlaced(order, await shop.settings()).catch(() => {});
+        await mail.orderPlaced(order, await shop.settings()).catch((err) => console.error('[mail]', err.message));
       }
     } catch (err) { /* show the order regardless; the admin can confirm */ }
   }

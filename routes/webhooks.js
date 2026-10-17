@@ -55,7 +55,9 @@ async function handle(event) {
       const [placed, settings] = await Promise.all([
         orders.byReference(order.reference), shop.settings()
       ]);
-      mail.orderPlaced(placed, settings).catch(() => {});
+      /* Awaited: on serverless hosting work left running after the
+         response may never finish, and this email is the shop's alert. */
+      await mail.orderPlaced(placed, settings).catch((err) => console.error('[mail]', err.message));
       break;
     }
 
