@@ -180,6 +180,7 @@ router.post('/products/:id', upload.array('images', 8), async (req, res, next) =
       );
     }
 
+    shop.invalidate();
     res.redirect('/admin/products/' + product.id + '?saved=1');
   } catch (err) { next(err); }
 });
@@ -188,6 +189,7 @@ router.post('/products/:id/images/:imageId/delete', async (req, res, next) => {
   try {
     await db.query('DELETE FROM product_images WHERE id = $1 AND product_id = $2',
       [req.params.imageId, req.params.id]);
+    shop.invalidate();
     res.redirect('/admin/products/' + req.params.id);
   } catch (err) { next(err); }
 });

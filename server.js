@@ -26,6 +26,29 @@ app.set('trust proxy', 1);
    mounted ahead of the body parsers. */
 app.use('/', require('./routes/webhooks'));
 
+/* Supplier photographs, served through our own address so the hosting CDN
+   keeps a copy at the edge nearest each visitor. Fetched from the supplier
+   once per edge location, then cached for a year: the file names are content
+   hashes and never change. Only the supplier's own image paths are accepted,
+   so this cannot be used to fetch anything else. Mounted before sessions and
+   the database so a photograph never waits on either. */
+const SUPPLIER_IMAGES = 'https://file.zendrop.com/products/';
+const SUPPLIER_PATH = /^[0-9a-f]{2}\/[0-9a-f]{2}\/[0-9a-f]{20,40}_(import|preview)\.webp$/;
+app.get(/^\/zimg\/(.+)$/, async (req, res, next) => {
+  const file = req.params[0];
+  if (!SUPPLIER_PATH.test(file)) return next();
+  try {
+    const upstream = await fetch(SUPPLIER_IMAGES + file);
+    if (!upstream.ok) return res.status(upstream.status === 404 ? 404 : 502).end();
+    res.set('Content-Type', upstream.headers.get('content-type') || 'image/webp');
+    res.set('Cache-Control', 'public, max-age=31536000, s-maxage=31536000, immutable');
+    res.set('CDN-Cache-Control', 'public, s-maxage=31536000, immutable');
+    res.send(Buffer.from(await upstream.arrayBuffer()));
+  } catch (err) {
+    res.status(502).end();
+  }
+});
+
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(cookieParser());
@@ -36,7 +59,9 @@ if (!process.env.SESSION_SECRET) {
 
 app.use(session({
   name: 'pesu.sid',
-  store: new pgSession({ pool: db.pool, tableName: 'session', createTableIfMissing: false }),
+  /* disableTouch: an unchanged bag does not cost a database write on every
+     page view. The session still expires 30 days after it was last changed. */
+  store: new pgSession({ pool: db.pool, tableName: 'session', createTableIfMissing: false, disableTouch: true }),
   secret: process.env.SESSION_SECRET || require('crypto').randomBytes(32).toString('hex'),
   resave: false,
   saveUninitialized: false,
@@ -133,6 +158,7 @@ app.use(async (req, res, next) => {
       if (!file) return '';
       const name = String(file);
       if (name.startsWith('db:')) return '/img/' + name.slice(3);
+      if (name.startsWith(SUPPLIER_IMAGES)) return '/zimg/' + name.slice(SUPPLIER_IMAGES.length);
       if (/^https:\/\//.test(name)) return name;
       return '/images/' + encodeURIComponent(name);
     };
@@ -143,7 +169,10 @@ app.use(async (req, res, next) => {
       const alt = String(product.name || '').replace(/"/g, '&quot;');
       /* A missing photograph degrades to the material texture behind it,
          rather than a broken-image icon with alt text spilling across it. */
-      return `<img src="${res.locals.imageSrc(file)}" alt="${alt}" loading="lazy" decoding="async"` +
+      let src = res.locals.imageSrc(file);
+      /* Tiles and thumbnails take the supplier's 512px version, not the full one. */
+      if ((width || 800) <= 600) src = src.replace(/^(\/zimg\/.+)_import\.webp$/, '$1_preview.webp');
+      return `<img src="${src}" alt="${alt}" loading="lazy" decoding="async"` +
         ` width="${width || 800}" height="${width || 800}" onerror="pesuImage(this)">`;
     };
 
