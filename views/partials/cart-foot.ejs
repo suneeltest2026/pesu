@@ -5,7 +5,7 @@
     <span class="num"><%= money(cart.subtotalFils) %></span>
   </div>
   <p class="cart-note">
-    <% if (cart.deliveryFils === 0) { %>Free delivery across the UAE.<% } else { %>Delivery <%= money(cart.deliveryFils) %> — add <%= money(cart.remainingForFreeFils) %> for free delivery.<% } %>
+    <% if (!cart.home) { %>Delivery to <%= cart.countryName %> <%= money(cart.deliveryFils) %> (per item).<% } else if (cart.deliveryFils === 0) { %>Free delivery across the UAE.<% } else { %>Delivery <%= money(cart.deliveryFils) %> — add <%= money(cart.remainingForFreeFils) %> for free delivery.<% } %>
     <%= settings.returns_days %>-day returns.
   </p>
   <a class="btn btn--block" href="/checkout">Checkout</a>

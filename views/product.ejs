@@ -59,7 +59,7 @@
             <% } %>
           </p>
           <p class="lead-time">
-            <% if (product.price_fils >= cart.freeThresholdFils) { %>Free delivery across the UAE<% } else { %>Delivery <%= money(deliveryFlatFils) %> — free over <%= money(cart.freeThresholdFils) %><% } %>
+            <% if (product.price_fils >= cart.freeThresholdFils) { %>Free delivery across the UAE<% } else { %>UAE delivery <%= money(deliveryFlatFils) %> — free over <%= money(cart.freeThresholdFils) %><% } %> · Also ships to the GCC
           </p>
         </div>
 
@@ -108,7 +108,7 @@
           </li>
           <li>
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 16V8l9-4 9 4v8l-9 4-9-4Z"/></svg>
-            <span>Ships to anywhere in the UAE in <%= settings.ship_dubai %>, with tracking.</span>
+            <span>Ships to anywhere in the UAE in <%= settings.ship_dubai %>, and to Saudi Arabia, Kuwait, Qatar, Bahrain and Oman, with tracking.</span>
           </li>
           <li>
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 14 4 9l5-5"/><path d="M4 9h11a5 5 0 0 1 0 10H9"/></svg>
@@ -145,9 +145,11 @@
             <div class="accordion__panel"><div><div class="inner">
               <dl>
                 <dt>Processing</dt><dd><%= settings.ship_processing %> after payment</dd>
-                <dt>Dubai</dt><dd><%= settings.ship_dubai %></dd>
-                <dt>Other emirates</dt><dd><%= settings.ship_emirates %></dd>
-                <dt>Cost</dt><dd>Free over <%= money(cart.freeThresholdFils) %>; <%= money(deliveryFlatFils) %> below that</dd>
+                <dt>UAE</dt><dd><%= settings.ship_dubai %></dd>
+                <dt>Kuwait, Qatar, Bahrain</dt><dd>10–14 business days</dd>
+                <dt>Saudi Arabia, Oman</dt><dd>14–21 business days</dd>
+                <dt>Cost, UAE</dt><dd>Free over <%= money(cart.freeThresholdFils) %>; <%= money(deliveryFlatFils) %> below that</dd>
+                <dt>Cost, rest of GCC</dt><dd>AED 79 per item; AED 29 per item on orders of AED 1,000 or more</dd>
                 <dt>Courier</dt><dd><%= settings.ship_courier %></dd>
               </dl>
               <p><a class="link" href="/delivery">Full delivery information</a></p>

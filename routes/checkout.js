@@ -5,9 +5,8 @@ const orders = require('../lib/orders');
 const payments = require('../lib/payments');
 const shop = require('../lib/shop');
 const mail = require('../lib/mail');
+const shipping = require('../lib/shipping');
 const router = express.Router();
-
-const EMIRATES = ['Dubai', 'Abu Dhabi', 'Sharjah', 'Ajman', 'Ras Al Khaimah', 'Fujairah', 'Umm Al Quwain'];
 
 function origin(req) {
   return process.env.PUBLIC_URL || `${req.protocol}://${req.get('host')}`;
@@ -18,14 +17,27 @@ function renderCheckout(req, res, { error, form } = {}) {
     title: 'Checkout — PESU',
     description: 'Complete your order.',
     methods: payments.all(),
-    emirates: EMIRATES,
+    countries: shipping.COUNTRIES,
+    destination: shipping.country(req.session.country) || shipping.COUNTRIES[0],
     form: form || {},
     error: error || null
   });
 }
 
+/* Choosing where the order goes. Kept in the session so the bag, checkout
+   and the order all price delivery the same way. */
+function setCountry(req, code) {
+  const c = shipping.country(code);
+  if (c) req.session.country = c.code;
+  return c;
+}
+
 router.get('/checkout', async (req, res, next) => {
   try {
+    if (req.query.country) {
+      setCountry(req, req.query.country);
+      return res.redirect(303, '/checkout');
+    }
     const summary = await cart.summary(req.session);
     if (!summary.items.length) return res.redirect('/cart');
     renderCheckout(req, res, {
@@ -36,7 +48,15 @@ router.get('/checkout', async (req, res, next) => {
 
 router.post('/checkout', async (req, res, next) => {
   const form = req.body;
+  const destination = setCountry(req, form.country);
+  if (!destination) {
+    return renderCheckout(req, res, { form, error: 'We do not deliver to that country yet.' });
+  }
+  /* Load the bag only after the destination is set, so the delivery charge
+     the customer pays is the one for where it is going. The country chosen
+     here is also the one shown in the summary when the page re-renders. */
   const summary = await cart.summary(req.session);
+  res.locals.cart = summary;
   if (!summary.items.length) return res.redirect('/cart');
 
   const required = ['name', 'email', 'phone', 'address1', 'city', 'emirate'];
@@ -44,6 +64,10 @@ router.post('/checkout', async (req, res, next) => {
   if (missing.length) {
     return renderCheckout(req, res, { form, error: 'Please complete every required field.' });
   }
+  if (destination.regions && !destination.regions.includes(form.emirate)) {
+    return renderCheckout(req, res, { form, error: 'Choose an emirate.' });
+  }
+  form.country = destination.name;
   if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(form.email)) {
     return renderCheckout(req, res, { form, error: 'That email address does not look right.' });
   }

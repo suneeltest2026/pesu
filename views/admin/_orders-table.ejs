@@ -8,7 +8,7 @@
       <% orders.forEach(function (o) { %>
       <tr>
         <td><a href="/admin/orders/<%= o.reference %>"><%= o.reference %></a></td>
-        <td><%= o.name %><br><span class="adm-dim"><%= o.city %>, <%= o.emirate %></span></td>
+        <td><%= o.name %><br><span class="adm-dim"><%= o.city %>, <%= o.emirate %><%= o.country && o.country !== 'United Arab Emirates' ? ' · ' + o.country : '' %></span></td>
         <td class="num"><%= money(o.total_fils) %></td>
         <td><span class="adm-pill <%= o.payment_status === 'paid' ? 'is-ok' : 'is-low' %>"><%= o.payment_method %> · <%= o.payment_status %></span></td>
         <td><span class="adm-pill <%= o.status === 'cancelled' ? 'is-out' : o.status === 'delivered' ? 'is-ok' : '' %>"><%= o.status %></span></td>

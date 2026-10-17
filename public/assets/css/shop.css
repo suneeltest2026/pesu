@@ -123,3 +123,8 @@
 @media (max-width: 420px) {
   .listing__grid { grid-template-columns: 1fr; }
 }
+
+/* Destination picker above the checkout form */
+.checkout__country { display: flex; gap: 1rem; align-items: flex-end; max-width: 26rem; margin-bottom: var(--sp-5, 2rem); }
+.checkout__country .field { flex: 1; }
+.totals dt small { font-size: 0.8em; color: var(--fg-faint); }

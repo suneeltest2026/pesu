@@ -47,7 +47,7 @@
 
       <dl class="totals">
         <dt>Delivering to</dt>
-        <dd><%= order.name %><br><%= order.address1 %><% if (order.address2) { %><br><%= order.address2 %><% } %><br><%= order.city %>, <%= order.emirate %></dd>
+        <dd><%= order.name %><br><%= order.address1 %><% if (order.address2) { %><br><%= order.address2 %><% } %><br><%= order.city %>, <%= order.emirate %><br><%= order.country %></dd>
         <dt>Payment</dt><dd><%= order.payment_method === 'cod' ? 'Cash on delivery' : order.payment_method === 'bank' ? 'Bank transfer' : 'Card' %> — <%= order.payment_status %></dd>
         <dt>Status</dt><dd><%= order.status %></dd>
         <% if (order.tracking) { %><dt>Tracking</dt><dd><%= order.tracking %></dd><% } %>

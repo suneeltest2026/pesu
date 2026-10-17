@@ -19,7 +19,11 @@ The Shopify store stays password-protected; customers only ever see pesu.ae.
    cash: you pay Zendrop up front and collect from the customer yourself.
 3. Shopify admin → **Orders** → **Create order**. Add the same products, pick the
    Zendrop option shown in the table below, enter the customer's name, phone and
-   address, and mark it as paid.
+   address — including the **country** shown on the pesu.ae order (UAE, Saudi
+   Arabia, Kuwait, Qatar, Bahrain or Oman) — and mark it as paid.
+
+   GCC orders outside the UAE cost Zendrop more to ship; the customer has already
+   paid AED 79 per item (AED 29 per item on orders of AED 1,000 or more) for that.
 4. Zendrop → **Orders**: the order appears within a few minutes. Click
    **Fulfill order** (or turn on auto-fulfil on a paid Zendrop plan).
 5. When Zendrop gives you a tracking number, paste it into the order in the

@@ -13,7 +13,22 @@
 
     <% if (error) { %><p class="form-error form-error--block"><%= error %></p><% } %>
 
+    <%# Choosing the country reloads the page, so the delivery charge in the
+        summary is always the one for where the order is going. %>
+    <form class="checkout__country" method="get" action="/checkout">
+      <label class="field">
+        <span class="field__label">Delivering to</span>
+        <select class="field__input" name="country" onchange="this.form.submit()">
+          <% countries.forEach(function (c) { %>
+          <option value="<%= c.code %>" <%= destination.code === c.code ? 'selected' : '' %>><%= c.name %></option>
+          <% }) %>
+        </select>
+      </label>
+      <noscript><button class="btn btn--ghost" type="submit">Update</button></noscript>
+    </form>
+
     <form class="checkout" method="post" action="/checkout" novalidate>
+      <input type="hidden" name="country" value="<%= destination.code %>">
       <div class="checkout__form stack-lg">
         <fieldset>
           <legend class="config__group-label">Contact</legend>
@@ -29,7 +44,7 @@
             <label class="field">
               <span class="field__label">Mobile</span>
               <input class="field__input" type="tel" name="phone" required autocomplete="tel"
-                     placeholder="05X XXX XXXX" value="<%= form.phone || '' %>">
+                     placeholder="<%= destination.phone %>" value="<%= form.phone || '' %>">
             </label>
           </div>
         </fieldset>
@@ -51,12 +66,16 @@
               <input class="field__input" name="city" required autocomplete="address-level2" value="<%= form.city || '' %>">
             </label>
             <label class="field">
-              <span class="field__label">Emirate</span>
+              <span class="field__label"><%= destination.regionLabel %></span>
+              <% if (destination.regions) { %>
               <select class="field__input" name="emirate" required>
-                <% emirates.forEach(function (e) { %>
+                <% destination.regions.forEach(function (e) { %>
                 <option value="<%= e %>" <%= form.emirate === e ? 'selected' : '' %>><%= e %></option>
                 <% }) %>
               </select>
+              <% } else { %>
+              <input class="field__input" name="emirate" required autocomplete="address-level1" value="<%= form.emirate || '' %>">
+              <% } %>
             </label>
             <label class="field field--wide">
               <span class="field__label">Delivery notes <span class="field__opt">optional</span></span>
@@ -96,9 +115,13 @@
         <% }) %>
         <dl class="totals">
           <dt>Subtotal</dt><dd class="num"><%= money(cart.subtotalFils) %></dd>
-          <dt>Delivery</dt><dd class="num"><%= cart.deliveryFils ? money(cart.deliveryFils) : 'Free' %></dd>
+          <dt>Delivery<% if (!cart.home) { %> <small>(<%= cart.count %> × <%= money(cart.deliveryFils / cart.count) %>)</small><% } %></dt><dd class="num"><%= cart.deliveryFils ? money(cart.deliveryFils) : 'Free' %></dd>
           <dt class="totals__grand">Total</dt><dd class="totals__grand num"><%= money(cart.totalFils) %></dd>
         </dl>
+        <p class="cart-note">Arrives in <%= cart.deliveryTime %>, with tracking.</p>
+        <% if (!cart.home) { %>
+        <p class="cart-note">Delivery to <%= cart.countryName %> is charged per item<% if (cart.remainingForReducedFils) { %>; spend <%= money(cart.remainingForReducedFils) %> more and it drops to AED 29 per item<% } %>. Any import duty or VAT charged by <%= cart.countryName %> customs is paid by the recipient.</p>
+        <% } %>
         <button class="btn btn--block" type="submit" <%= methods.length ? '' : 'disabled' %>>Place order</button>
         <p class="cart-note">By placing this order you agree to our <a href="/terms">terms</a>. <%= settings.returns_days %>-day returns.</p>
       </aside>

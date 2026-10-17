@@ -26,7 +26,7 @@
         <dt>Name</dt><dd><%= order.name %></dd>
         <dt>Email</dt><dd><a href="mailto:<%= order.email %>"><%= order.email %></a></dd>
         <dt>Phone</dt><dd><a href="tel:<%= order.phone %>"><%= order.phone %></a></dd>
-        <dt>Address</dt><dd><%= order.address1 %><% if (order.address2) { %><br><%= order.address2 %><% } %><br><%= order.city %>, <%= order.emirate %></dd>
+        <dt>Address</dt><dd><%= order.address1 %><% if (order.address2) { %><br><%= order.address2 %><% } %><br><%= order.city %>, <%= order.emirate %><br><%= order.country %></dd>
         <% if (order.notes) { %><dt>Notes</dt><dd><%= order.notes %></dd><% } %>
       </dl>
     </section>
