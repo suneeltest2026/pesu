@@ -133,6 +133,7 @@
             if (button) button.disabled = false;
             if (!data.ok) { toast(data.error || 'That did not work'); return; }
             refreshBag(data);
+            trackAddToCart(form);
             var drawer = $('#cart');
             if (drawer) setPanel(drawer, true);
             toast('Added to your bag');
@@ -140,6 +141,20 @@
           .catch(function () { form.submit(); });
       });
     });
+  }
+
+  /* Google Analytics: report the piece added to the bag. */
+  function trackAddToCart(form) {
+    try {
+      if (typeof window.gtag !== 'function') return;
+      var item = JSON.parse(form.getAttribute('data-ga-item') || 'null');
+      if (!item) return;
+      var qtyInput = form.querySelector('[name="qty"]');
+      var opt = document.querySelector('input[name="option"][form="' + form.id + '"]:checked');
+      item.quantity = Math.max(1, parseInt(qtyInput && qtyInput.value, 10) || 1);
+      if (opt && form.id) item.item_variant = opt.value;
+      window.gtag('event', 'add_to_cart', { currency: 'AED', value: item.price * item.quantity, items: [item] });
+    } catch (e) { /* tracking must never break the bag */ }
   }
 
   function refreshBag(data) {

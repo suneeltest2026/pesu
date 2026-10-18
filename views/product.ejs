@@ -85,7 +85,7 @@
         </fieldset>
         <% }) %>
 
-        <form class="config__actions" id="buy-form" data-buy-anchor method="post" action="/cart/add">
+        <form class="config__actions" id="buy-form" data-buy-anchor method="post" action="/cart/add" data-ga-item="<%= JSON.stringify({ item_id: String(product.id), item_name: product.name, price: product.price_fils / 100 }) %>">
           <input type="hidden" name="productId" value="<%= product.id %>">
           <% if (error) { %><p class="form-error"><%= error %></p><% } %>
           <div class="config__row">
@@ -194,7 +194,7 @@
     <p class="tile__meta"><%= product.name %></p>
     <p class="buybar__price num"><%= money(product.price_fils) %></p>
   </div>
-  <form method="post" action="/cart/add">
+  <form method="post" action="/cart/add" data-ga-item="<%= JSON.stringify({ item_id: String(product.id), item_name: product.name, price: product.price_fils / 100 }) %>">
     <input type="hidden" name="productId" value="<%= product.id %>">
     <input type="hidden" name="qty" value="1">
     <button class="btn" type="submit" <%= product.inventory <= 0 ? 'disabled' : '' %>>Add to bag</button>

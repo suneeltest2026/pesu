@@ -62,5 +62,23 @@
 
 <%- include('partials/footer') %>
 <script src="/assets/js/site.js?v=<%= v %>"></script>
+<%# Count the sale once it is real: card orders only after payment is confirmed;
+    bank-transfer orders when placed (the customer has committed to pay). %>
+<% if (order.payment_status === 'paid' || order.payment_method !== 'card') { %>
+<%- include('partials/ga-event', {
+  gaName: 'purchase',
+  gaOnceKey: 'pesu_ga_purchase_' + order.reference,
+  gaParams: {
+    transaction_id: order.reference,
+    currency: 'AED',
+    value: order.total_fils / 100,
+    shipping: (order.delivery_fils || 0) / 100,
+    payment_type: order.payment_method,
+    items: order.items.map(function (i) {
+      return { item_id: String(i.product_id), item_name: i.name, price: i.price_fils / 100, quantity: i.qty };
+    })
+  }
+}) %>
+<% } %>
 </body>
 </html>

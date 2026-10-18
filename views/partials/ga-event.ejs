@@ -1,0 +1,14 @@
+<%# Sends one Google Analytics event. Pass gaName, gaParams and (optionally)
+    gaOnceKey: when set, the event is sent only once per browser for that key
+    (stops a purchase being counted again when the order page is reopened). %>
+<script>
+  (function () {
+    if (typeof gtag !== 'function') return;
+    var onceKey = <%- JSON.stringify(locals.gaOnceKey || null).replace(/</g, '\\u003c') %>;
+    try {
+      if (onceKey && localStorage.getItem(onceKey)) return;
+      if (onceKey) localStorage.setItem(onceKey, '1');
+    } catch (e) { /* storage blocked: send anyway; GA also de-duplicates by transaction_id */ }
+    gtag('event', <%- JSON.stringify(gaName) %>, <%- JSON.stringify(gaParams).replace(/</g, '\\u003c') %>);
+  })();
+</script>
